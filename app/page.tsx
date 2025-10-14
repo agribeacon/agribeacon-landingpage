@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/hero-section";
 import { MissionSection } from "@/components/mission-section";
 import { NameStorySection } from "@/components/name-story-section";
 import { ValuesSection } from "@/components/values-section";
-import { AppStoreSupportSection } from "@/components/app-store-support-section";
+import { SupportSection } from "@/components/support-section";
 import { FooterSection } from "@/components/footer-section";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
       <MissionSection />
       <NameStorySection />
       <ValuesSection />
-      <AppStoreSupportSection />
+      <SupportSection />
       <FooterSection />
     </main>
   );
