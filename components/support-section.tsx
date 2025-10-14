@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { MessageCircle, Send, CheckCircle, AlertCircle } from "lucide-react";
-import Link from "next/link";
 
 export function SupportSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,150 +99,135 @@ export function SupportSection() {
         </div>
       </div>
 
-       <div className="max-w-2xl mx-auto">
-         {/* Support Card */}
-         <Card className="group hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border-green-200 dark:border-green-700 bg-gradient-to-br from-white to-emerald-50 dark:from-gray-900 dark:to-emerald-950 shadow-xl">
-           <CardContent className="p-12 text-center">
-             <div className="w-20 h-20 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center group-hover:from-emerald-600 group-hover:to-green-700 transition-all duration-300 shadow-lg">
-               <MessageCircle className="h-10 w-10 text-white" />
-             </div>
-             
-             <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-               Get Support
-             </h3>
-             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-               Have questions or need help? Our support team is here to assist you with any inquiries about AgriBeacon.
-             </p>
+      <div className="text-center">
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-12 py-6 text-xl font-bold"
+            >
+              Submit Question
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px] bg-white dark:bg-gray-900 border-green-200 dark:border-green-800">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+                <MessageCircle className="h-6 w-6 text-emerald-600" />
+                Submit Question
+              </DialogTitle>
+            </DialogHeader>
 
-             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-               <DialogTrigger asChild>
-                 <Button
-                   size="lg"
-                   className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-8 py-6 text-lg font-semibold"
-                 >
-                   <MessageCircle className="h-6 w-6 mr-3" />
-                   Contact Support
-                 </Button>
-               </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px] bg-white dark:bg-gray-900 border-green-200 dark:border-green-800">
-                <DialogHeader>
-                   <DialogTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-                     <MessageCircle className="h-6 w-6 text-emerald-600" />
-                     Support
-                   </DialogTitle>
-                </DialogHeader>
+            {isSubmitted ? (
+              <div className="text-center py-8">
+                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Message sent successfully! 🎉
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Thank you for contacting us! We will respond as soon as
+                  possible.
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">
+                  Your message has been sent to our Discord support channel.
+                </p>
+              </div>
+            ) : submitError ? (
+              <div className="text-center py-8">
+                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  An error occurred! 😔
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Unable to send message. Please check your internet connection
+                  and try again.
+                </p>
+                <Button
+                  onClick={() => setSubmitError(false)}
+                  className="mt-4 bg-emerald-600 hover:bg-emerald-700"
+                >
+                  Try Again
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="name"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Your Name *
+                  </Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Enter your name"
+                  />
+                </div>
 
-                {isSubmitted ? (
-                  <div className="text-center py-8">
-                    <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                     <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                       Message sent successfully! 🎉
-                     </h3>
-                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                       Thank you for contacting us! We will respond as soon as possible.
-                     </p>
-                     <p className="text-sm text-gray-500 dark:text-gray-500">
-                       Your message has been sent to our Discord support channel.
-                     </p>
-                  </div>
-                ) : submitError ? (
-                  <div className="text-center py-8">
-                    <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                     <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                       An error occurred! 😔
-                     </h3>
-                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                       Unable to send message. Please check your internet connection and try again.
-                     </p>
-                     <Button
-                       onClick={() => setSubmitError(false)}
-                       className="mt-4 bg-emerald-600 hover:bg-emerald-700"
-                     >
-                       Try Again
-                     </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                       <Label
-                         htmlFor="name"
-                         className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                       >
-                         Your Name *
-                       </Label>
-                       <Input
-                         id="name"
-                         name="name"
-                         type="text"
-                         required
-                         value={formData.name}
-                         onChange={handleInputChange}
-                         className="border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
-                         placeholder="Enter your name"
-                       />
-                    </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Email *
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="email"
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                      >
-                        Email *
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
-                        placeholder="your.email@example.com"
-                      />
-                    </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="question"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Your Question *
+                  </Label>
+                  <Textarea
+                    id="question"
+                    name="question"
+                    required
+                    value={formData.question}
+                    onChange={handleInputChange}
+                    className="min-h-[120px] border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Please describe your question or issue in detail..."
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                       <Label
-                         htmlFor="question"
-                         className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                       >
-                         Your Question *
-                       </Label>
-                       <Textarea
-                         id="question"
-                         name="question"
-                         required
-                         value={formData.question}
-                         onChange={handleInputChange}
-                         className="min-h-[120px] border-green-200 dark:border-green-800 focus:ring-emerald-500 focus:border-emerald-500"
-                         placeholder="Please describe your question or issue in detail..."
-                       />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                       {isSubmitting ? (
-                         <>
-                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                           Sending...
-                         </>
-                       ) : (
-                         <>
-                           <Send className="h-4 w-4 mr-2" />
-                           Send Message
-                         </>
-                       )}
-                    </Button>
-                  </form>
-                )}
-              </DialogContent>
-             </Dialog>
-           </CardContent>
-         </Card>
-       </div>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4 mr-2" />
+                      Submit
+                    </>
+                  )}
+                </Button>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     </Section>
   );
 }
