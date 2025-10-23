@@ -4,100 +4,102 @@ import { Plane, Radio, Cpu, Sparkles, Wifi, Battery, Cloud, Shield } from "lucid
 import droneTech from "@/assets/drone-tech.jpg";
 import iotSensor from "@/assets/iot-sensor.jpg";
 import robotFarming from "@/assets/robot-farming.jpg";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const Technology = () => {
+  const { t } = useSimpleLanguage();
   const technologies = [
     {
       id: "drones",
-      name: "Autonomous Drones",
+      name: t('tech.drones.name'),
       icon: Plane,
       image: droneTech,
-      description: "Advanced aerial intelligence for comprehensive farm monitoring and data collection",
+      description: t('tech.drones.description'),
       specs: [
-        { label: "Flight Time", value: "45 minutes" },
-        { label: "Coverage Area", value: "200 acres/flight" },
-        { label: "Camera Resolution", value: "4K multispectral" },
-        { label: "AI Processing", value: "Real-time onboard" },
+        { label: t('tech.drones.spec1.label'), value: t('tech.drones.spec1.value') },
+        { label: t('tech.drones.spec2.label'), value: t('tech.drones.spec2.value') },
+        { label: t('tech.drones.spec3.label'), value: t('tech.drones.spec3.value') },
+        { label: t('tech.drones.spec4.label'), value: t('tech.drones.spec4.value') },
       ],
       features: [
-        "Autonomous flight planning and execution",
-        "Multi-spectral imaging for crop health analysis",
-        "Real-time pest and disease detection",
-        "Precision spraying capabilities",
-        "3D terrain mapping",
-        "Weather-resistant design (IP54)",
+        t('tech.drones.feature1'),
+        t('tech.drones.feature2'),
+        t('tech.drones.feature3'),
+        t('tech.drones.feature4'),
+        t('tech.drones.feature5'),
+        t('tech.drones.feature6'),
       ],
     },
     {
       id: "sensors",
-      name: "IoT Sensors",
+      name: t('tech.sensors.name'),
       icon: Radio,
       image: iotSensor,
-      description: "Comprehensive environmental monitoring with enterprise-grade reliability",
+      description: t('tech.sensors.description'),
       specs: [
-        { label: "Battery Life", value: "3+ years" },
-        { label: "Range", value: "10km LoRaWAN" },
-        { label: "Data Frequency", value: "Every 15 minutes" },
-        { label: "Sensors per Unit", value: "8+ parameters" },
+        { label: t('tech.sensors.spec1.label'), value: t('tech.sensors.spec1.value') },
+        { label: t('tech.sensors.spec2.label'), value: t('tech.sensors.spec2.value') },
+        { label: t('tech.sensors.spec3.label'), value: t('tech.sensors.spec3.value') },
+        { label: t('tech.sensors.spec4.label'), value: t('tech.sensors.spec4.value') },
       ],
       features: [
-        "Soil moisture, temperature, and pH monitoring",
-        "Weather data (temp, humidity, rainfall, wind)",
-        "Light intensity and UV index tracking",
-        "Air quality and CO2 measurement",
-        "Solar-powered with backup battery",
-        "Waterproof and weatherproof (IP67)",
+        t('tech.sensors.feature1'),
+        t('tech.sensors.feature2'),
+        t('tech.sensors.feature3'),
+        t('tech.sensors.feature4'),
+        t('tech.sensors.feature5'),
+        t('tech.sensors.feature6'),
       ],
     },
     {
       id: "robotics",
-      name: "Smart Robotics",
+      name: t('tech.robotics.name'),
       icon: Cpu,
       image: robotFarming,
-      description: "Autonomous robotic systems for precision farming tasks and labor automation",
+      description: t('tech.robotics.description'),
       specs: [
-        { label: "Operating Time", value: "8-12 hours" },
-        { label: "Precision", value: "±2cm accuracy" },
-        { label: "Payload", value: "50kg capacity" },
-        { label: "Speed", value: "0.5-2 m/s" },
+        { label: t('tech.robotics.spec1.label'), value: t('tech.robotics.spec1.value') },
+        { label: t('tech.robotics.spec2.label'), value: t('tech.robotics.spec2.value') },
+        { label: t('tech.robotics.spec3.label'), value: t('tech.robotics.spec3.value') },
+        { label: t('tech.robotics.spec4.label'), value: t('tech.robotics.spec4.value') },
       ],
       features: [
-        "Automated weeding with 99% accuracy",
-        "Precision planting and seeding",
-        "Selective harvesting capabilities",
-        "Navigation via GPS + computer vision",
-        "Obstacle detection and avoidance",
-        "Autonomous charging and route planning",
+        t('tech.robotics.feature1'),
+        t('tech.robotics.feature2'),
+        t('tech.robotics.feature3'),
+        t('tech.robotics.feature4'),
+        t('tech.robotics.feature5'),
+        t('tech.robotics.feature6'),
       ],
     },
     {
       id: "ai",
-      name: "AI Analytics",
+      name: t('tech.ai.name'),
       icon: Sparkles,
       image: iotSensor,
-      description: "Machine learning-powered insights and predictive analytics for optimal farm management",
+      description: t('tech.ai.description'),
       specs: [
-        { label: "Processing", value: "Cloud + Edge" },
-        { label: "Predictions", value: "7-30 day forecast" },
-        { label: "Accuracy", value: "92%+ average" },
-        { label: "Data Points", value: "1M+ daily" },
+        { label: t('tech.ai.spec1.label'), value: t('tech.ai.spec1.value') },
+        { label: t('tech.ai.spec2.label'), value: t('tech.ai.spec2.value') },
+        { label: t('tech.ai.spec3.label'), value: t('tech.ai.spec3.value') },
+        { label: t('tech.ai.spec4.label'), value: t('tech.ai.spec4.value') },
       ],
       features: [
-        "Yield prediction and optimization",
-        "Disease outbreak early warning system",
-        "Irrigation scheduling recommendations",
-        "Harvest timing optimization",
-        "Resource allocation planning",
-        "Historical trend analysis and benchmarking",
+        t('tech.ai.feature1'),
+        t('tech.ai.feature2'),
+        t('tech.ai.feature3'),
+        t('tech.ai.feature4'),
+        t('tech.ai.feature5'),
+        t('tech.ai.feature6'),
       ],
     },
   ];
 
   const platformFeatures = [
-    { icon: Cloud, title: "Cloud Platform", description: "Secure, scalable infrastructure" },
-    { icon: Shield, title: "Data Security", description: "Bank-level encryption" },
-    { icon: Wifi, title: "Multi-Network", description: "LoRaWAN, 4G, WiFi, Satellite" },
-    { icon: Battery, title: "Energy Efficient", description: "Solar + long-life batteries" },
+    { icon: Cloud, title: t('tech.platform.cloud'), description: t('tech.platform.cloud.desc') },
+    { icon: Shield, title: t('tech.platform.security'), description: t('tech.platform.security.desc') },
+    { icon: Wifi, title: t('tech.platform.network'), description: t('tech.platform.network.desc') },
+    { icon: Battery, title: t('tech.platform.energy'), description: t('tech.platform.energy.desc') },
   ];
 
   return (
@@ -107,11 +109,11 @@ const Technology = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
           <h1 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Our Technology
+              {t('tech.title')}
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Cutting-edge hardware and intelligent software working in perfect harmony
+            {t('tech.subtitle')}
           </p>
         </div>
 
@@ -182,7 +184,7 @@ const Technology = () => {
 
                   {/* Features */}
                   <div>
-                    <h4 className="font-bold mb-4">Key Features</h4>
+                    <h4 className="font-bold mb-4">{t('tech.keyFeatures')}</h4>
                     <div className="grid gap-3">
                       {tech.features.map((feature) => (
                         <div key={feature} className="flex items-start gap-3">
@@ -203,10 +205,9 @@ const Technology = () => {
         {/* Integration Section */}
         <Card className="mt-16 bg-gradient-to-br from-muted/50 to-background border-2 shadow-card">
           <CardContent className="p-8 sm:p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Seamless Integration</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('tech.integration.title')}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-              All our technology works together through the AgriBeacon platform, providing a unified view
-              of your farm operations with real-time data synchronization and intelligent automation.
+              {t('tech.integration.description')}
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="bg-primary/10 px-4 py-2 rounded-full">REST API</div>
