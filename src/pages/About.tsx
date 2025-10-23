@@ -1,27 +1,30 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Target, Eye, Users, TrendingUp } from "lucide-react";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const About = () => {
+  const { t } = useSimpleLanguage();
+  
   const values = [
     {
       icon: Target,
-      title: "Precision",
-      description: "We believe in data-driven decisions and accurate measurements for optimal results.",
+      title: t('about.values.precision'),
+      description: t('about.values.precision.desc'),
     },
     {
       icon: TrendingUp,
-      title: "Innovation",
-      description: "Constantly pushing boundaries with cutting-edge technology and fresh approaches.",
+      title: t('about.values.innovation'),
+      description: t('about.values.innovation.desc'),
     },
     {
       icon: Users,
-      title: "Partnership",
-      description: "Working hand-in-hand with farmers to understand and solve real challenges.",
+      title: t('about.values.partnership'),
+      description: t('about.values.partnership.desc'),
     },
     {
       icon: Eye,
-      title: "Sustainability",
-      description: "Building solutions that benefit both farms and the planet for generations to come.",
+      title: t('about.values.sustainability'),
+      description: t('about.values.sustainability.desc'),
     },
   ];
 
@@ -32,11 +35,11 @@ const About = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
           <h1 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              About AgriBeacon
+              {t('about.title')}
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Guiding the future of agriculture with intelligent technology
+            {t('about.subtitle')}
           </p>
         </div>
 
@@ -47,16 +50,12 @@ const About = () => {
               <div className="bg-gradient-to-br from-primary to-secondary p-3 rounded-lg w-fit mb-4">
                 <Eye className="h-6 w-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('about.vision.title')}</h2>
               <p className="text-muted-foreground">
-                To become the world's leading provider of intelligent, end-to-end agricultural technology
-                solutions for perennial plant farms — enabling them to thrive economically, ecologically,
-                and socially.
+                {t('about.vision.text1')}
               </p>
               <p className="text-muted-foreground mt-4">
-                We envision a resilient, data-driven farming future that champions sustainable growth,
-                environmental responsibility, and long-term community impact — fully aligned with global ESG
-                values.
+                {t('about.vision.text2')}
               </p>
             </CardContent>
           </Card>
@@ -66,15 +65,12 @@ const About = () => {
               <div className="bg-gradient-to-br from-accent to-primary p-3 rounded-lg w-fit mb-4">
                 <Target className="h-6 w-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('about.mission.title')}</h2>
               <p className="text-muted-foreground">
-                We empower farmers and agricultural businesses through a unified ecosystem of hardware and
-                software — including autonomous drones, robotics, IoT sensors, and AI-powered analytics — to
-                optimize every decision from soil to harvest.
+                {t('about.mission.text1')}
               </p>
               <p className="text-muted-foreground mt-4">
-                Our mission is to transform agriculture through precision, automation, and insight, delivering
-                measurable impact to both people and planet.
+                {t('about.mission.text2')}
               </p>
             </CardContent>
           </Card>
@@ -83,33 +79,32 @@ const About = () => {
         {/* Our Name */}
         <Card className="mb-16 bg-card shadow-card">
           <CardContent className="p-8 sm:p-12">
-            <h2 className="text-3xl font-bold mb-6 text-center">Why "AgriBeacon"?</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center">{t('about.name.title')}</h2>
             <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
               <div className="text-center">
                 <div className="text-6xl mb-4">🌾</div>
-                <h3 className="text-xl font-bold mb-2 text-primary">Agri</h3>
+                <h3 className="text-xl font-bold mb-2 text-primary">{t('about.name.agri')}</h3>
                 <p className="text-muted-foreground">
-                  Agriculture, the foundation of our focus and the heart of everything we do.
+                  {t('about.name.agri.desc')}
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-6xl mb-4">💡</div>
-                <h3 className="text-xl font-bold mb-2 text-secondary">Beacon</h3>
+                <h3 className="text-xl font-bold mb-2 text-secondary">{t('about.name.beacon')}</h3>
                 <p className="text-muted-foreground">
-                  A guiding light or intelligent signal that shows the way forward.
+                  {t('about.name.beacon.desc')}
                 </p>
               </div>
             </div>
             <p className="text-center text-muted-foreground mt-8 max-w-2xl mx-auto">
-              Together, the name reflects our commitment to providing clear direction, real-time insight, and
-              smart automation in a complex and evolving farming environment.
+              {t('about.name.together')}
             </p>
           </CardContent>
         </Card>
 
         {/* Values */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Core Values</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{t('about.values.title')}</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
               <Card
@@ -132,13 +127,13 @@ const About = () => {
         {/* Impact Stats */}
         <Card className="bg-gradient-to-br from-primary to-secondary border-0 text-white shadow-tech">
           <CardContent className="p-8 sm:p-12">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Impact</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">{t('about.impact.title')}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { value: "500+", label: "Active Farms" },
-                { value: "50,000+", label: "Acres Monitored" },
-                { value: "25%", label: "Avg. Yield Increase" },
-                { value: "30%", label: "Water Savings" },
+                { value: "500+", label: t('about.impact.farms') },
+                { value: "50,000+", label: t('about.impact.acres') },
+                { value: "25%", label: t('about.impact.yield') },
+                { value: "30%", label: t('about.impact.water') },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="text-5xl font-bold mb-2">{stat.value}</div>

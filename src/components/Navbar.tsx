@@ -12,27 +12,29 @@ import {
 } from "@/components/ui/navigation-menu";
 import logo from "@/assets/Logo.svg";
 import ContactSalesDialog from "./ContactSalesDialog";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactSalesOpen, setContactSalesOpen] = useState(false);
+  const { t } = useSimpleLanguage();
 
   const technologyMenu = [
-    { name: "Platform Overview", path: "/technology#platform", description: "Integrated B2B farm management" },
-    { name: "AI Analytics", path: "/technology#ai", description: "Predictive insights for businesses" },
-    { name: "Connectivity", path: "/technology#connectivity", description: "LoRaWAN & Multi-network" },
-    { name: "All Technology", path: "/technology", description: "Explore our tech stack" },
+    { name: t('nav.technology.platform'), path: "/technology#platform", description: t('nav.technology.platform.desc') },
+    { name: t('nav.technology.ai'), path: "/technology#ai", description: t('nav.technology.ai.desc') },
+    { name: t('nav.technology.connectivity'), path: "/technology#connectivity", description: t('nav.technology.connectivity.desc') },
+    { name: t('nav.technology.all'), path: "/technology", description: t('nav.technology.all.desc') },
   ];
 
   const resourcesMenu = [
-    { name: "Best Practices", path: "/best-practices", description: "Farming guides & ESG" },
+    { name: t('nav.resources.bestPractices'), path: "/best-practices", description: t('nav.resources.bestPractices.desc') },
   ];
 
   const aboutMenu = [
-    { name: "About Us", path: "/about", description: "Our mission & vision" },
-    { name: "Careers", path: "/careers", description: "Join our team" },
-    { name: "Contact", path: "/contact", description: "Get in touch" },
+    { name: t('nav.about.aboutUs'), path: "/about", description: t('nav.about.aboutUs.desc') },
+    { name: t('nav.about.careers'), path: "/careers", description: t('nav.about.careers.desc') },
+    { name: t('nav.about.contact'), path: "/contact", description: t('nav.about.contact.desc') },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -53,7 +55,7 @@ const Navbar = () => {
                 {/* Technology Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-sm font-medium">
-                    Technology
+                    {t('nav.technology')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="w-[400px] p-4 bg-popover">
@@ -74,7 +76,7 @@ const Navbar = () => {
                 {/* Resources Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-sm font-medium">
-                    Resources
+                    {t('nav.resources')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="w-[400px] p-4 bg-popover">
@@ -96,7 +98,7 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <Link to="/solutions">
                     <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
-                      Pricing
+                      {t('nav.pricing')}
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -104,7 +106,7 @@ const Navbar = () => {
                 {/* About Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-sm font-medium">
-                    About
+                    {t('nav.about')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="w-[400px] p-4 bg-popover">
@@ -130,11 +132,11 @@ const Navbar = () => {
               className="border-primary text-primary hover:bg-primary/10 ml-2"
               onClick={() => setContactSalesOpen(true)}
             >
-              Contact Sales
+              {t('nav.contactSales')}
             </Button>
             <Link to="/contact">
               <Button size="sm" className="bg-gradient-to-r from-primary to-secondary hover:shadow-glow transition-all">
-                Try for FREE
+                {t('nav.tryForFree')}
               </Button>
             </Link>
           </div>
@@ -157,7 +159,7 @@ const Navbar = () => {
             <div className="flex flex-col gap-2">
               {/* Technology Menu */}
               <div className="border-b border-border pb-2 mb-2">
-                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Technology</div>
+                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">{t('nav.technology')}</div>
                 {technologyMenu.map((item) => (
                   <Link
                     key={item.path}
@@ -173,7 +175,7 @@ const Navbar = () => {
 
               {/* Resources Menu */}
               <div className="border-b border-border pb-2 mb-2">
-                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Resources</div>
+                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">{t('nav.resources')}</div>
                 {resourcesMenu.map((item) => (
                   <Link
                     key={item.path}
@@ -194,14 +196,14 @@ const Navbar = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-foreground/70 hover:bg-muted flex flex-col gap-1"
                 >
-                  <span>Pricing</span>
-                  <span className="text-xs text-muted-foreground">B2B solutions & packages</span>
+                  <span>{t('nav.pricing')}</span>
+                  <span className="text-xs text-muted-foreground">{t('nav.pricing.desc')}</span>
                 </Link>
               </div>
 
               {/* About Menu */}
               <div className="border-b border-border pb-2 mb-2">
-                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">About</div>
+                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">{t('nav.about')}</div>
                 {aboutMenu.map((item) => (
                   <Link
                     key={item.path}
@@ -225,11 +227,11 @@ const Navbar = () => {
                     setContactSalesOpen(true);
                   }}
                 >
-                  Contact Sales
+                  {t('nav.contactSales')}
                 </Button>
                 <Link to="/contact" className="w-full" onClick={() => setMobileMenuOpen(false)}>
                   <Button className="bg-gradient-to-r from-primary to-secondary w-full">
-                    Try for FREE
+                    {t('nav.tryForFree')}
                   </Button>
                 </Link>
               </div>

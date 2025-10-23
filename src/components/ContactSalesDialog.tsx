@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 interface ContactSalesDialogProps {
   open: boolean;
@@ -20,6 +21,7 @@ interface ContactSalesDialogProps {
 
 const ContactSalesDialog = ({ open, onOpenChange }: ContactSalesDialogProps) => {
   const { toast } = useToast();
+  const { t } = useSimpleLanguage();
   const [formData, setFormData] = useState({
     companyName: "",
     contactName: "",
@@ -57,8 +59,8 @@ Specific Needs: ${formData.needs}
     window.location.href = mailtoLink;
     
     toast({
-      title: "Opening Email Client",
-      description: "Your email client will open with the pre-filled information.",
+      title: t('contactSales.success.title'),
+      description: t('contactSales.success.description'),
     });
     
     // Reset form and close dialog
@@ -87,41 +89,41 @@ Specific Needs: ${formData.needs}
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Contact Sales - B2B Solutions</DialogTitle>
+          <DialogTitle className="text-2xl">{t('contactSales.title')}</DialogTitle>
           <DialogDescription>
-            Tell us about your farm and business needs, and our team will get back to you within 24 hours.
+            {t('contactSales.description')}
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="companyName">Company/Farm Name *</Label>
+              <Label htmlFor="companyName">{t('contactSales.companyName')} *</Label>
               <Input
                 id="companyName"
                 name="companyName"
                 value={formData.companyName}
                 onChange={handleChange}
                 required
-                placeholder="ABC Agricultural Co."
+                placeholder={t('contactSales.companyName.placeholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contactName">Contact Person *</Label>
+              <Label htmlFor="contactName">{t('contactSales.contactName')} *</Label>
               <Input
                 id="contactName"
                 name="contactName"
                 value={formData.contactName}
                 onChange={handleChange}
                 required
-                placeholder="John Doe"
+                placeholder={t('contactSales.contactName.placeholder')}
               />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Business Email *</Label>
+              <Label htmlFor="email">{t('contactSales.email')} *</Label>
               <Input
                 id="email"
                 name="email"
@@ -129,11 +131,11 @@ Specific Needs: ${formData.needs}
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="john@example.com"
+                placeholder={t('contactSales.email.placeholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
+              <Label htmlFor="phone">{t('contactSales.phone')} *</Label>
               <Input
                 id="phone"
                 name="phone"
@@ -141,69 +143,69 @@ Specific Needs: ${formData.needs}
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                placeholder="+84 XXX XXX XXX"
+                placeholder={t('contactSales.phone.placeholder')}
               />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="farmSize">Total Farm Size (acres) *</Label>
+              <Label htmlFor="farmSize">{t('contactSales.farmSize')} *</Label>
               <Input
                 id="farmSize"
                 name="farmSize"
                 value={formData.farmSize}
                 onChange={handleChange}
                 required
-                placeholder="e.g., 500"
+                placeholder={t('contactSales.farmSize.placeholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location">Farm Location *</Label>
+              <Label htmlFor="location">{t('contactSales.location')} *</Label>
               <Input
                 id="location"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
                 required
-                placeholder="Province/Region"
+                placeholder={t('contactSales.location.placeholder')}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cropTypes">Main Crop Types *</Label>
+            <Label htmlFor="cropTypes">{t('contactSales.cropTypes')} *</Label>
             <Input
               id="cropTypes"
               name="cropTypes"
               value={formData.cropTypes}
               onChange={handleChange}
               required
-              placeholder="e.g., Rice, Coffee, Vegetables"
+              placeholder={t('contactSales.cropTypes.placeholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="currentChallenges">Current Farming Challenges</Label>
+            <Label htmlFor="currentChallenges">{t('contactSales.challenges')}</Label>
             <Textarea
               id="currentChallenges"
               name="currentChallenges"
               value={formData.currentChallenges}
               onChange={handleChange}
-              placeholder="What challenges are you facing in your farming operations?"
+              placeholder={t('contactSales.challenges.placeholder')}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="needs">Specific Needs & Solutions of Interest *</Label>
+            <Label htmlFor="needs">{t('contactSales.needs')} *</Label>
             <Textarea
               id="needs"
               name="needs"
               value={formData.needs}
               onChange={handleChange}
               required
-              placeholder="Tell us about the solutions you're interested in (IoT sensors, drones, robotics, platform, etc.)"
+              placeholder={t('contactSales.needs.placeholder')}
               rows={4}
             />
           </div>
@@ -213,7 +215,7 @@ Specific Needs: ${formData.needs}
             size="lg"
             className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow group"
           >
-            Submit Inquiry
+            {t('contactSales.submit')}
             <Send className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </form>

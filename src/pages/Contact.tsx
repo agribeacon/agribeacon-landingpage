@@ -7,9 +7,11 @@ import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import MapComponent from "@/components/Map";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const Contact = () => {
   const { toast } = useToast();
+  const { t } = useSimpleLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,8 +23,8 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Message Sent!",
-      description: "Thank you for your interest. Our team will contact you within 24 hours.",
+      title: t('contact.form.success.title'),
+      description: t('contact.form.success.description'),
     });
     setFormData({ name: "", email: "", phone: "", farmSize: "", message: "" });
   };
@@ -41,11 +43,11 @@ const Contact = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
           <h1 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Get in Touch
+              {t('contact.title')}
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Ready to transform your farm? Let's discuss how AgriBeacon can help you grow smarter.
+            {t('contact.subtitle')}
           </p>
         </div>
 
@@ -54,22 +56,22 @@ const Contact = () => {
           <div className="lg:col-span-2">
             <Card className="shadow-card">
               <CardContent className="p-8">
-                <h2 className="text-2xl font-bold mb-6">Request a Demo</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('contact.form.title')}</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
+                      <Label htmlFor="name">{t('contact.form.name')} *</Label>
                       <Input
                         id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="John Doe"
+                        placeholder={t('contact.form.name.placeholder')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
+                      <Label htmlFor="email">{t('contact.form.email')} *</Label>
                       <Input
                         id="email"
                         name="email"
@@ -77,44 +79,44 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="john@example.com"
+                        placeholder={t('contact.form.email.placeholder')}
                       />
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">{t('contact.form.phone')}</Label>
                       <Input
                         id="phone"
                         name="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+84 XXX XXX XXX"
+                        placeholder={t('contact.form.phone.placeholder')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="farmSize">Farm Size (acres)</Label>
+                      <Label htmlFor="farmSize">{t('contact.form.farmSize')}</Label>
                       <Input
                         id="farmSize"
                         name="farmSize"
                         value={formData.farmSize}
                         onChange={handleChange}
-                        placeholder="e.g., 200"
+                        placeholder={t('contact.form.farmSize.placeholder')}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
+                    <Label htmlFor="message">{t('contact.form.message')} *</Label>
                     <Textarea
                       id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
                       required
-                      placeholder="Tell us about your farm business and what you're looking to achieve..."
+                      placeholder={t('contact.form.message.placeholder')}
                       rows={6}
                     />
                   </div>
@@ -124,7 +126,7 @@ const Contact = () => {
                     size="lg"
                     className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow group"
                   >
-                    Send Message
+                    {t('contact.form.submit')}
                     <Send className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
@@ -141,7 +143,7 @@ const Contact = () => {
                     <Mail className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold mb-1">Email</h3>
+                    <h3 className="font-bold mb-1">{t('contact.info.email')}</h3>
                     <a
                       href="mailto:info@agribeacon.tech"
                       className="text-muted-foreground hover:text-primary transition-colors"
@@ -156,7 +158,7 @@ const Contact = () => {
                     <Phone className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold mb-1">Phone</h3>
+                    <h3 className="font-bold mb-1">{t('contact.info.phone')}</h3>
                     <a
                       href="tel:+84339280135"
                       className="text-muted-foreground hover:text-primary transition-colors"
@@ -171,7 +173,7 @@ const Contact = () => {
                     <MapPin className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold mb-1">Location</h3>
+                    <h3 className="font-bold mb-1">{t('contact.info.location')}</h3>
                     <p className="text-muted-foreground">
                       KĐT Geleximco, Hoài Đức
                       <br />
@@ -184,14 +186,14 @@ const Contact = () => {
 
             <Card className="bg-gradient-to-br from-primary to-secondary border-0 text-white shadow-tech">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-3">Support Hours</h3>
+                <h3 className="text-xl font-bold mb-3">{t('contact.support.title')}</h3>
                 <div className="space-y-2 text-white/90">
-                  <p>Monday - Friday: 8:00 AM - 6:00 PM ICT</p>
-                  <p>Saturday: 9:00 AM - 3:00 PM ICT</p>
-                  <p>Sunday: Closed</p>
+                  <p>{t('contact.support.weekday')}</p>
+                  <p>{t('contact.support.saturday')}</p>
+                  <p>{t('contact.support.sunday')}</p>
                 </div>
                 <p className="text-sm text-white/80 mt-4">
-                  For urgent technical support, our 24/7 hotline is available for Enterprise partners.
+                  {t('contact.support.urgent')}
                 </p>
               </CardContent>
             </Card>
