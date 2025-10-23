@@ -6,7 +6,7 @@ import iotSensor from "@/assets/iot-sensor.jpg";
 import droneTech from "@/assets/drone-tech.jpg";
 import robotFarming from "@/assets/robot-farming.jpg";
 
-const heroVideoUrl = "http://portal-dev.cacao-farm.online:9000/farm-store/video.mp4";
+const heroVideoUrl = "https://s3-dev.cacao-farm.online/farm-store/video.mp4";
 
 const Home = () => {
   const solutions = [
