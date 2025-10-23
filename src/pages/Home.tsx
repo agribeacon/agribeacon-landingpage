@@ -5,33 +5,36 @@ import { Link } from "react-router-dom";
 import iotSensor from "@/assets/iot-sensor.jpg";
 import droneTech from "@/assets/drone-tech.jpg";
 import robotFarming from "@/assets/robot-farming.jpg";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const heroVideoUrl = "https://s3-dev.cacao-farm.online/farm-store/video.mp4";
 
 const Home = () => {
+  const { t } = useSimpleLanguage();
+  
   const solutions = [
     {
       icon: Plane,
-      title: "Autonomous Drones",
-      description: "Intelligent aerial monitoring and data collection",
+      title: t('home.solutions.autonomous'),
+      description: t('home.solutions.autonomous.desc'),
       image: droneTech,
     },
     {
       icon: Cpu,
-      title: "Smart Robotics",
-      description: "Automated farming operations and precision tasks",
+      title: t('home.solutions.robotics'),
+      description: t('home.solutions.robotics.desc'),
       image: robotFarming,
     },
     {
       icon: Radio,
-      title: "IoT Sensors",
-      description: "Real-time environmental monitoring and alerts",
+      title: t('home.solutions.iot'),
+      description: t('home.solutions.iot.desc'),
       image: iotSensor,
     },
     {
       icon: Sparkles,
-      title: "AI Analytics",
-      description: "Data-driven insights for optimal decision making",
+      title: t('home.solutions.ai'),
+      description: t('home.solutions.ai.desc'),
       image: iotSensor,
     },
   ];
@@ -46,24 +49,23 @@ const Home = () => {
             <div className="animate-fade-in-up z-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
                 <Leaf className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Precision Agriculture Technology</span>
+                <span className="text-sm font-medium text-primary">{t('home.hero.badge')}</span>
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Precise signals.
+                  {t('home.hero.title1')}
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
-                  Smarter sensing.
+                  {t('home.hero.title2')}
                 </span>
                 <br />
-                <span className="text-foreground">Sustainable growth.</span>
+                <span className="text-foreground">{t('home.hero.title3')}</span>
               </h1>
 
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl">
-                Transform your farm with intelligent, end-to-end agricultural technology solutions.
-                Optimize every decision from soil to harvest.
+                {t('home.hero.subtitle')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -72,13 +74,13 @@ const Home = () => {
                     size="lg"
                     className="bg-gradient-to-r from-primary to-secondary hover:shadow-glow transition-all group"
                   >
-                    Explore Solutions
+                    {t('home.hero.explore')}
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/contact">
                   <Button size="lg" variant="outline" className="border-2">
-                    Request Demo
+                    {t('home.hero.demo')}
                   </Button>
                 </Link>
               </div>
@@ -106,13 +108,11 @@ const Home = () => {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-4xl font-bold mb-6">
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Our Vision
+                {t('home.vision.title')}
               </span>
             </h2>
             <p className="text-lg text-muted-foreground">
-              To become the world's leading provider of intelligent, end-to-end agricultural technology
-              solutions for perennial plant farms — enabling them to thrive economically, ecologically,
-              and socially.
+              {t('home.vision.subtitle')}
             </p>
           </div>
 
@@ -120,23 +120,20 @@ const Home = () => {
             <CardContent className="p-8 sm:p-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
+                  <h3 className="text-2xl font-bold mb-4">{t('home.mission.title')}</h3>
                   <p className="text-muted-foreground">
-                    We empower farmers and agricultural businesses through a unified ecosystem of hardware
-                    and software — including autonomous drones, robotics, IoT sensors, and AI-powered
-                    analytics — to optimize every decision from soil to harvest.
+                    {t('home.mission.text1')}
                   </p>
                   <p className="text-muted-foreground mt-4">
-                    Our mission is to transform agriculture through precision, automation, and insight,
-                    delivering measurable impact to both people and planet.
+                    {t('home.mission.text2')}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: "Farms Optimized", value: "500+" },
-                    { label: "Data Points Daily", value: "1M+" },
-                    { label: "Yield Increase", value: "25%" },
-                    { label: "Water Saved", value: "30%" },
+                    { label: t('home.stats.farms'), value: "500+" },
+                    { label: t('home.stats.data'), value: "1M+" },
+                    { label: t('home.stats.yield'), value: "25%" },
+                    { label: t('home.stats.water'), value: "30%" },
                   ].map((stat) => (
                     <Card key={stat.label} className="bg-background/50 backdrop-blur">
                       <CardContent className="p-4 text-center">
@@ -158,11 +155,11 @@ const Home = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Intelligent Solutions
+                {t('home.solutions.title')}
               </span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A complete ecosystem of cutting-edge agricultural technology
+              {t('home.solutions.subtitle')}
             </p>
           </div>
 
@@ -198,7 +195,7 @@ const Home = () => {
                 size="lg"
                 className="bg-gradient-to-r from-primary to-secondary hover:shadow-glow group"
               >
-                View All Solutions
+                {t('home.solutions.viewAll')}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -217,22 +214,21 @@ const Home = () => {
             <CardContent className="p-12 sm:p-16 relative z-10">
               <div className="max-w-2xl">
                 <h2 className="text-4xl font-bold text-white mb-4">
-                  Ready to Transform Your Farm?
+                  {t('home.cta.title')}
                 </h2>
                 <p className="text-white/90 text-lg mb-8">
-                  Join hundreds of forward-thinking farms using AgriBeacon to increase yields, reduce
-                  waste, and build a sustainable future.
+                  {t('home.cta.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link to="/contact">
                     <Button size="lg" variant="secondary" className="group">
-                      Schedule a Demo
+                      {t('home.cta.demo')}
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
                   <Link to="/about">
                     <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white/10">
-                      Learn More
+                      {t('home.cta.learn')}
                     </Button>
                   </Link>
                 </div>

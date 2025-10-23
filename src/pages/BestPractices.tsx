@@ -15,134 +15,136 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const BestPractices = () => {
+  const { t } = useSimpleLanguage();
   const circularEconomyPractices = [
     {
-      title: "Waste-to-Resource Systems",
-      description: "Transform agricultural waste into valuable resources through composting, biogas production, and organic fertilizer creation.",
+      title: t('bestPractices.circular.waste.title'),
+      description: t('bestPractices.circular.waste.description'),
       icon: Recycle,
       tips: [
-        "Implement on-farm composting systems for organic waste",
-        "Convert crop residues into bioenergy or biochar",
-        "Use animal waste for biogas and natural fertilizers",
-        "Establish closed-loop nutrient cycles"
+        t('bestPractices.circular.waste.tip1'),
+        t('bestPractices.circular.waste.tip2'),
+        t('bestPractices.circular.waste.tip3'),
+        t('bestPractices.circular.waste.tip4')
       ]
     },
     {
-      title: "Water循環 & Reuse",
-      description: "Maximize water efficiency through recycling, rainwater harvesting, and precision irrigation systems.",
+      title: t('bestPractices.circular.water.title'),
+      description: t('bestPractices.circular.water.description'),
       icon: Droplet,
       tips: [
-        "Install rainwater collection and storage systems",
-        "Implement drip irrigation with moisture sensors",
-        "Reuse treated wastewater for non-food crops",
-        "Monitor and minimize water evaporation losses"
+        t('bestPractices.circular.water.tip1'),
+        t('bestPractices.circular.water.tip2'),
+        t('bestPractices.circular.water.tip3'),
+        t('bestPractices.circular.water.tip4')
       ]
     },
     {
-      title: "Regenerative Agriculture",
-      description: "Build soil health and biodiversity while producing food, creating a self-sustaining ecosystem.",
+      title: t('bestPractices.circular.regenerative.title'),
+      description: t('bestPractices.circular.regenerative.description'),
       icon: Leaf,
       tips: [
-        "Practice crop rotation and cover cropping",
-        "Minimize soil disturbance with no-till methods",
-        "Integrate livestock for natural fertilization",
-        "Preserve and enhance biodiversity corridors"
+        t('bestPractices.circular.regenerative.tip1'),
+        t('bestPractices.circular.regenerative.tip2'),
+        t('bestPractices.circular.regenerative.tip3'),
+        t('bestPractices.circular.regenerative.tip4')
       ]
     },
     {
-      title: "Resource Sharing Economy",
-      description: "Optimize equipment utilization and reduce costs through collaborative farming models.",
+      title: t('bestPractices.circular.sharing.title'),
+      description: t('bestPractices.circular.sharing.description'),
       icon: Users,
       tips: [
-        "Share expensive machinery with neighboring farms",
-        "Participate in cooperative buying programs",
-        "Exchange knowledge and best practices locally",
-        "Pool resources for bulk renewable energy investments"
+        t('bestPractices.circular.sharing.tip1'),
+        t('bestPractices.circular.sharing.tip2'),
+        t('bestPractices.circular.sharing.tip3'),
+        t('bestPractices.circular.sharing.tip4')
       ]
     }
   ];
 
   const esgPrinciples = [
     {
-      category: "Environmental",
+      category: t('bestPractices.esg.environmental'),
       icon: Leaf,
       color: "from-primary to-secondary",
       practices: [
         {
-          title: "Carbon Sequestration",
-          description: "Capture and store atmospheric CO2 through soil management and tree planting",
-          metrics: "Target: Net-zero or carbon-negative operations"
+          title: t('bestPractices.esg.env.carbon.title'),
+          description: t('bestPractices.esg.env.carbon.description'),
+          metrics: t('bestPractices.esg.env.carbon.metrics')
         },
         {
-          title: "Biodiversity Protection",
-          description: "Preserve native species, create wildlife habitats, and maintain ecological balance",
-          metrics: "Measure: Species diversity index and habitat area"
+          title: t('bestPractices.esg.env.biodiversity.title'),
+          description: t('bestPractices.esg.env.biodiversity.description'),
+          metrics: t('bestPractices.esg.env.biodiversity.metrics')
         },
         {
-          title: "Clean Energy Transition",
-          description: "Adopt solar, wind, and biogas to power farm operations sustainably",
-          metrics: "Goal: 80%+ renewable energy by 2030"
+          title: t('bestPractices.esg.env.energy.title'),
+          description: t('bestPractices.esg.env.energy.description'),
+          metrics: t('bestPractices.esg.env.energy.metrics')
         },
         {
-          title: "Pollution Prevention",
-          description: "Eliminate chemical runoff, reduce pesticide use, and minimize plastic waste",
-          metrics: "Track: Water quality and chemical usage reduction"
+          title: t('bestPractices.esg.env.pollution.title'),
+          description: t('bestPractices.esg.env.pollution.description'),
+          metrics: t('bestPractices.esg.env.pollution.metrics')
         }
       ]
     },
     {
-      category: "Social",
+      category: t('bestPractices.esg.social'),
       icon: Users,
       color: "from-secondary to-accent",
       practices: [
         {
-          title: "Fair Labor Practices",
-          description: "Ensure safe working conditions, fair wages, and worker well-being",
-          metrics: "Certify: Fair Trade or equivalent standards"
+          title: t('bestPractices.esg.social.labor.title'),
+          description: t('bestPractices.esg.social.labor.description'),
+          metrics: t('bestPractices.esg.social.labor.metrics')
         },
         {
-          title: "Community Engagement",
-          description: "Support local communities, create jobs, and contribute to regional development",
-          metrics: "Measure: Local employment rate and community investment"
+          title: t('bestPractices.esg.social.community.title'),
+          description: t('bestPractices.esg.social.community.description'),
+          metrics: t('bestPractices.esg.social.community.metrics')
         },
         {
-          title: "Knowledge Transfer",
-          description: "Train next-generation farmers and share sustainable practices",
-          metrics: "Target: Annual training programs and apprenticeships"
+          title: t('bestPractices.esg.social.knowledge.title'),
+          description: t('bestPractices.esg.social.knowledge.description'),
+          metrics: t('bestPractices.esg.social.knowledge.metrics')
         },
         {
-          title: "Food Security",
-          description: "Contribute to local and regional food availability and accessibility",
-          metrics: "Track: Production volume and distribution reach"
+          title: t('bestPractices.esg.social.food.title'),
+          description: t('bestPractices.esg.social.food.description'),
+          metrics: t('bestPractices.esg.social.food.metrics')
         }
       ]
     },
     {
-      category: "Governance",
+      category: t('bestPractices.esg.governance'),
       icon: Target,
       color: "from-accent to-primary",
       practices: [
         {
-          title: "Transparent Reporting",
-          description: "Publish sustainability reports and share environmental impact data",
-          metrics: "Annual ESG disclosure and third-party audits"
+          title: t('bestPractices.esg.gov.reporting.title'),
+          description: t('bestPractices.esg.gov.reporting.description'),
+          metrics: t('bestPractices.esg.gov.reporting.metrics')
         },
         {
-          title: "Ethical Supply Chains",
-          description: "Partner with responsible suppliers and ensure traceability",
-          metrics: "100% supplier compliance verification"
+          title: t('bestPractices.esg.gov.supply.title'),
+          description: t('bestPractices.esg.gov.supply.description'),
+          metrics: t('bestPractices.esg.gov.supply.metrics')
         },
         {
-          title: "Data-Driven Decisions",
-          description: "Use analytics and monitoring to guide sustainability improvements",
-          metrics: "Real-time dashboards and quarterly reviews"
+          title: t('bestPractices.esg.gov.data.title'),
+          description: t('bestPractices.esg.gov.data.description'),
+          metrics: t('bestPractices.esg.gov.data.metrics')
         },
         {
-          title: "Stakeholder Engagement",
-          description: "Involve farmers, investors, and communities in decision-making",
-          metrics: "Regular stakeholder consultations and feedback loops"
+          title: t('bestPractices.esg.gov.stakeholder.title'),
+          description: t('bestPractices.esg.gov.stakeholder.description'),
+          metrics: t('bestPractices.esg.gov.stakeholder.metrics')
         }
       ]
     }
@@ -150,100 +152,100 @@ const BestPractices = () => {
 
   const techBestPractices = [
     {
-      title: "Precision Agriculture",
+      title: t('bestPractices.tech.precision.title'),
       icon: Target,
-      description: "Use data and technology to optimize inputs and maximize yields",
+      description: t('bestPractices.tech.precision.description'),
       implementations: [
-        "GPS-guided equipment for precise planting and spraying",
-        "Variable rate technology (VRT) for fertilizer application",
-        "Yield mapping to identify high and low-performing zones",
-        "Soil sampling and analysis for targeted amendments"
+        t('bestPractices.tech.precision.impl1'),
+        t('bestPractices.tech.precision.impl2'),
+        t('bestPractices.tech.precision.impl3'),
+        t('bestPractices.tech.precision.impl4')
       ]
     },
     {
-      title: "IoT Sensor Networks",
+      title: t('bestPractices.tech.iot.title'),
       icon: Cpu,
-      description: "Deploy connected sensors for real-time farm monitoring",
+      description: t('bestPractices.tech.iot.description'),
       implementations: [
-        "Soil moisture sensors for irrigation optimization",
-        "Weather stations for microclimate tracking",
-        "Livestock monitoring for health and behavior",
-        "Equipment sensors for predictive maintenance"
+        t('bestPractices.tech.iot.impl1'),
+        t('bestPractices.tech.iot.impl2'),
+        t('bestPractices.tech.iot.impl3'),
+        t('bestPractices.tech.iot.impl4')
       ]
     },
     {
-      title: "Renewable Energy Integration",
+      title: t('bestPractices.tech.renewable.title'),
       icon: Sun,
-      description: "Harness clean energy sources to power operations",
+      description: t('bestPractices.tech.renewable.description'),
       implementations: [
-        "Solar panels on barn roofs and unused land",
-        "Wind turbines in suitable locations",
-        "Biogas digesters for waste-to-energy conversion",
-        "Energy storage systems for 24/7 availability"
+        t('bestPractices.tech.renewable.impl1'),
+        t('bestPractices.tech.renewable.impl2'),
+        t('bestPractices.tech.renewable.impl3'),
+        t('bestPractices.tech.renewable.impl4')
       ]
     },
     {
-      title: "Data Analytics & AI",
+      title: t('bestPractices.tech.ai.title'),
       icon: TrendingUp,
-      description: "Leverage artificial intelligence for predictive insights",
+      description: t('bestPractices.tech.ai.description'),
       implementations: [
-        "Crop disease prediction and early detection",
-        "Yield forecasting based on historical and weather data",
-        "Market price prediction for optimal selling times",
-        "Automated decision support systems"
+        t('bestPractices.tech.ai.impl1'),
+        t('bestPractices.tech.ai.impl2'),
+        t('bestPractices.tech.ai.impl3'),
+        t('bestPractices.tech.ai.impl4')
       ]
     }
   ];
 
   const farmingBestPractices = [
     {
-      category: "Soil Health",
+      category: t('bestPractices.farming.soil'),
       practices: [
-        "Test soil regularly (at least annually) for nutrient levels and pH",
-        "Practice crop rotation to prevent nutrient depletion",
-        "Use cover crops to prevent erosion and add organic matter",
-        "Apply compost and organic amendments instead of synthetic fertilizers",
-        "Minimize tillage to preserve soil structure and microbiomes"
+        t('bestPractices.farming.soil.practice1'),
+        t('bestPractices.farming.soil.practice2'),
+        t('bestPractices.farming.soil.practice3'),
+        t('bestPractices.farming.soil.practice4'),
+        t('bestPractices.farming.soil.practice5')
       ]
     },
     {
-      category: "Water Management",
+      category: t('bestPractices.farming.water'),
       practices: [
-        "Install drip or micro-sprinkler irrigation for efficiency",
-        "Schedule irrigation based on actual crop needs, not routines",
-        "Mulch around plants to reduce evaporation",
-        "Capture and store rainwater for dry periods",
-        "Monitor soil moisture continuously with sensors"
+        t('bestPractices.farming.water.practice1'),
+        t('bestPractices.farming.water.practice2'),
+        t('bestPractices.farming.water.practice3'),
+        t('bestPractices.farming.water.practice4'),
+        t('bestPractices.farming.water.practice5')
       ]
     },
     {
-      category: "Pest & Disease Control",
+      category: t('bestPractices.farming.pest'),
       practices: [
-        "Implement Integrated Pest Management (IPM) strategies",
-        "Use biological controls (beneficial insects, microbes) first",
-        "Scout fields regularly for early pest detection",
-        "Rotate crops to break pest and disease cycles",
-        "Choose disease-resistant varieties when available"
+        t('bestPractices.farming.pest.practice1'),
+        t('bestPractices.farming.pest.practice2'),
+        t('bestPractices.farming.pest.practice3'),
+        t('bestPractices.farming.pest.practice4'),
+        t('bestPractices.farming.pest.practice5')
       ]
     },
     {
-      category: "Crop Management",
+      category: t('bestPractices.farming.crop'),
       practices: [
-        "Select varieties suited to your climate and soil",
-        "Plant at optimal times based on weather and soil conditions",
-        "Maintain proper spacing for air circulation and light",
-        "Monitor growth stages and adjust inputs accordingly",
-        "Harvest at peak maturity for maximum quality and shelf life"
+        t('bestPractices.farming.crop.practice1'),
+        t('bestPractices.farming.crop.practice2'),
+        t('bestPractices.farming.crop.practice3'),
+        t('bestPractices.farming.crop.practice4'),
+        t('bestPractices.farming.crop.practice5')
       ]
     },
     {
-      category: "Record Keeping",
+      category: t('bestPractices.farming.record'),
       practices: [
-        "Document all planting, treatment, and harvest activities",
-        "Track input costs and yields for profitability analysis",
-        "Maintain equipment maintenance logs",
-        "Record weather patterns and their impact on crops",
-        "Use farm management software for centralized data"
+        t('bestPractices.farming.record.practice1'),
+        t('bestPractices.farming.record.practice2'),
+        t('bestPractices.farming.record.practice3'),
+        t('bestPractices.farming.record.practice4'),
+        t('bestPractices.farming.record.practice5')
       ]
     }
   ];
@@ -255,15 +257,15 @@ const BestPractices = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
             <BookOpen className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Knowledge Hub</span>
+            <span className="text-sm font-medium text-primary">{t('bestPractices.badge')}</span>
           </div>
           <h1 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Best Practices
+              {t('bestPractices.title')}
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Modern farming strategies for sustainability, profitability, and environmental stewardship
+            {t('bestPractices.subtitle')}
           </p>
         </div>
 
@@ -272,29 +274,28 @@ const BestPractices = () => {
           <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-8 h-auto">
             <TabsTrigger value="circular" className="py-3">
               <Recycle className="h-4 w-4 mr-2" />
-              Circular Economy
+              {t('bestPractices.tabs.circular')}
             </TabsTrigger>
             <TabsTrigger value="esg" className="py-3">
               <Leaf className="h-4 w-4 mr-2" />
-              ESG Framework
+              {t('bestPractices.tabs.esg')}
             </TabsTrigger>
             <TabsTrigger value="technology" className="py-3">
               <Cpu className="h-4 w-4 mr-2" />
-              Technology
+              {t('bestPractices.tabs.technology')}
             </TabsTrigger>
             <TabsTrigger value="farming" className="py-3">
               <Sun className="h-4 w-4 mr-2" />
-              Farming Practices
+              {t('bestPractices.tabs.farming')}
             </TabsTrigger>
           </TabsList>
 
           {/* Circular Economy Tab */}
           <TabsContent value="circular" className="animate-fade-in-up">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Circular Economy for Modern Farms</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('bestPractices.circular.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-3xl">
-                Transform your farm into a closed-loop system where waste becomes a resource, 
-                reducing costs and environmental impact while improving resilience.
+                {t('bestPractices.circular.description')}
               </p>
             </div>
 
@@ -328,10 +329,9 @@ const BestPractices = () => {
           {/* ESG Framework Tab */}
           <TabsContent value="esg" className="animate-fade-in-up">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">ESG Framework for Agriculture</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('bestPractices.esg.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-3xl">
-                Adopt Environmental, Social, and Governance principles to build a sustainable, 
-                responsible farm that meets modern investor and consumer expectations.
+                {t('bestPractices.esg.description')}
               </p>
             </div>
 
@@ -369,10 +369,9 @@ const BestPractices = () => {
           {/* Technology Tab */}
           <TabsContent value="technology" className="animate-fade-in-up">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Technology Best Practices</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('bestPractices.tech.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-3xl">
-                Leverage cutting-edge agricultural technology to optimize operations, 
-                reduce waste, and make data-driven decisions.
+                {t('bestPractices.tech.description')}
               </p>
             </div>
 
@@ -410,10 +409,9 @@ const BestPractices = () => {
           {/* Farming Practices Tab */}
           <TabsContent value="farming" className="animate-fade-in-up">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Core Farming Best Practices</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('bestPractices.farming.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-3xl">
-                Time-tested and science-backed agricultural practices that form the foundation 
-                of successful, sustainable farming operations.
+                {t('bestPractices.farming.description')}
               </p>
             </div>
 
@@ -453,22 +451,21 @@ const BestPractices = () => {
           <CardContent className="p-12 sm:p-16 relative z-10">
             <div className="max-w-2xl">
               <h2 className="text-4xl font-bold text-white mb-4">
-                Ready to Implement These Practices?
+                {t('bestPractices.cta.title')}
               </h2>
               <p className="text-white/90 text-lg mb-8">
-                AgriBeacon's intelligent platform helps you track, measure, and optimize all these 
-                best practices with real-time data and actionable insights.
+                {t('bestPractices.cta.description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/solutions">
                   <Button size="lg" variant="secondary" className="group">
-                    Explore Solutions
+                    {t('bestPractices.cta.button1')}
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/contact">
                   <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white/10">
-                    Get Expert Guidance
+                    {t('bestPractices.cta.button2')}
                   </Button>
                 </Link>
               </div>

@@ -3,14 +3,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Users, Zap, TrendingUp, MapPin, Clock, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const Careers = () => {
+  const { t } = useSimpleLanguage();
+  
   const positions = [
     {
-      title: "Robotics Engineer – Agricultural Automation",
-      description: "Build autonomous robots and drones that are transforming how we grow food. Join us in making agriculture smarter, more sustainable, and more efficient.",
-      location: "Ha Noi",
-      type: "Full-time",
+      title: t('careers.position.robotics.title'),
+      description: t('careers.position.robotics.desc'),
+      location: t('careers.position.location'),
+      type: t('careers.position.type.fulltime'),
       equity: true,
       onsite: true,
     },
@@ -19,18 +22,18 @@ const Careers = () => {
   const benefits = [
     {
       icon: Users,
-      title: "Real Impact",
-      description: "Your work directly helps farmers increase yields, reduce waste, and build sustainable operations.",
+      title: t('careers.benefits.impact'),
+      description: t('careers.benefits.impact.desc'),
     },
     {
       icon: Zap,
-      title: "Cutting-Edge Tech",
-      description: "Work with autonomous drones, robotics, IoT sensors, and AI/ML in a challenging real-world domain.",
+      title: t('careers.benefits.tech'),
+      description: t('careers.benefits.tech.desc'),
     },
     {
       icon: TrendingUp,
-      title: "Growth & Equity",
-      description: "Join early, grow with us, and own part of what we're building through our equity program.",
+      title: t('careers.benefits.growth'),
+      description: t('careers.benefits.growth.desc'),
     },
   ];
 
@@ -41,25 +44,24 @@ const Careers = () => {
         <div className="text-center max-w-4xl mx-auto mb-16 animate-fade-in-up">
           <h1 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              AgriBeacon Careers
+              {t('careers.title')}
             </span>
           </h1>
           <h2 className="text-3xl font-semibold mb-6 text-foreground">
-            Build the Future of Agriculture
+            {t('careers.subtitle')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Join our mission to transform farming with cutting-edge robotics, AI, and IoT technology. 
-            Make a real impact on food security and sustainability.
+            {t('careers.description')}
           </p>
         </div>
 
         {/* Why AgriBeacon Section */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-center mb-12">
-            Why AgriBeacon?
+            {t('careers.why.title')}
           </h3>
           <p className="text-lg text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
-            We're not just building technology—we're solving real problems for farmers across Southeast Asia.
+            {t('careers.why.subtitle')}
           </p>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -80,10 +82,10 @@ const Careers = () => {
         {/* Open Positions */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-center mb-4">
-            Open Positions
+            {t('careers.positions.title')}
           </h3>
           <p className="text-lg text-center text-muted-foreground mb-12">
-            We're looking for talented people who want to make a difference.
+            {t('careers.positions.subtitle')}
           </p>
 
           <div className="max-w-4xl mx-auto">
@@ -107,11 +109,11 @@ const Careers = () => {
                         {position.equity && (
                           <Badge variant="default" className="flex items-center gap-1">
                             <Award className="h-3 w-3" />
-                            Equity Available
+                            {t('careers.position.equity')}
                           </Badge>
                         )}
                         {position.onsite && (
-                          <Badge variant="secondary">Onsite</Badge>
+                          <Badge variant="secondary">{t('careers.position.onsite')}</Badge>
                         )}
                       </div>
                     </div>
@@ -119,7 +121,7 @@ const Careers = () => {
                     <div className="flex-shrink-0">
                       <Link to="/careers/robotics-engineer">
                         <Button className="group">
-                          View Details
+                          {t('careers.position.viewDetails')}
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                       </Link>
@@ -134,13 +136,13 @@ const Careers = () => {
         {/* Don't See Your Role Section */}
         <Card className="bg-gradient-to-br from-muted/50 to-background border-2 shadow-card">
           <CardContent className="p-8 sm:p-12 text-center">
-            <h3 className="text-3xl font-bold mb-4">Don't See Your Role?</h3>
+            <h3 className="text-3xl font-bold mb-4">{t('careers.noRole.title')}</h3>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              We're always looking for talented people. If you're passionate about agtech and innovation, reach out to us.
+              {t('careers.noRole.description')}
             </p>
             <Link to="/contact">
               <Button size="lg" className="group">
-                Contact Us
+                {t('careers.noRole.contact')}
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

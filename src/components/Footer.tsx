@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone } from "lucide-react";
 import logo from "@/assets/Logo.svg";
+import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useSimpleLanguage();
 
   return (
     <footer className="bg-card border-t border-border mt-20">
@@ -15,7 +17,7 @@ const Footer = () => {
               <img src={logo} alt="AgriBeacon" className="h-10 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm max-w-md mb-4">
-              Precise signals. Smarter sensing. Sustainable growth. Empowering farmers with intelligent agricultural technology solutions.
+              {t('footer.tagline')}
             </p>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -39,31 +41,31 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/solutions" className="hover:text-primary transition-colors">Solutions</Link></li>
-              <li><Link to="/technology" className="hover:text-primary transition-colors">Technology</Link></li>
-              <li><Link to="/best-practices" className="hover:text-primary transition-colors">Best Practices</Link></li>
-              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link to="/solutions" className="hover:text-primary transition-colors">{t('footer.solutions')}</Link></li>
+              <li><Link to="/technology" className="hover:text-primary transition-colors">{t('footer.technology')}</Link></li>
+              <li><Link to="/best-practices" className="hover:text-primary transition-colors">{t('nav.resources.bestPractices')}</Link></li>
+              <li><Link to="/about" className="hover:text-primary transition-colors">{t('nav.about.aboutUs')}</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">{t('nav.contact')}</Link></li>
             </ul>
           </div>
 
           {/* Resources */}
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">{t('footer.resources')}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Support</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.documentation')}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.support')}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.privacy')}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.terms')}</a></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} AgriBeacon. All rights reserved. Built for sustainable agriculture.</p>
+          <p>&copy; {currentYear} AgriBeacon. {t('footer.copyright').replace('© 2024 AgriBeacon. ', '')} {t('footer.builtFor')}</p>
         </div>
       </div>
     </footer>
