@@ -1,19 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
-import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ProductDetailModal } from "@/components/ProductDetailModal";
+import { useToast } from "@/hooks/use-toast";
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("vi-VN").format(price);
 
 const Price = () => {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+  const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string }>({
+    open: false,
+    title: "",
+    type: "",
+    key: "",
+  });
   const navigate = useNavigate();
   const { t } = useSimpleLanguage();
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const yearlyDiscount = 0.8;
 
   const planKeys = ["starter", "professional", "business", "enterprise"] as const;
@@ -120,8 +131,66 @@ const Price = () => {
   const faqItems = t("faq.items") as any;
   const faqArray: Array<{ q: string; a: string }> = Array.isArray(faqItems) ? faqItems : [];
 
+  const handleAddPlanToCart = (planKey: string, price: number) => {
+    addItem({
+      id: `plan-${planKey}-${billing}`,
+      type: 'plan',
+      name: t(`plans.${planKey}.name`),
+      price: billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      billing,
+      metadata: { key: planKey },
+    });
+    toast({
+      title: t('cart.added') || 'Added to cart',
+      description: `${t(`plans.${planKey}.name`)} (${billing === 'yearly' ? t('hero.yearly') : t('hero.monthly')})`,
+      duration: 2000,
+    });
+  };
+
+  const handleAddAddonToCart = (addonKey: string, price: number) => {
+    addItem({
+      id: `addon-${addonKey}-${billing}`,
+      type: 'addon',
+      name: t(`addons.${addonKey}.name`),
+      price: billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      billing,
+      metadata: { key: addonKey },
+    });
+    toast({
+      title: t('cart.added') || 'Added to cart',
+      description: t(`addons.${addonKey}.name`),
+      duration: 2000,
+    });
+  };
+
+  const handleAddHardwareToCart = (hwKey: string, price: number, isRental: boolean = false) => {
+    addItem({
+      id: `hardware-${hwKey}-${isRental ? 'rent' : 'buy'}-${isRental ? billing : 'onetime'}`,
+      type: 'hardware',
+      name: t(`hardware.${hwKey}.name`),
+      price: isRental && billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      billing: isRental ? billing : undefined,
+      metadata: { key: hwKey, isRental },
+    });
+    toast({
+      title: t('cart.added') || 'Added to cart',
+      description: `${t(`hardware.${hwKey}.name`)} (${isRental ? (billing === 'yearly' ? t('hero.yearly') : t('hero.monthly')) : t('hardware.buyOutright')})`,
+      duration: 2000,
+    });
+  };
+
+  const openDetailModal = (type: string, key: string, title: string) => {
+    setDetailModal({ open: true, type, key, title });
+  };
+
   return (
     <div className="min-h-screen bg-background pt-32">
+      <ProductDetailModal
+        open={detailModal.open}
+        onOpenChange={(open) => setDetailModal({ ...detailModal, open })}
+        title={detailModal.title}
+      />
+
       {/* Hero */}
       <section className="py-16 md:py-24 text-center px-4">
         <Badge variant="secondary" className="mb-4 text-sm px-4 py-1.5">
@@ -235,8 +304,15 @@ const Price = () => {
                   <Button
                     variant={planCtaVariants[idx]}
                     className="w-full"
+                    onClick={() => handleAddPlanToCart(key, price)}
+                    disabled={price === -1}
                   >
-                    {t(`plans.${key}.cta`)}
+                    {price === -1 ? t(`plans.${key}.cta`) : (
+                      <>
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        {t('cart.addToCart') || 'Add to Cart'}
+                      </>
+                    )}
                   </Button>
                 </CardFooter>
               </Card>
@@ -319,7 +395,7 @@ const Price = () => {
             {addonConfigs.map((addon) => {
               const priceSuffix = addon.priceSuffixKey ? t(addon.priceSuffixKey) : "";
               return (
-                <Card key={addon.key} className="border-border hover:border-primary/40 transition-colors">
+                <Card key={addon.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full">
                   <CardHeader className="pb-3">
                     <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-2">
                       <addon.icon className="h-5 w-5 text-accent-foreground" />
@@ -340,12 +416,25 @@ const Price = () => {
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1">
                     <p className="text-sm text-muted-foreground">{t(`addons.${addon.key}.description`)}</p>
                   </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm" className="w-full">
+                  <CardFooter className="flex gap-2 mt-auto">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => openDetailModal('addon', addon.key, t(`addons.${addon.key}.name`))}
+                    >
                       {t("addons.detail")}
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleAddAddonToCart(addon.key, addon.price)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      {t('cart.addToCart') || 'Add to Cart'}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -372,7 +461,7 @@ const Price = () => {
               const specs = t(`hardware.${hw.key}.specs`) as any;
               const specsArray = Array.isArray(specs) ? specs : [];
               return (
-                <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors">
+                <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full">
                   <CardHeader>
                     <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
                       <hw.icon className="h-6 w-6 text-primary" />
@@ -380,7 +469,7 @@ const Price = () => {
                     <CardTitle className="text-base">{t(`hardware.${hw.key}.name`)}</CardTitle>
                     <CardDescription>{t(`hardware.${hw.key}.description`)}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1">
                     <div className="flex flex-wrap gap-2 mb-4">
                       {specsArray.map((spec: string) => (
                         <Badge key={spec} variant="secondary" className="text-xs font-normal">
@@ -429,9 +518,22 @@ const Price = () => {
                       )}
                     </div>
                   </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm" className="w-full">
+                  <CardFooter className="flex gap-2 mt-auto">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => openDetailModal('hardware', hw.key, t(`hardware.${hw.key}.name`))}
+                    >
                       {t("hardware.detail")}
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      {t('cart.addToCart') || 'Add to Cart'}
                     </Button>
                   </CardFooter>
                 </Card>

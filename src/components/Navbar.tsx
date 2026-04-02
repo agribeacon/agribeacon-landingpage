@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import {
   NavigationMenu,
@@ -10,15 +10,18 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Badge } from "@/components/ui/badge";
 import logo from "@/assets/Logo.svg";
 import ContactSalesDialog from "./ContactSalesDialog";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
+import { useCart } from "@/contexts/CartContext";
 
 const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactSalesOpen, setContactSalesOpen] = useState(false);
   const { t } = useSimpleLanguage();
+  const { itemCount } = useCart();
 
   const technologyMenu = [
     { name: t('nav.technology.platform'), path: "/technology#platform", description: t('nav.technology.platform.desc') },
@@ -125,6 +128,26 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+
+            {/* Cart Icon */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="relative ml-2"
+              asChild
+            >
+              <Link to="/cart">
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {itemCount}
+                  </Badge>
+                )}
+              </Link>
+            </Button>
 
             <Button 
               variant="outline" 

@@ -838,6 +838,10 @@ const translations = {
     'addons.badge': 'Add-ons',
     'addons.title': 'Add-on Modules',
     'addons.subtitle': 'Extend your platform with specialized features',
+    
+    // Cart
+    'cart.addToCart': 'Add to Cart',
+    'cart.added': 'Added to cart',
   },
   vi: {
     'home.hero.badge': 'Công nghệ nông nghiệp chính xác',
@@ -1665,6 +1669,10 @@ const translations = {
     'addons.badge': 'Tiện ích mở rộng',
     'addons.title': 'Module bổ sung',
     'addons.subtitle': 'Mở rộng nền tảng với các tính năng chuyên biệt',
+    
+    // Cart
+    'cart.addToCart': 'Thêm vào giỏ',
+    'cart.added': 'Đã thêm vào giỏ',
   },
   ja: {
     'home.hero.badge': '精密農業テクノロジー',
@@ -2494,6 +2502,10 @@ const translations = {
     'addons.badge': 'アドオン',
     'addons.title': 'アドオンモジュール',
     'addons.subtitle': '専門機能でプラットフォームを拡張',
+    
+    // Cart
+    'cart.addToCart': 'カートに追加',
+    'cart.added': 'カートに追加しました',
   },
 };
 
