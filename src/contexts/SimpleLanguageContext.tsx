@@ -2,10 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type Language = 'en' | 'vi' | 'ja';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TranslationValue = string | string[] | Array<{ label: string; value: string }> | Array<{ q: string; a: string }> | any;
+
 interface SimpleLanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string) => TranslationValue;
 }
 
 const SimpleLanguageContext = createContext<SimpleLanguageContextType | undefined>(undefined);
@@ -89,7 +92,6 @@ const translations = {
     'footer.technology': 'Technology',
     'footer.resources': 'Resources',
     'footer.legal': 'Legal',
-    'footer.copyright': '© 2024 AgriBeacon. All rights reserved.',
     'footer.tagline': 'Precise signals. Smarter sensing. Sustainable growth. Empowering farmers with intelligent agricultural technology solutions.',
     'footer.quickLinks': 'Quick Links',
     'footer.documentation': 'Documentation',
@@ -650,12 +652,15 @@ const translations = {
     'addons.ai-assistant.shortDesc': '130,000₫/50 queries — buy additional packs anytime',
     'addons.ai-assistant.priceLabel': 'From 130,000₫',
     'addons.aiAssistant.name': 'AI Farm Assistant',
+    'addons.aiAssistant.priceLabel': 'From 130,000₫',
     'addons.aiAssistant.description': '130,000₫/50 queries — buy additional packs anytime',
     'addons.buy-tree.name': 'Buy Tree',
     'addons.buy-tree.shortDesc': 'Revenue-share model — online B2C tree marketplace, order & shipping management',
     'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.priceLabel': 'From 5%',
     'addons.buyTree.description': 'Revenue-share model — online B2C tree marketplace, order & shipping management',
     'addons.vector.name': 'Farm Vectorization Service',
+    'addons.vector.priceLabel': 'From 3,000₫',
     'addons.vector.shortDesc': 'RTK field survey & data vectorization, automated centimeter-accurate digital tree mapping',
     'addons.vector.description': 'RTK field survey & data vectorization, automated centimeter-accurate digital tree mapping',
     'addons.vector.priceSuffix': '/m²',
@@ -685,7 +690,129 @@ const translations = {
     'hardware.perUnit': '/unit',
     'hardware.perUnitMonth': '/unit/month',
     'hardware.detail': 'Details',
-    
+
+    // Hardware detail pages
+    'hardware.drone.detail.tagline': 'Autonomous aerial monitoring for precision agriculture',
+    'hardware.drone.detail.overview': 'The Autonomous Farm Monitor Drone is a fully self-flying UAV designed specifically for perennial crop farms. It autonomously navigates your farm, captures high-resolution imagery of every tree, and syncs data directly to the AgriBeacon platform for AI-powered analysis.',
+    'hardware.drone.detail.features': ['Fully autonomous flight — no pilot required', 'Individual tree photography & health assessment', 'AI-powered plant disease detection', 'NDVI & multispectral imaging support', 'Auto-generated flight plans based on farm map', 'Real-time data sync to AgriBeacon cloud', 'Obstacle avoidance with 360° sensors', 'Weather-resistant design (IP54)'],
+    'hardware.drone.detail.specs': [
+      { label: 'Flight Time', value: '72 minutes per charge' },
+      { label: 'Range', value: 'Unlimited (waypoint-based)' },
+      { label: 'Camera', value: '4K 60fps + Multispectral' },
+      { label: 'Max Speed', value: '15 m/s' },
+      { label: 'Weight', value: '2.8 kg (with battery)' },
+      { label: 'Positioning', value: 'RTK GPS (cm-level accuracy)' },
+      { label: 'Wind Resistance', value: 'Up to 10 m/s' },
+      { label: 'Operating Temp', value: '0°C to 45°C' }
+    ],
+    'hardware.drone.detail.useCases': ['Daily crop health monitoring', 'Early pest & disease detection', 'Growth tracking & yield forecasting', 'Post-storm damage assessment', 'Farm mapping & inventory counting'],
+    'hardware.drone.detail.whatsIncluded': ['1x Autonomous Farm Monitor Drone', '2x Intelligent flight batteries', '1x Charging hub', '1x RTK antenna module', '1x Carrying case', 'AgriBeacon platform license (1 year)', 'Setup & training session'],
+    'hardware.drone.detail.specTitle': 'Technical Specifications',
+    'hardware.drone.detail.featuresTitle': 'Key Features',
+    'hardware.drone.detail.useCasesTitle': 'Use Cases',
+    'hardware.drone.detail.includedTitle': "What's Included",
+
+    'hardware.robot.detail.tagline': 'AI-powered autonomous spraying with remote teleoperation',
+    'hardware.robot.detail.overview': 'The Teleoperated Autonomous Sprayer (TAS) is an intelligent ground robot that autonomously navigates between rows of crops to spray pesticides, fertilizers, or foliar treatments. It saves up to 60% of chemicals through precision AI targeting and can be remotely controlled via teleoperation from anywhere.',
+    'hardware.robot.detail.features': ['Autonomous navigation between crop rows', 'AI-targeted precision spraying — 60% chemical savings', 'Remote teleoperation from any location', '360° camera for full situational awareness', 'GPS/RTK autonomous path planning', 'Adjustable spray nozzles for different crops', 'Terrain-adaptive suspension system', 'Emergency stop & geo-fencing safety'],
+    'hardware.robot.detail.specs': [
+      { label: 'Tank Capacity', value: '500 liters' },
+      { label: 'Camera', value: '360° panoramic + AI vision' },
+      { label: 'Navigation', value: 'GPS/RTK autonomous' },
+      { label: 'Spray Width', value: '4-8 meters adjustable' },
+      { label: 'Speed', value: '0-8 km/h' },
+      { label: 'Battery', value: '8 hours continuous operation' },
+      { label: 'Connectivity', value: '4G/5G + WiFi' },
+      { label: 'Weight', value: '180 kg (empty)' }
+    ],
+    'hardware.robot.detail.useCases': ['Pesticide & herbicide spraying', 'Foliar fertilizer application', 'Fungicide treatment during wet seasons', 'Night-time spraying operations', 'Large-scale orchard management'],
+    'hardware.robot.detail.whatsIncluded': ['1x TAS Spraying Robot', '1x 500L spray tank', '2x Battery packs', '1x Charging station', '1x Remote control unit', 'Teleoperation software license (1 year)', 'On-site installation & training'],
+    'hardware.robot.detail.specTitle': 'Technical Specifications',
+    'hardware.robot.detail.featuresTitle': 'Key Features',
+    'hardware.robot.detail.useCasesTitle': 'Use Cases',
+    'hardware.robot.detail.includedTitle': "What's Included",
+
+    'hardware.soilSensor.detail.tagline': 'Comprehensive soil analysis in the palm of your hand',
+    'hardware.soilSensor.detail.overview': 'The 7in1 Soil Sensor measures 7 critical soil parameters simultaneously: pH, EC, Nitrogen, Phosphorus, Potassium, temperature, and moisture. Data is transmitted via Bluetooth to the AgriBeacon app, generating heat maps and AI-powered fertilizer recommendations.',
+    'hardware.soilSensor.detail.features': ['7 parameters in a single probe', 'Bluetooth connectivity to mobile app', 'Auto-generated soil heat maps', 'AI comparison with MRLs standards', 'Instant readings in under 5 seconds', 'Durable stainless steel probe', 'Historical data tracking & trends', 'Export reports in PDF/CSV'],
+    'hardware.soilSensor.detail.specs': [
+      { label: 'Parameters', value: 'pH, EC, N, P, K, Temp, Moisture' },
+      { label: 'Battery', value: '4 hours continuous use' },
+      { label: 'Connectivity', value: 'Bluetooth 5.0' },
+      { label: 'Probe Material', value: 'Stainless Steel 316' },
+      { label: 'Accuracy', value: '±2% (calibrated)' },
+      { label: 'Depth', value: 'Up to 15 cm' },
+      { label: 'Weight', value: '350g' },
+      { label: 'Protection', value: 'IP65 dust & water resistant' }
+    ],
+    'hardware.soilSensor.detail.useCases': ['Pre-planting soil assessment', 'Fertilization optimization', 'Soil health monitoring over seasons', 'Organic certification compliance', 'Research & experimental plots'],
+    'hardware.soilSensor.detail.whatsIncluded': ['1x 7in1 Soil Sensor probe', '1x Rechargeable battery', '1x USB-C charging cable', '1x Calibration solution kit', '1x Carrying case', 'AgriBeacon mobile app (free)'],
+    'hardware.soilSensor.detail.specTitle': 'Technical Specifications',
+    'hardware.soilSensor.detail.featuresTitle': 'Key Features',
+    'hardware.soilSensor.detail.useCasesTitle': 'Use Cases',
+    'hardware.soilSensor.detail.includedTitle': "What's Included",
+
+    'hardware.waterSensor.detail.tagline': 'Solar-powered real-time water quality monitoring',
+    'hardware.waterSensor.detail.overview': 'The 5in1 Water Quality Sensor continuously monitors 5 key water parameters: pH, Dissolved Oxygen, TDS, temperature, and turbidity. Solar-powered and IP68 waterproof, it operates 24/7 in ponds, irrigation channels, or reservoirs, sending real-time alerts to the AgriBeacon platform.',
+    'hardware.waterSensor.detail.features': ['5 parameters measured continuously', 'Solar-powered — no external power needed', 'IP68 fully waterproof & submersible', 'Real-time alerts for abnormal readings', 'LoRaWAN long-range connectivity', 'Anti-fouling sensor coating', 'Self-cleaning mechanism', 'Data logging with 1-year retention'],
+    'hardware.waterSensor.detail.specs': [
+      { label: 'Parameters', value: 'pH, DO, TDS, Temp, Turbidity' },
+      { label: 'Power', value: 'Solar panel + backup battery' },
+      { label: 'Protection', value: 'IP68 (submersible to 2m)' },
+      { label: 'Connectivity', value: 'LoRaWAN / NB-IoT' },
+      { label: 'Battery Backup', value: '72 hours without sunlight' },
+      { label: 'Measurement Interval', value: 'Every 15 minutes (configurable)' },
+      { label: 'Probe Lifespan', value: '2 years' },
+      { label: 'Operating Temp', value: '-10°C to 60°C' }
+    ],
+    'hardware.waterSensor.detail.useCases': ['Aquaculture water monitoring', 'Irrigation water quality control', 'Reservoir & pond management', 'Effluent discharge compliance', 'Hydroponic system monitoring'],
+    'hardware.waterSensor.detail.whatsIncluded': ['1x 5in1 Water Quality Sensor', '1x Solar panel assembly', '1x Mounting bracket & float', '1x LoRaWAN gateway antenna', '1x Calibration kit', 'AgriBeacon cloud dashboard (1 year)'],
+    'hardware.waterSensor.detail.specTitle': 'Technical Specifications',
+    'hardware.waterSensor.detail.featuresTitle': 'Key Features',
+    'hardware.waterSensor.detail.useCasesTitle': 'Use Cases',
+    'hardware.waterSensor.detail.includedTitle': "What's Included",
+
+    'hardware.rtk.detail.tagline': 'Centimeter-precision positioning for autonomous agriculture',
+    'hardware.rtk.detail.overview': 'The RTK Base Station provides centimeter-level positioning accuracy for agricultural drones and robots. It serves as a fixed reference point that broadcasts correction signals, enabling autonomous vehicles to navigate with ±2cm precision across your entire farm.',
+    'hardware.rtk.detail.features': ['±2cm positioning accuracy', 'Multi-GNSS support (GPS, GLONASS, BeiDou, Galileo)', 'Covers up to 10km radius', 'Plug & play with AgriBeacon devices', 'Weather-resistant outdoor enclosure', 'Auto-start on power-up', 'NTRIP server & caster built-in', 'Low power consumption'],
+    'hardware.rtk.detail.specs': [
+      { label: 'Accuracy', value: '±2cm horizontal, ±3cm vertical' },
+      { label: 'GNSS Systems', value: 'GPS, GLONASS, BeiDou, Galileo' },
+      { label: 'Coverage Radius', value: 'Up to 10 km' },
+      { label: 'Channels', value: '184 tracking channels' },
+      { label: 'Power', value: '12V DC / Solar compatible' },
+      { label: 'Connectivity', value: '4G modem + Ethernet' },
+      { label: 'Enclosure', value: 'IP67 outdoor rated' },
+      { label: 'Operating Temp', value: '-30°C to 65°C' }
+    ],
+    'hardware.rtk.detail.useCases': ['Autonomous drone flight guidance', 'Robot navigation in orchards', 'Precision planting & row mapping', 'Farm boundary surveying', 'Tree inventory GPS tagging'],
+    'hardware.rtk.detail.whatsIncluded': ['1x RTK Base Station', '1x Multi-band GNSS antenna', '1x Antenna mounting pole (2m)', '1x Power supply unit', '1x Ethernet cable (10m)', 'Configuration & setup guide'],
+    'hardware.rtk.detail.specTitle': 'Technical Specifications',
+    'hardware.rtk.detail.featuresTitle': 'Key Features',
+    'hardware.rtk.detail.useCasesTitle': 'Use Cases',
+    'hardware.rtk.detail.includedTitle': "What's Included",
+
+    // Addon detail pages
+    'addons.aiAnalytics.detail.tagline': 'AI-powered insights for smarter farming decisions',
+    'addons.aiAnalytics.detail.overview': 'AI Analytics transforms your farm data into actionable insights. Using advanced machine learning models, it analyzes crop health imagery, soil data, weather patterns, and historical yields to provide accurate forecasts and detect anomalies before they become problems.',
+    'addons.aiAnalytics.detail.features': ['Yield prediction with 90%+ accuracy', 'Anomaly detection & early warning alerts', 'Crop health scoring from drone imagery', 'Weather-integrated growth modeling', 'Soil nutrient optimization recommendations', 'Historical trend analysis & benchmarking', 'Custom report generation', 'API access for data integration'],
+    'addons.aiAnalytics.detail.featuresTitle': 'Key Features',
+
+    'addons.aiAssistant.detail.tagline': 'Your personal AI farming expert — ask anything',
+    'addons.aiAssistant.detail.overview': 'AI Farm Assistant is a conversational AI trained on agricultural science, your farm data, and local growing conditions. Ask questions about pest identification, treatment recommendations, fertilizer schedules, or any farming topic — get expert answers instantly.',
+    'addons.aiAssistant.detail.features': ['Natural language Q&A in Vietnamese, English, Japanese', 'Pest & disease identification from photos', 'Personalized treatment recommendations', 'Fertilizer & irrigation scheduling', 'Market price insights', 'Regulatory compliance guidance (MRLs, GAP)', 'Integration with your farm data', 'Available 24/7 on mobile & web'],
+    'addons.aiAssistant.detail.featuresTitle': 'Key Features',
+
+    'addons.buyTree.detail.tagline': 'Online B2C marketplace for your trees — zero upfront cost',
+    'addons.buyTree.detail.overview': 'Buy Tree is an integrated online marketplace that connects your farm directly to consumers. List your trees, manage orders, and handle shipping — all from the AgriBeacon platform. Pay only a 5% revenue share on successful sales, with no monthly fees or upfront costs.',
+    'addons.buyTree.detail.features': ['Zero upfront cost — revenue share only', 'Integrated product listing & catalog management', 'Built-in order management system', 'Shipping & logistics tracking', 'Customer reviews & ratings', 'Payment processing included', 'SEO-optimized product pages', 'Analytics dashboard for sales performance'],
+    'addons.buyTree.detail.featuresTitle': 'Key Features',
+
+    'addons.vector.detail.tagline': 'Centimeter-accurate digital mapping of every tree',
+    'addons.vector.detail.overview': 'Farm Vectorization Service uses RTK-precision field surveys to create digital maps of your entire farm with centimeter accuracy. Every tree, row, and zone is precisely mapped and vectorized, creating a digital twin that powers all AgriBeacon precision features.',
+    'addons.vector.detail.features': ['RTK field survey with ±2cm accuracy', 'Individual tree GPS coordinates', 'Automated row & zone detection', 'Digital twin of your entire farm', 'Integration with drone flight planning', 'Exportable GIS data (GeoJSON, KML)', 'One-time service — permanent map data', 'Professional survey team included'],
+    'addons.vector.detail.featuresTitle': 'Key Features',
+
     // Comparison Table
     'comparison.badge': 'Detailed comparison',
     'comparison.title': 'Features by plan',
@@ -776,14 +903,6 @@ const translations = {
     
     // Addons
     'addons.detail': 'Details',
-    'addons.aiAnalytics.description': 'Advanced data analysis, yield forecasting, anomaly detection powered by AI',
-    'addons.aiAnalytics.priceSuffix': '/month',
-    'addons.aiAssistant.description': '130,000₫/50 queries — buy additional packs anytime',
-    'addons.buyTree.priceLabel': 'From 5%',
-    'addons.buyTree.description': 'Revenue-share model — online B2C tree marketplace, order & shipping management',
-    'addons.vector.priceSuffix': '/m²',
-    'addons.vector.priceLabel': 'From 3,000₫',
-    'addons.vector.description': 'RTK field survey & data vectorization, automated centimeter-accurate digital tree mapping',
     
     // FAQ
     'faq.badge': 'FAQ',
@@ -842,6 +961,25 @@ const translations = {
     // Cart
     'cart.addToCart': 'Add to Cart',
     'cart.added': 'Added to cart',
+    'cart.title': 'Shopping Cart',
+    'cart.emptyTitle': 'Your cart is empty',
+    'cart.emptyDescription': 'Browse our products and add items to get started.',
+    'cart.continueShopping': 'Continue Shopping',
+    'cart.itemCount': '{count} item(s) in your cart',
+    'cart.typePlan': 'Plan',
+    'cart.typeAddon': 'Add-on',
+    'cart.typeHardware': 'Hardware',
+    'cart.monthly': 'Monthly',
+    'cart.yearly': 'Yearly',
+    'cart.rental': 'Rental',
+    'cart.month': 'month',
+    'cart.year': 'year',
+    'cart.clearAll': 'Clear all',
+    'cart.orderSummary': 'Order Summary',
+    'cart.total': 'Total',
+    'cart.taxNote': 'Prices exclude VAT. Final quote will be provided upon consultation.',
+    'cart.checkout': 'Request Quote',
+    'cart.checkoutNote': 'Our sales team will contact you with a detailed quote.',
   },
   vi: {
     'home.hero.badge': 'Công nghệ nông nghiệp chính xác',
@@ -920,7 +1058,6 @@ const translations = {
     'footer.technology': 'Công nghệ',
     'footer.resources': 'Tài nguyên',
     'footer.legal': 'Pháp lý',
-    'footer.copyright': '© 2024 AgriBeacon. Tất cả quyền được bảo lưu.',
     'footer.tagline': 'Tín hiệu chính xác. Cảm biến thông minh. Tăng trưởng bền vững. Trao quyền cho nông dân với các giải pháp công nghệ nông nghiệp thông minh.',
     'footer.quickLinks': 'Liên kết nhanh',
     'footer.documentation': 'Tài liệu',
@@ -1481,12 +1618,15 @@ const translations = {
     'addons.ai-assistant.shortDesc': '130.000₫/50 truy vấn — mua thêm không giới hạn gói mua',
     'addons.ai-assistant.priceLabel': 'Chỉ từ 130.000₫',
     'addons.aiAssistant.name': 'Trợ lý AI Tiểu Thần Nông',
+    'addons.aiAssistant.priceLabel': 'Chỉ từ 130.000₫',
     'addons.aiAssistant.description': '130.000₫/50 truy vấn — mua thêm không giới hạn gói mua',
     'addons.buy-tree.name': 'Buy Tree',
     'addons.buy-tree.shortDesc': 'Chia sẻ theo doanh thu thực tế — nền tảng bán cây trực tuyến B2C, quản lý đơn hàng & vận chuyển',
     'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.priceLabel': 'Chỉ từ 5%',
     'addons.buyTree.description': 'Chia sẻ theo doanh thu thực tế — nền tảng bán cây trực tuyến B2C, quản lý đơn hàng & vận chuyển',
     'addons.vector.name': 'Dịch vụ Vector hóa nông trại',
+    'addons.vector.priceLabel': 'Chỉ từ 3.000₫',
     'addons.vector.shortDesc': 'Dịch vụ đo đạc thực địa bằng RTK và véc-tơ hóa dữ liệu, tự động lập bản đồ số cây trồng chính xác cấp centimet',
     'addons.vector.description': 'Dịch vụ đo đạc thực địa bằng RTK và véc-tơ hóa dữ liệu, tự động lập bản đồ số cây trồng chính xác cấp centimet',
     'addons.vector.priceSuffix': '/m²',
@@ -1516,7 +1656,129 @@ const translations = {
     'hardware.perUnit': '/chiếc',
     'hardware.perUnitMonth': '/chiếc/tháng',
     'hardware.detail': 'Chi tiết',
-    
+
+    // Hardware detail pages
+    'hardware.drone.detail.tagline': 'Giám sát trên không tự động cho nông nghiệp chính xác',
+    'hardware.drone.detail.overview': 'Drone Giám sát Nông trại Tự hành là UAV tự bay hoàn toàn, được thiết kế riêng cho các nông trại cây lâu năm. Nó tự động điều hướng, chụp ảnh độ phân giải cao từng cây và đồng bộ dữ liệu trực tiếp lên nền tảng AgriBeacon để phân tích bằng AI.',
+    'hardware.drone.detail.features': ['Bay hoàn toàn tự động — không cần phi công', 'Chụp ảnh & đánh giá sức khỏe từng cây', 'Phát hiện bệnh cây bằng AI', 'Hỗ trợ ảnh NDVI & đa phổ', 'Tự động lập kế hoạch bay theo bản đồ', 'Đồng bộ dữ liệu thời gian thực lên đám mây', 'Tránh chướng ngại vật với cảm biến 360°', 'Thiết kế chống thời tiết (IP54)'],
+    'hardware.drone.detail.specs': [
+      { label: 'Thời gian bay', value: '72 phút mỗi lần sạc' },
+      { label: 'Phạm vi', value: 'Không giới hạn (dựa trên waypoint)' },
+      { label: 'Camera', value: '4K 60fps + Đa phổ' },
+      { label: 'Tốc độ tối đa', value: '15 m/s' },
+      { label: 'Trọng lượng', value: '2,8 kg (có pin)' },
+      { label: 'Định vị', value: 'RTK GPS (chính xác cấp cm)' },
+      { label: 'Chịu gió', value: 'Lên đến 10 m/s' },
+      { label: 'Nhiệt độ hoạt động', value: '0°C đến 45°C' }
+    ],
+    'hardware.drone.detail.useCases': ['Giám sát sức khỏe cây trồng hàng ngày', 'Phát hiện sớm sâu bệnh', 'Theo dõi tăng trưởng & dự báo năng suất', 'Đánh giá thiệt hại sau bão', 'Lập bản đồ & kiểm đếm cây trồng'],
+    'hardware.drone.detail.whatsIncluded': ['1x Drone Giám sát Tự hành', '2x Pin bay thông minh', '1x Bộ sạc hub', '1x Module anten RTK', '1x Vali vận chuyển', 'Giấy phép nền tảng AgriBeacon (1 năm)', 'Buổi cài đặt & đào tạo'],
+    'hardware.drone.detail.specTitle': 'Thông số kỹ thuật',
+    'hardware.drone.detail.featuresTitle': 'Tính năng chính',
+    'hardware.drone.detail.useCasesTitle': 'Ứng dụng thực tế',
+    'hardware.drone.detail.includedTitle': 'Bao gồm trong hộp',
+
+    'hardware.robot.detail.tagline': 'Phun thuốc tự động bằng AI với điều khiển từ xa',
+    'hardware.robot.detail.overview': 'Robot Phun thuốc Tự hành (TAS) là robot mặt đất thông minh, tự động di chuyển giữa các hàng cây để phun thuốc trừ sâu, phân bón hoặc thuốc qua lá. Tiết kiệm 60% hóa chất nhờ AI nhắm mục tiêu chính xác, có thể điều khiển từ xa qua teleoperation.',
+    'hardware.robot.detail.features': ['Tự hành giữa các hàng cây trồng', 'Phun chính xác bằng AI — tiết kiệm 60% hóa chất', 'Điều khiển từ xa từ bất kỳ đâu', 'Camera 360° quan sát toàn cảnh', 'Lập đường đi tự động GPS/RTK', 'Vòi phun điều chỉnh cho nhiều loại cây', 'Hệ thống treo thích ứng địa hình', 'Dừng khẩn cấp & hàng rào địa lý'],
+    'hardware.robot.detail.specs': [
+      { label: 'Dung tích bồn', value: '500 lít' },
+      { label: 'Camera', value: '360° toàn cảnh + AI vision' },
+      { label: 'Điều hướng', value: 'GPS/RTK tự hành' },
+      { label: 'Bề rộng phun', value: '4-8 mét điều chỉnh được' },
+      { label: 'Tốc độ', value: '0-8 km/h' },
+      { label: 'Pin', value: '8 giờ hoạt động liên tục' },
+      { label: 'Kết nối', value: '4G/5G + WiFi' },
+      { label: 'Trọng lượng', value: '180 kg (rỗng)' }
+    ],
+    'hardware.robot.detail.useCases': ['Phun thuốc trừ sâu & diệt cỏ', 'Bón phân qua lá', 'Xử lý nấm mùa mưa', 'Phun ban đêm', 'Quản lý vườn cây quy mô lớn'],
+    'hardware.robot.detail.whatsIncluded': ['1x Robot phun TAS', '1x Bồn phun 500L', '2x Bộ pin', '1x Trạm sạc', '1x Bộ điều khiển từ xa', 'Giấy phép phần mềm teleoperation (1 năm)', 'Lắp đặt & đào tạo tại chỗ'],
+    'hardware.robot.detail.specTitle': 'Thông số kỹ thuật',
+    'hardware.robot.detail.featuresTitle': 'Tính năng chính',
+    'hardware.robot.detail.useCasesTitle': 'Ứng dụng thực tế',
+    'hardware.robot.detail.includedTitle': 'Bao gồm trong hộp',
+
+    'hardware.soilSensor.detail.tagline': 'Phân tích đất toàn diện trong lòng bàn tay',
+    'hardware.soilSensor.detail.overview': 'Cảm biến Đất 7in1 đo đồng thời 7 thông số quan trọng: pH, EC, Nitơ, Phốt-pho, Kali, nhiệt độ và độ ẩm. Dữ liệu truyền qua Bluetooth đến ứng dụng AgriBeacon, tạo bản đồ nhiệt và khuyến nghị bón phân bằng AI.',
+    'hardware.soilSensor.detail.features': ['7 thông số trong một đầu dò', 'Kết nối Bluetooth với ứng dụng di động', 'Tự động tạo bản đồ nhiệt đất', 'So sánh AI với tiêu chuẩn MRLs', 'Đọc kết quả tức thì trong 5 giây', 'Đầu dò thép không gỉ bền bỉ', 'Theo dõi dữ liệu lịch sử & xu hướng', 'Xuất báo cáo PDF/CSV'],
+    'hardware.soilSensor.detail.specs': [
+      { label: 'Thông số', value: 'pH, EC, N, P, K, Nhiệt độ, Độ ẩm' },
+      { label: 'Pin', value: '4 giờ sử dụng liên tục' },
+      { label: 'Kết nối', value: 'Bluetooth 5.0' },
+      { label: 'Chất liệu đầu dò', value: 'Thép không gỉ 316' },
+      { label: 'Độ chính xác', value: '±2% (đã hiệu chuẩn)' },
+      { label: 'Độ sâu', value: 'Lên đến 15 cm' },
+      { label: 'Trọng lượng', value: '350g' },
+      { label: 'Bảo vệ', value: 'IP65 chống bụi & nước' }
+    ],
+    'hardware.soilSensor.detail.useCases': ['Đánh giá đất trước khi trồng', 'Tối ưu hóa bón phân', 'Giám sát sức khỏe đất theo mùa', 'Tuân thủ chứng nhận hữu cơ', 'Nghiên cứu & thử nghiệm'],
+    'hardware.soilSensor.detail.whatsIncluded': ['1x Đầu dò cảm biến đất 7in1', '1x Pin sạc', '1x Cáp sạc USB-C', '1x Bộ dung dịch hiệu chuẩn', '1x Hộp đựng', 'Ứng dụng AgriBeacon (miễn phí)'],
+    'hardware.soilSensor.detail.specTitle': 'Thông số kỹ thuật',
+    'hardware.soilSensor.detail.featuresTitle': 'Tính năng chính',
+    'hardware.soilSensor.detail.useCasesTitle': 'Ứng dụng thực tế',
+    'hardware.soilSensor.detail.includedTitle': 'Bao gồm trong hộp',
+
+    'hardware.waterSensor.detail.tagline': 'Giám sát chất lượng nước thời gian thực bằng năng lượng mặt trời',
+    'hardware.waterSensor.detail.overview': 'Cảm biến Nước 5in1 giám sát liên tục 5 thông số: pH, Oxy hòa tan, TDS, nhiệt độ và độ đục. Chạy bằng năng lượng mặt trời, chống nước IP68, hoạt động 24/7 trong ao, kênh tưới hoặc hồ chứa, gửi cảnh báo thời gian thực lên AgriBeacon.',
+    'hardware.waterSensor.detail.features': ['5 thông số đo liên tục', 'Năng lượng mặt trời — không cần nguồn điện', 'IP68 chống nước hoàn toàn & chìm được', 'Cảnh báo thời gian thực khi bất thường', 'Kết nối LoRaWAN tầm xa', 'Lớp phủ cảm biến chống bám', 'Cơ chế tự làm sạch', 'Lưu trữ dữ liệu 1 năm'],
+    'hardware.waterSensor.detail.specs': [
+      { label: 'Thông số', value: 'pH, DO, TDS, Nhiệt độ, Độ đục' },
+      { label: 'Nguồn', value: 'Pin mặt trời + pin dự phòng' },
+      { label: 'Bảo vệ', value: 'IP68 (chìm sâu 2m)' },
+      { label: 'Kết nối', value: 'LoRaWAN / NB-IoT' },
+      { label: 'Pin dự phòng', value: '72 giờ không có nắng' },
+      { label: 'Chu kỳ đo', value: 'Mỗi 15 phút (tùy chỉnh)' },
+      { label: 'Tuổi thọ đầu dò', value: '2 năm' },
+      { label: 'Nhiệt độ hoạt động', value: '-10°C đến 60°C' }
+    ],
+    'hardware.waterSensor.detail.useCases': ['Giám sát nước nuôi trồng thủy sản', 'Kiểm soát chất lượng nước tưới', 'Quản lý hồ chứa & ao', 'Tuân thủ xả thải', 'Giám sát hệ thống thủy canh'],
+    'hardware.waterSensor.detail.whatsIncluded': ['1x Cảm biến nước 5in1', '1x Tấm pin mặt trời', '1x Giá đỡ & phao', '1x Anten LoRaWAN gateway', '1x Bộ hiệu chuẩn', 'Dashboard AgriBeacon (1 năm)'],
+    'hardware.waterSensor.detail.specTitle': 'Thông số kỹ thuật',
+    'hardware.waterSensor.detail.featuresTitle': 'Tính năng chính',
+    'hardware.waterSensor.detail.useCasesTitle': 'Ứng dụng thực tế',
+    'hardware.waterSensor.detail.includedTitle': 'Bao gồm trong hộp',
+
+    'hardware.rtk.detail.tagline': 'Định vị chính xác cấp centimet cho nông nghiệp tự động',
+    'hardware.rtk.detail.overview': 'Trạm RTK cung cấp độ chính xác định vị cấp centimet cho drone và robot nông nghiệp. Đóng vai trò là điểm tham chiếu cố định phát tín hiệu hiệu chỉnh, giúp các phương tiện tự hành điều hướng với độ chính xác ±2cm trên toàn bộ nông trại.',
+    'hardware.rtk.detail.features': ['Độ chính xác ±2cm', 'Hỗ trợ đa GNSS (GPS, GLONASS, BeiDou, Galileo)', 'Phủ sóng bán kính 10km', 'Plug & Play với thiết bị AgriBeacon', 'Vỏ ngoài trời chống thời tiết', 'Tự khởi động khi có điện', 'Tích hợp NTRIP server & caster', 'Tiêu thụ điện thấp'],
+    'hardware.rtk.detail.specs': [
+      { label: 'Độ chính xác', value: '±2cm ngang, ±3cm dọc' },
+      { label: 'Hệ GNSS', value: 'GPS, GLONASS, BeiDou, Galileo' },
+      { label: 'Bán kính phủ sóng', value: 'Lên đến 10 km' },
+      { label: 'Kênh', value: '184 kênh theo dõi' },
+      { label: 'Nguồn', value: '12V DC / Tương thích năng lượng mặt trời' },
+      { label: 'Kết nối', value: 'Modem 4G + Ethernet' },
+      { label: 'Vỏ', value: 'IP67 ngoài trời' },
+      { label: 'Nhiệt độ hoạt động', value: '-30°C đến 65°C' }
+    ],
+    'hardware.rtk.detail.useCases': ['Hướng dẫn bay drone tự hành', 'Điều hướng robot trong vườn', 'Trồng chính xác & lập bản đồ hàng', 'Khảo sát ranh giới nông trại', 'Đánh dấu GPS cây trồng'],
+    'hardware.rtk.detail.whatsIncluded': ['1x Trạm RTK', '1x Anten GNSS đa băng', '1x Cột gắn anten (2m)', '1x Bộ nguồn', '1x Cáp Ethernet (10m)', 'Hướng dẫn cấu hình & cài đặt'],
+    'hardware.rtk.detail.specTitle': 'Thông số kỹ thuật',
+    'hardware.rtk.detail.featuresTitle': 'Tính năng chính',
+    'hardware.rtk.detail.useCasesTitle': 'Ứng dụng thực tế',
+    'hardware.rtk.detail.includedTitle': 'Bao gồm trong hộp',
+
+    // Addon detail pages
+    'addons.aiAnalytics.detail.tagline': 'Phân tích AI cho quyết định nông nghiệp thông minh hơn',
+    'addons.aiAnalytics.detail.overview': 'AI Analytics biến dữ liệu nông trại thành thông tin hành động. Sử dụng mô hình học máy tiên tiến, phân tích ảnh sức khỏe cây, dữ liệu đất, thời tiết và năng suất lịch sử để cung cấp dự báo chính xác và phát hiện bất thường sớm.',
+    'addons.aiAnalytics.detail.features': ['Dự báo năng suất chính xác 90%+', 'Phát hiện bất thường & cảnh báo sớm', 'Chấm điểm sức khỏe cây từ ảnh drone', 'Mô hình tăng trưởng tích hợp thời tiết', 'Khuyến nghị tối ưu dinh dưỡng đất', 'Phân tích xu hướng lịch sử & so sánh', 'Tạo báo cáo tùy chỉnh', 'Truy cập API để tích hợp dữ liệu'],
+    'addons.aiAnalytics.detail.featuresTitle': 'Tính năng chính',
+
+    'addons.aiAssistant.detail.tagline': 'Chuyên gia nông nghiệp AI cá nhân — hỏi bất cứ điều gì',
+    'addons.aiAssistant.detail.overview': 'Trợ lý AI Tiểu Thần Nông là AI đàm thoại được huấn luyện về khoa học nông nghiệp, dữ liệu nông trại của bạn và điều kiện canh tác địa phương. Hỏi về nhận dạng sâu bệnh, khuyến nghị điều trị, lịch bón phân hoặc bất kỳ chủ đề nông nghiệp nào.',
+    'addons.aiAssistant.detail.features': ['Hỏi đáp bằng Tiếng Việt, English, 日本語', 'Nhận dạng sâu bệnh từ ảnh chụp', 'Khuyến nghị điều trị cá nhân hóa', 'Lập lịch bón phân & tưới tiêu', 'Thông tin giá thị trường', 'Hướng dẫn tuân thủ quy định (MRLs, GAP)', 'Tích hợp với dữ liệu nông trại', 'Hoạt động 24/7 trên di động & web'],
+    'addons.aiAssistant.detail.featuresTitle': 'Tính năng chính',
+
+    'addons.buyTree.detail.tagline': 'Sàn thương mại B2C cho cây — không chi phí ban đầu',
+    'addons.buyTree.detail.overview': 'Buy Tree là sàn thương mại trực tuyến tích hợp, kết nối nông trại trực tiếp với người tiêu dùng. Đăng bán cây, quản lý đơn hàng, và xử lý vận chuyển — tất cả từ nền tảng AgriBeacon. Chỉ trả 5% hoa hồng trên doanh thu thực tế.',
+    'addons.buyTree.detail.features': ['Không chi phí ban đầu — chỉ chia sẻ doanh thu', 'Quản lý danh mục & sản phẩm tích hợp', 'Hệ thống quản lý đơn hàng tích hợp', 'Theo dõi vận chuyển & logistics', 'Đánh giá & xếp hạng khách hàng', 'Xử lý thanh toán tích hợp', 'Trang sản phẩm tối ưu SEO', 'Dashboard phân tích doanh số'],
+    'addons.buyTree.detail.featuresTitle': 'Tính năng chính',
+
+    'addons.vector.detail.tagline': 'Bản đồ số chính xác centimet cho từng cây',
+    'addons.vector.detail.overview': 'Dịch vụ Vector hóa Nông trại sử dụng khảo sát thực địa RTK để tạo bản đồ số toàn bộ nông trại với độ chính xác cấp centimet. Mỗi cây, hàng và khu vực được lập bản đồ chính xác, tạo bản sao số phục vụ các tính năng chính xác của AgriBeacon.',
+    'addons.vector.detail.features': ['Khảo sát thực địa RTK chính xác ±2cm', 'Tọa độ GPS từng cây', 'Tự động phát hiện hàng & khu vực', 'Bản sao số toàn bộ nông trại', 'Tích hợp lập kế hoạch bay drone', 'Xuất dữ liệu GIS (GeoJSON, KML)', 'Dịch vụ một lần — dữ liệu bản đồ vĩnh viễn', 'Đội khảo sát chuyên nghiệp đi kèm'],
+    'addons.vector.detail.featuresTitle': 'Tính năng chính',
+
     // Comparison Table
     'comparison.badge': 'So sánh chi tiết',
     'comparison.title': 'Tính năng theo từng gói',
@@ -1607,14 +1869,6 @@ const translations = {
     
     // Addons
     'addons.detail': 'Chi tiết',
-    'addons.aiAnalytics.description': 'Phân tích dữ liệu nâng cao, dự báo năng suất, phát hiện bất thường bằng AI',
-    'addons.aiAnalytics.priceSuffix': '/tháng',
-    'addons.aiAssistant.description': '130.000₫/50 truy vấn — mua thêm không giới hạn gói mua',
-    'addons.buyTree.priceLabel': 'Chỉ từ 5%',
-    'addons.buyTree.description': 'Chia sẻ theo doanh thu thực tế — nền tảng bán cây trực tuyến B2C, quản lý đơn hàng & vận chuyển',
-    'addons.vector.priceSuffix': '/m²',
-    'addons.vector.priceLabel': 'Chỉ từ 3.000₫',
-    'addons.vector.description': 'Dịch vụ đo đạc thực địa bằng RTK và véc-tơ hóa dữ liệu, tự động lập bản đồ số cây trồng chính xác cấp centimet',
     
     // FAQ
     'faq.badge': 'FAQ',
@@ -1673,6 +1927,25 @@ const translations = {
     // Cart
     'cart.addToCart': 'Thêm vào giỏ',
     'cart.added': 'Đã thêm vào giỏ',
+    'cart.title': 'Giỏ hàng',
+    'cart.emptyTitle': 'Giỏ hàng trống',
+    'cart.emptyDescription': 'Khám phá sản phẩm và thêm vào giỏ hàng để bắt đầu.',
+    'cart.continueShopping': 'Tiếp tục mua sắm',
+    'cart.itemCount': '{count} sản phẩm trong giỏ hàng',
+    'cart.typePlan': 'Gói dịch vụ',
+    'cart.typeAddon': 'Tiện ích',
+    'cart.typeHardware': 'Phần cứng',
+    'cart.monthly': 'Hàng tháng',
+    'cart.yearly': 'Hàng năm',
+    'cart.rental': 'Thuê',
+    'cart.month': 'tháng',
+    'cart.year': 'năm',
+    'cart.clearAll': 'Xóa tất cả',
+    'cart.orderSummary': 'Tóm tắt đơn hàng',
+    'cart.total': 'Tổng cộng',
+    'cart.taxNote': 'Giá chưa bao gồm VAT. Báo giá chính thức sẽ được gửi sau khi tư vấn.',
+    'cart.checkout': 'Yêu cầu báo giá',
+    'cart.checkoutNote': 'Đội ngũ kinh doanh sẽ liên hệ bạn với báo giá chi tiết.',
   },
   ja: {
     'home.hero.badge': '精密農業テクノロジー',
@@ -1751,7 +2024,6 @@ const translations = {
     'footer.technology': 'テクノロジー',
     'footer.resources': 'リソース',
     'footer.legal': '法的',
-    'footer.copyright': '© 2024 AgriBeacon. 全著作権所有。',
     'footer.tagline': '精密な信号。スマートセンシング。持続可能な成長。インテリジェントな農業技術ソリューションで農家に力を与える。',
     'footer.quickLinks': 'クイックリンク',
     'footer.documentation': 'ドキュメント',
@@ -2232,12 +2504,15 @@ const translations = {
     'addons.ai-assistant.shortDesc': '130,000₫/50クエリ — 追加パック購入可能',
     'addons.ai-assistant.priceLabel': '130,000₫〜',
     'addons.aiAssistant.name': 'AI農業アシスタント',
+    'addons.aiAssistant.priceLabel': '130,000₫〜',
     'addons.aiAssistant.description': '130,000₫/50クエリ — 追加パック購入可能',
     'addons.buy-tree.name': 'Buy Tree',
     'addons.buy-tree.shortDesc': '売上連動型 — オンラインB2C樹木マーケットプレイス、注文＆配送管理',
     'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.priceLabel': '5%〜',
     'addons.buyTree.description': '売上連動型 — オンラインB2C樹木マーケットプレイス、注文＆配送管理',
     'addons.vector.name': '農場ベクトル化サービス',
+    'addons.vector.priceLabel': '3,000₫〜',
     'addons.vector.shortDesc': 'RTK実地測量＆データベクトル化、センチメートル精度の自動デジタル樹木マッピング',
     'addons.vector.description': 'RTK実地測量＆データベクトル化、センチメートル精度の自動デジタル樹木マッピング',
     'addons.vector.priceSuffix': '/m²',
@@ -2267,7 +2542,129 @@ const translations = {
     'hardware.perUnit': '/台',
     'hardware.perUnitMonth': '/台/月',
     'hardware.detail': '詳細',
-    
+
+    // Hardware detail pages
+    'hardware.drone.detail.tagline': '精密農業のための自律型空中監視',
+    'hardware.drone.detail.overview': '自律型農場監視ドローンは、多年生作物農場向けに特別に設計された完全自律飛行UAVです。農場を自動的にナビゲートし、すべての樹木の高解像度画像を撮影し、AI分析のためにAgriBeaconプラットフォームにデータを直接同期します。',
+    'hardware.drone.detail.features': ['完全自律飛行 — パイロット不要', '個別樹木撮影＆健康評価', 'AI搭載の植物病害検出', 'NDVI＆マルチスペクトルイメージング対応', '農場マップに基づく自動飛行計画', 'AgriBeaconクラウドへのリアルタイムデータ同期', '360°センサーによる障害物回避', '耐候性設計（IP54）'],
+    'hardware.drone.detail.specs': [
+      { label: '飛行時間', value: '1回の充電で72分' },
+      { label: '範囲', value: '無制限（ウェイポイントベース）' },
+      { label: 'カメラ', value: '4K 60fps + マルチスペクトル' },
+      { label: '最大速度', value: '15 m/s' },
+      { label: '重量', value: '2.8 kg（バッテリー含む）' },
+      { label: '測位', value: 'RTK GPS（cm精度）' },
+      { label: '耐風性', value: '最大10 m/s' },
+      { label: '動作温度', value: '0°C〜45°C' }
+    ],
+    'hardware.drone.detail.useCases': ['日常的な作物健康監視', '病害虫の早期発見', '成長追跡＆収量予測', '暴風雨後の被害評価', '農場マッピング＆在庫カウント'],
+    'hardware.drone.detail.whatsIncluded': ['1x 自律型農場監視ドローン', '2x インテリジェント飛行バッテリー', '1x 充電ハブ', '1x RTKアンテナモジュール', '1x キャリングケース', 'AgriBeaconプラットフォームライセンス（1年）', 'セットアップ＆トレーニングセッション'],
+    'hardware.drone.detail.specTitle': '技術仕様',
+    'hardware.drone.detail.featuresTitle': '主な特徴',
+    'hardware.drone.detail.useCasesTitle': '活用事例',
+    'hardware.drone.detail.includedTitle': '同梱内容',
+
+    'hardware.robot.detail.tagline': 'AI搭載の自律散布とリモートテレオペレーション',
+    'hardware.robot.detail.overview': '遠隔操作自律散布機（TAS）は、作物の列間を自動的にナビゲートし、農薬、肥料、または葉面散布を行うインテリジェントな地上ロボットです。AI精密ターゲティングにより化学物質を最大60%節約し、テレオペレーションによりどこからでもリモート制御可能です。',
+    'hardware.robot.detail.features': ['作物列間の自律ナビゲーション', 'AI精密散布 — 化学物質60%節約', 'どこからでもリモートテレオペレーション', '360°カメラによる完全な状況認識', 'GPS/RTK自律経路計画', '異なる作物に対応する調整可能なノズル', '地形適応サスペンションシステム', '緊急停止＆ジオフェンシング安全機能'],
+    'hardware.robot.detail.specs': [
+      { label: 'タンク容量', value: '500リットル' },
+      { label: 'カメラ', value: '360°パノラマ + AIビジョン' },
+      { label: 'ナビゲーション', value: 'GPS/RTK自律走行' },
+      { label: '散布幅', value: '4-8メートル調整可能' },
+      { label: '速度', value: '0-8 km/h' },
+      { label: 'バッテリー', value: '8時間連続稼働' },
+      { label: '接続', value: '4G/5G + WiFi' },
+      { label: '重量', value: '180 kg（空）' }
+    ],
+    'hardware.robot.detail.useCases': ['殺虫剤＆除草剤散布', '葉面肥料施用', '雨季の殺菌剤処理', '夜間散布作業', '大規模果樹園管理'],
+    'hardware.robot.detail.whatsIncluded': ['1x TAS散布ロボット', '1x 500L散布タンク', '2x バッテリーパック', '1x 充電ステーション', '1x リモコンユニット', 'テレオペレーションソフトウェアライセンス（1年）', '現地設置＆トレーニング'],
+    'hardware.robot.detail.specTitle': '技術仕様',
+    'hardware.robot.detail.featuresTitle': '主な特徴',
+    'hardware.robot.detail.useCasesTitle': '活用事例',
+    'hardware.robot.detail.includedTitle': '同梱内容',
+
+    'hardware.soilSensor.detail.tagline': '手のひらで包括的な土壌分析',
+    'hardware.soilSensor.detail.overview': '7in1土壌センサーは、pH、EC、窒素、リン、カリウム、温度、水分の7つの重要な土壌パラメータを同時に測定します。データはBluetooth経由でAgriBeaconアプリに送信され、ヒートマップとAI搭載の施肥推奨を生成します。',
+    'hardware.soilSensor.detail.features': ['1本のプローブで7パラメータ', 'モバイルアプリへのBluetooth接続', '自動土壌ヒートマップ生成', 'MRLs基準とのAI比較', '5秒以内の即時読み取り', '耐久性のあるステンレス鋼プローブ', '履歴データ追跡＆トレンド', 'PDF/CSVレポートエクスポート'],
+    'hardware.soilSensor.detail.specs': [
+      { label: 'パラメータ', value: 'pH、EC、N、P、K、温度、水分' },
+      { label: 'バッテリー', value: '4時間連続使用' },
+      { label: '接続', value: 'Bluetooth 5.0' },
+      { label: 'プローブ素材', value: 'ステンレス鋼316' },
+      { label: '精度', value: '±2%（校正済み）' },
+      { label: '深度', value: '最大15 cm' },
+      { label: '重量', value: '350g' },
+      { label: '保護', value: 'IP65 防塵・防水' }
+    ],
+    'hardware.soilSensor.detail.useCases': ['植え付け前の土壌評価', '施肥最適化', 'シーズンを通じた土壌健康監視', '有機認証コンプライアンス', '研究＆実験圃場'],
+    'hardware.soilSensor.detail.whatsIncluded': ['1x 7in1土壌センサープローブ', '1x 充電式バッテリー', '1x USB-C充電ケーブル', '1x 校正液キット', '1x キャリングケース', 'AgriBeaconモバイルアプリ（無料）'],
+    'hardware.soilSensor.detail.specTitle': '技術仕様',
+    'hardware.soilSensor.detail.featuresTitle': '主な特徴',
+    'hardware.soilSensor.detail.useCasesTitle': '活用事例',
+    'hardware.soilSensor.detail.includedTitle': '同梱内容',
+
+    'hardware.waterSensor.detail.tagline': 'ソーラー電源によるリアルタイム水質監視',
+    'hardware.waterSensor.detail.overview': '5in1水質センサーは、pH、溶存酸素、TDS、温度、濁度の5つの主要水質パラメータを継続的に監視します。ソーラー電源＆IP68防水で、池、灌漑水路、貯水池で24時間365日稼働し、AgriBeaconプラットフォームにリアルタイムアラートを送信します。',
+    'hardware.waterSensor.detail.features': ['5パラメータ連続測定', 'ソーラー電源 — 外部電源不要', 'IP68完全防水＆水没可能', '異常値のリアルタイムアラート', 'LoRaWAN長距離接続', '防汚センサーコーティング', 'セルフクリーニング機能', '1年分のデータログ保持'],
+    'hardware.waterSensor.detail.specs': [
+      { label: 'パラメータ', value: 'pH、DO、TDS、温度、濁度' },
+      { label: '電源', value: 'ソーラーパネル + バックアップバッテリー' },
+      { label: '保護', value: 'IP68（2m水没可能）' },
+      { label: '接続', value: 'LoRaWAN / NB-IoT' },
+      { label: 'バッテリーバックアップ', value: '日照なし72時間' },
+      { label: '測定間隔', value: '15分ごと（設定可能）' },
+      { label: 'プローブ寿命', value: '2年' },
+      { label: '動作温度', value: '-10°C〜60°C' }
+    ],
+    'hardware.waterSensor.detail.useCases': ['養殖水監視', '灌漑水品質管理', '貯水池＆池管理', '排水規制コンプライアンス', '水耕栽培システム監視'],
+    'hardware.waterSensor.detail.whatsIncluded': ['1x 5in1水質センサー', '1x ソーラーパネルアセンブリ', '1x マウントブラケット＆フロート', '1x LoRaWANゲートウェイアンテナ', '1x 校正キット', 'AgriBeaconクラウドダッシュボード（1年）'],
+    'hardware.waterSensor.detail.specTitle': '技術仕様',
+    'hardware.waterSensor.detail.featuresTitle': '主な特徴',
+    'hardware.waterSensor.detail.useCasesTitle': '活用事例',
+    'hardware.waterSensor.detail.includedTitle': '同梱内容',
+
+    'hardware.rtk.detail.tagline': '自律農業のためのセンチメートル精度測位',
+    'hardware.rtk.detail.overview': 'RTKベースステーションは、農業用ドローンとロボットにセンチメートルレベルの測位精度を提供します。補正信号を送信する固定参照点として機能し、自律車両が農場全体で±2cm精度でナビゲートできるようにします。',
+    'hardware.rtk.detail.features': ['±2cm測位精度', 'マルチGNSS対応（GPS、GLONASS、BeiDou、Galileo）', '半径10kmカバー', 'AgriBeaconデバイスとプラグ＆プレイ', '耐候性屋外エンクロージャー', '電源投入時自動起動', 'NTRIPサーバー＆キャスター内蔵', '低消費電力'],
+    'hardware.rtk.detail.specs': [
+      { label: '精度', value: '水平±2cm、垂直±3cm' },
+      { label: 'GNSSシステム', value: 'GPS、GLONASS、BeiDou、Galileo' },
+      { label: 'カバー半径', value: '最大10 km' },
+      { label: 'チャンネル', value: '184追跡チャンネル' },
+      { label: '電源', value: '12V DC / ソーラー対応' },
+      { label: '接続', value: '4Gモデム + イーサネット' },
+      { label: 'エンクロージャー', value: 'IP67屋外対応' },
+      { label: '動作温度', value: '-30°C〜65°C' }
+    ],
+    'hardware.rtk.detail.useCases': ['自律ドローン飛行ガイダンス', '果樹園でのロボットナビゲーション', '精密植え付け＆列マッピング', '農場境界測量', '樹木在庫GPSタグ付け'],
+    'hardware.rtk.detail.whatsIncluded': ['1x RTKベースステーション', '1x マルチバンドGNSSアンテナ', '1x アンテナ取付ポール（2m）', '1x 電源ユニット', '1x イーサネットケーブル（10m）', '構成＆セットアップガイド'],
+    'hardware.rtk.detail.specTitle': '技術仕様',
+    'hardware.rtk.detail.featuresTitle': '主な特徴',
+    'hardware.rtk.detail.useCasesTitle': '活用事例',
+    'hardware.rtk.detail.includedTitle': '同梱内容',
+
+    // Addon detail pages
+    'addons.aiAnalytics.detail.tagline': 'よりスマートな農業判断のためのAI分析',
+    'addons.aiAnalytics.detail.overview': 'AI Analyticsは農場データを実用的なインサイトに変換します。高度な機械学習モデルを使用して、作物健康画像、土壌データ、気象パターン、過去の収量を分析し、正確な予測を提供し、問題が発生する前に異常を検出します。',
+    'addons.aiAnalytics.detail.features': ['90%以上の精度で収量予測', '異常検出＆早期警告アラート', 'ドローン画像からの作物健康スコアリング', '気象統合型成長モデリング', '土壌栄養最適化推奨', '履歴トレンド分析＆ベンチマーキング', 'カスタムレポート生成', 'データ統合用APIアクセス'],
+    'addons.aiAnalytics.detail.featuresTitle': '主な特徴',
+
+    'addons.aiAssistant.detail.tagline': 'あなた専属のAI農業エキスパート — 何でも聞いてください',
+    'addons.aiAssistant.detail.overview': 'AI農業アシスタントは、農業科学、あなたの農場データ、地域の栽培条件で訓練された会話型AIです。病害虫の識別、治療推奨、施肥スケジュール、その他の農業トピックについて質問してください。',
+    'addons.aiAssistant.detail.features': ['ベトナム語、英語、日本語での自然言語Q&A', '写真からの病害虫識別', 'パーソナライズされた治療推奨', '施肥＆灌漑スケジューリング', '市場価格インサイト', '規制コンプライアンスガイダンス（MRLs、GAP）', '農場データとの統合', 'モバイル＆Webで24時間365日利用可能'],
+    'addons.aiAssistant.detail.featuresTitle': '主な特徴',
+
+    'addons.buyTree.detail.tagline': '樹木のオンラインB2Cマーケットプレイス — 初期費用ゼロ',
+    'addons.buyTree.detail.overview': 'Buy Treeは、農場と消費者を直接つなぐ統合オンラインマーケットプレイスです。樹木を出品し、注文を管理し、出荷を処理 — すべてAgriBeaconプラットフォームから。月額料金や初期費用なし、成功した販売に対して5%のレベニューシェアのみ。',
+    'addons.buyTree.detail.features': ['初期費用ゼロ — レベニューシェアのみ', '統合された製品リスト＆カタログ管理', '内蔵注文管理システム', '配送＆物流追跡', '顧客レビュー＆評価', '決済処理込み', 'SEO最適化された製品ページ', '販売実績分析ダッシュボード'],
+    'addons.buyTree.detail.featuresTitle': '主な特徴',
+
+    'addons.vector.detail.tagline': 'すべての樹木のセンチメートル精度デジタルマッピング',
+    'addons.vector.detail.overview': '農場ベクトル化サービスは、RTK精密フィールド調査を使用して、センチメートル精度で農場全体のデジタルマップを作成します。すべての樹木、列、ゾーンが正確にマッピングされ、AgriBeaconの精密機能を支えるデジタルツインを作成します。',
+    'addons.vector.detail.features': ['RTKフィールド調査±2cm精度', '個別樹木GPS座標', '自動列＆ゾーン検出', '農場全体のデジタルツイン', 'ドローン飛行計画との統合', 'エクスポート可能なGISデータ（GeoJSON、KML）', '一回限りのサービス — 永久マップデータ', 'プロの調査チーム付き'],
+    'addons.vector.detail.featuresTitle': '主な特徴',
+
     // Comparison Table
     'comparison.badge': '詳細比較',
     'comparison.title': 'プラン別機能一覧',
@@ -2358,14 +2755,6 @@ const translations = {
     
     // Addons
     'addons.detail': '詳細',
-    'addons.aiAnalytics.description': 'AI搭載の高度なデータ分析、収量予測、異常検出',
-    'addons.aiAnalytics.priceSuffix': '/月',
-    'addons.aiAssistant.description': '130,000₫/50クエリ — 追加パック購入可能',
-    'addons.buyTree.priceLabel': '5%〜',
-    'addons.buyTree.description': '売上連動型 — オンラインB2C樹木マーケットプレイス、注文＆配送管理',
-    'addons.vector.priceSuffix': '/m²',
-    'addons.vector.priceLabel': '3,000₫〜',
-    'addons.vector.description': 'RTK実地測量＆データベクトル化、センチメートル精度の自動デジタル樹木マッピング',
     
     // FAQ
     'faq.badge': 'FAQ',
@@ -2506,6 +2895,25 @@ const translations = {
     // Cart
     'cart.addToCart': 'カートに追加',
     'cart.added': 'カートに追加しました',
+    'cart.title': 'ショッピングカート',
+    'cart.emptyTitle': 'カートは空です',
+    'cart.emptyDescription': '製品を閲覧してカートに追加してください。',
+    'cart.continueShopping': '買い物を続ける',
+    'cart.itemCount': 'カートに{count}点の商品',
+    'cart.typePlan': 'プラン',
+    'cart.typeAddon': 'アドオン',
+    'cart.typeHardware': 'ハードウェア',
+    'cart.monthly': '月額',
+    'cart.yearly': '年額',
+    'cart.rental': 'レンタル',
+    'cart.month': '月',
+    'cart.year': '年',
+    'cart.clearAll': 'すべて削除',
+    'cart.orderSummary': '注文概要',
+    'cart.total': '合計',
+    'cart.taxNote': '表示価格はVAT別です。正式な見積もりはご相談後に提供されます。',
+    'cart.checkout': '見積もり依頼',
+    'cart.checkoutNote': '営業チームが詳細な見積もりをご連絡いたします。',
   },
 };
 
@@ -2525,7 +2933,7 @@ export const SimpleLanguageProvider: React.FC<{ children: React.ReactNode }> = (
     localStorage.setItem('language', language);
   }, [language]);
 
-  const t = (key: string): string => {
+  const t = (key: string): TranslationValue => {
     return translations[language][key as keyof typeof translations[typeof language]] || key;
   };
 

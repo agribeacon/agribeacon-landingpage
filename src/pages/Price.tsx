@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, ShoppingCart } from "lucide-react";
@@ -15,13 +14,14 @@ const formatPrice = (price: number) =>
 
 const Price = () => {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
-  const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string }>({
+  const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string; price: number; isRental: boolean }>({
     open: false,
     title: "",
     type: "",
     key: "",
+    price: 0,
+    isRental: false,
   });
-  const navigate = useNavigate();
   const { t } = useSimpleLanguage();
   const { addItem } = useCart();
   const { toast } = useToast();
@@ -33,10 +33,10 @@ const Price = () => {
   const planCtaVariants = ["outline", "default", "outline", "outline"] as const;
 
   const addonConfigs = [
-    { icon: BarChart3, key: "aiAnalytics", priceLabel: "120.000₫", price: 120000, useFormatted: false, priceSuffixKey: "addons.aiAnalytics.priceSuffix" },
-    { icon: Bot, key: "aiAssistant", priceLabel: "Chỉ từ 130.000₫", price: 130000, useFormatted: true, priceSuffixKey: "" },
-    { icon: TreePine, key: "buyTree", priceLabel: "Chỉ từ 5%", price: 0, useFormatted: true, priceSuffixKey: "" },
-    { icon: MapPinned, key: "vector", priceLabel: "Chỉ từ 3.000₫", price: 0, useFormatted: true, priceSuffixKey: "addons.vector.priceSuffix" },
+    { icon: BarChart3, key: "aiAnalytics", price: 120000, useFormatted: false, priceSuffixKey: "addons.aiAnalytics.priceSuffix" },
+    { icon: Bot, key: "aiAssistant", price: 130000, useFormatted: true, priceSuffixKey: "" },
+    { icon: TreePine, key: "buyTree", price: 0, useFormatted: true, priceSuffixKey: "" },
+    { icon: MapPinned, key: "vector", price: 0, useFormatted: true, priceSuffixKey: "addons.vector.priceSuffix" },
   ];
 
   const hwConfigs = [
@@ -128,7 +128,7 @@ const Price = () => {
     { feature: t("comparison.features.apiIntegration"), values: [false, true, true, true] },
   ];
 
-  const faqItems = t("faq.items") as any;
+  const faqItems = t("faq.items");
   const faqArray: Array<{ q: string; a: string }> = Array.isArray(faqItems) ? faqItems : [];
 
   const handleAddPlanToCart = (planKey: string, price: number) => {
@@ -179,8 +179,8 @@ const Price = () => {
     });
   };
 
-  const openDetailModal = (type: string, key: string, title: string) => {
-    setDetailModal({ open: true, type, key, title });
+  const openDetailModal = (type: string, key: string, title: string, price: number = 0, isRental: boolean = false) => {
+    setDetailModal({ open: true, type, key, title, price, isRental });
   };
 
   return (
@@ -189,6 +189,17 @@ const Price = () => {
         open={detailModal.open}
         onOpenChange={(open) => setDetailModal({ ...detailModal, open })}
         title={detailModal.title}
+        type={detailModal.type}
+        productKey={detailModal.key}
+        isRental={detailModal.isRental}
+        priceLabel={detailModal.price > 0 ? `${formatPrice(detailModal.price)}₫${detailModal.isRental ? (billing === 'yearly' ? '/' + t('cart.year') : '/' + t('cart.month')) : ''}` : undefined}
+        onAddToCart={() => {
+          if (detailModal.type === 'hardware') {
+            handleAddHardwareToCart(detailModal.key, detailModal.price, detailModal.isRental);
+          } else {
+            handleAddAddonToCart(detailModal.key, detailModal.price);
+          }
+        }}
       />
 
       {/* Hero */}
@@ -235,9 +246,9 @@ const Price = () => {
           {planKeys.map((key, idx) => {
             const price = planPrices[idx];
             const popular = planPopular[idx];
-            const features = t(`plans.${key}.features`) as any;
+            const features = t(`plans.${key}.features`);
             const featuresArray = Array.isArray(features) ? features : [];
-            const excludedFeatures = t(`plans.${key}.excludedFeatures`) as any;
+            const excludedFeatures = t(`plans.${key}.excludedFeatures`);
             const excludedArray = Array.isArray(excludedFeatures) ? excludedFeatures : [];
 
             return (
@@ -358,8 +369,8 @@ const Price = () => {
                   }
                   return (
                     <tr key={i} className="border-t border-border hover:bg-muted/20 transition-colors">
-                      <td className="py-3 px-5 text-foreground">{(row as any).feature}</td>
-                      {(row as any).values?.map((val: any, j: number) => (
+                      <td className="py-3 px-5 text-foreground">{"feature" in row ? String(row.feature) : ""}</td>
+                      {("values" in row && Array.isArray(row.values)) && row.values.map((val: string | boolean, j: number) => (
                         <td key={j} className="text-center py-3 px-4">
                           {val === true ? (
                             <Check className="h-4 w-4 text-primary mx-auto" />
@@ -404,7 +415,7 @@ const Price = () => {
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold text-foreground">
                         {addon.useFormatted
-                          ? addon.priceLabel
+                          ? t(`addons.${addon.key}.priceLabel`)
                           : `${formatPrice(
                               billing === "yearly"
                                 ? Math.round(addon.price * yearlyDiscount)
@@ -424,7 +435,7 @@ const Price = () => {
                       variant="outline" 
                       size="sm" 
                       className="flex-1"
-                      onClick={() => openDetailModal('addon', addon.key, t(`addons.${addon.key}.name`))}
+                      onClick={() => openDetailModal('addon', addon.key, t(`addons.${addon.key}.name`), addon.price)}
                     >
                       {t("addons.detail")}
                     </Button>
@@ -458,7 +469,7 @@ const Price = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {hwConfigs.map((hw) => {
-              const specs = t(`hardware.${hw.key}.specs`) as any;
+              const specs = t(`hardware.${hw.key}.specs`);
               const specsArray = Array.isArray(specs) ? specs : [];
               return (
                 <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full">
@@ -478,21 +489,34 @@ const Price = () => {
                       ))}
                     </div>
                     <div className="space-y-3">
+                      {/* Buy outright option */}
                       <div className="rounded-lg border border-border bg-muted/40 p-3">
                         <div className="flex items-center justify-between gap-3">
                           <div>
                             <p className="text-sm font-medium text-foreground">{t("hardware.buyOutright")}</p>
                             <p className="text-xs text-muted-foreground">{t("hardware.buyDesc")}</p>
                           </div>
-                          <div className="text-right">
-                            <span className="text-xl font-bold text-foreground">
-                              {formatPrice(hw.buyPrice)}₫
-                            </span>
-                            <p className="text-xs text-muted-foreground">{t("hardware.perUnit")}</p>
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <span className="text-xl font-bold text-foreground">
+                                {formatPrice(hw.buyPrice)}₫
+                              </span>
+                              <p className="text-xs text-muted-foreground">{t("hardware.perUnit")}</p>
+                            </div>
+                            {hw.rentPrice && (
+                              <Button
+                                size="icon"
+                                className="h-9 w-9 shrink-0"
+                                onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
+                              >
+                                <ShoppingCart className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
 
+                      {/* Rent bundle option */}
                       {hw.rentPrice && (
                         <div className="rounded-lg border border-primary/30 bg-accent p-3">
                           <div className="flex items-center justify-between gap-3">
@@ -503,15 +527,24 @@ const Price = () => {
                               </div>
                               <p className="text-xs text-muted-foreground">{t("hardware.rentDesc")}</p>
                             </div>
-                            <div className="text-right">
-                              <span className="text-xl font-bold text-foreground">
-                                {formatPrice(
-                                  billing === "yearly"
-                                    ? Math.round(hw.rentPrice * yearlyDiscount)
-                                    : hw.rentPrice
-                                )}₫
-                              </span>
-                              <p className="text-xs text-muted-foreground">{t("hardware.perUnitMonth")}</p>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <span className="text-xl font-bold text-foreground">
+                                  {formatPrice(
+                                    billing === "yearly"
+                                      ? Math.round(hw.rentPrice * yearlyDiscount)
+                                      : hw.rentPrice
+                                  )}₫
+                                </span>
+                                <p className="text-xs text-muted-foreground">{t("hardware.perUnitMonth")}</p>
+                              </div>
+                              <Button
+                                size="icon"
+                                className="h-9 w-9 shrink-0"
+                                onClick={() => handleAddHardwareToCart(hw.key, hw.rentPrice!, true)}
+                              >
+                                <ShoppingCart className="h-4 w-4" />
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -519,42 +552,29 @@ const Price = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="flex gap-2 mt-auto">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="flex-1"
-                      onClick={() => openDetailModal('hardware', hw.key, t(`hardware.${hw.key}.name`))}
+                      onClick={() => openDetailModal('hardware', hw.key, String(t(`hardware.${hw.key}.name`)), hw.buyPrice, false)}
                     >
                       {t("hardware.detail")}
                     </Button>
-                    <Button 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      {t('cart.addToCart') || 'Add to Cart'}
-                    </Button>
+                    {!hw.rentPrice && (
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        {t('cart.addToCart')}
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* Cost Estimator CTA */}
-      <section className="bg-muted/50 py-16 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            {t("costEstimator.title")}
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-6">
-            {t("costEstimator.subtitle")}
-          </p>
-          <Button size="lg" onClick={() => navigate("/contact")}>
-            {t("costEstimator.cta")}
-          </Button>
         </div>
       </section>
 

@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
+import { useSimpleLanguage, type Language } from "@/contexts/SimpleLanguageContext";
 
 const languages = [
   { code: "en", name: "English", flag: "🇬🇧" },
@@ -19,7 +19,7 @@ const LanguageSwitcher = () => {
   const { language, setLanguage } = useSimpleLanguage();
 
   const handleLanguageChange = (code: string) => {
-    setLanguage(code as any);
+    setLanguage(code as Language);
   };
 
   const currentLang = languages.find((lang) => lang.code === language) || languages[0];
