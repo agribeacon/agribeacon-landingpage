@@ -34,48 +34,59 @@ const ContactSalesDialog = ({ open, onOpenChange }: ContactSalesDialogProps) => 
     needs: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Create email body
-    const emailBody = `
-New B2B Contact Sales Request:
+    setSending(true);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: "🏢 Yêu cầu Contact Sales (B2B)",
+          color: 0x38bdf8,
+          fields: [
+            { name: "🏢 Công ty", value: formData.companyName },
+            { name: "👤 Người liên hệ", value: formData.contactName },
+            { name: "✉️ Email", value: formData.email },
+            { name: "📞 Số điện thoại", value: formData.phone },
+            { name: "🌾 Quy mô farm", value: formData.farmSize ? `${formData.farmSize} acres` : "" },
+            { name: "📍 Địa điểm", value: formData.location },
+            { name: "🌱 Loại cây trồng", value: formData.cropTypes },
+            { name: "⚠️ Thách thức hiện tại", value: formData.currentChallenges },
+            { name: "🎯 Nhu cầu cụ thể", value: formData.needs },
+          ],
+        }),
+      });
+      if (!response.ok) throw new Error("Request failed");
 
-Company Name: ${formData.companyName}
-Contact Person: ${formData.contactName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Farm Size: ${formData.farmSize} acres
-Location: ${formData.location}
-Crop Types: ${formData.cropTypes}
-Current Challenges: ${formData.currentChallenges}
-Specific Needs: ${formData.needs}
-    `.trim();
+      toast({
+        title: t('contactSales.success.title'),
+        description: t('contactSales.success.description'),
+      });
 
-    // Create mailto link
-    const mailtoLink = `mailto:info@agribeacon.tech?subject=B2B Sales Inquiry - ${formData.companyName}&body=${encodeURIComponent(emailBody)}`;
-    
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    toast({
-      title: t('contactSales.success.title'),
-      description: t('contactSales.success.description'),
-    });
-    
-    // Reset form and close dialog
-    setFormData({
-      companyName: "",
-      contactName: "",
-      email: "",
-      phone: "",
-      farmSize: "",
-      location: "",
-      cropTypes: "",
-      currentChallenges: "",
-      needs: "",
-    });
-    onOpenChange(false);
+      setFormData({
+        companyName: "",
+        contactName: "",
+        email: "",
+        phone: "",
+        farmSize: "",
+        location: "",
+        cropTypes: "",
+        currentChallenges: "",
+        needs: "",
+      });
+      onOpenChange(false);
+    } catch {
+      toast({
+        title: "Gửi thất bại",
+        description: "Vui lòng thử lại sau.",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -213,6 +224,7 @@ Specific Needs: ${formData.needs}
           <Button
             type="submit"
             size="lg"
+            disabled={sending}
             className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow group"
           >
             {t('contactSales.submit')}

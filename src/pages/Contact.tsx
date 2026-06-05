@@ -20,13 +20,41 @@ const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: t('contact.form.success.title'),
-      description: t('contact.form.success.description'),
-    });
-    setFormData({ name: "", email: "", phone: "", farmSize: "", message: "" });
+    setSending(true);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: "📬 Liên hệ mới (trang Contact)",
+          fields: [
+            { name: "👤 Họ tên", value: formData.name },
+            { name: "✉️ Email", value: formData.email },
+            { name: "📞 Số điện thoại", value: formData.phone },
+            { name: "🌾 Quy mô farm", value: formData.farmSize },
+            { name: "📝 Nội dung", value: formData.message },
+          ],
+        }),
+      });
+      if (!response.ok) throw new Error("Request failed");
+      toast({
+        title: t('contact.form.success.title'),
+        description: t('contact.form.success.description'),
+      });
+      setFormData({ name: "", email: "", phone: "", farmSize: "", message: "" });
+    } catch {
+      toast({
+        title: "Gửi thất bại",
+        description: "Vui lòng thử lại sau.",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -124,6 +152,7 @@ const Contact = () => {
                   <Button
                     type="submit"
                     size="lg"
+                    disabled={sending}
                     className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow group"
                   >
                     {t('contact.form.submit')}
