@@ -45,7 +45,7 @@ const AIAssistant = () => {
           {/* Hero image + floating chat bubble */}
           <div className="relative">
             <div className="rounded-2xl overflow-hidden shadow-2xl border border-border">
-              <img src={aiHero} alt="AI Assistant Thần Nông" className="w-full" />
+              <img src={aiHero} alt="AI Assistant Tiểu Thần Nông" className="w-full" />
             </div>
             <div className="absolute -bottom-4 -left-4 bg-card rounded-xl shadow-lg border border-border p-4 max-w-[260px]">
               <div className="flex items-start gap-2">

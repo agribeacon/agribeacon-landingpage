@@ -9,7 +9,7 @@ import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import heroImg from "@/assets/digital-farm-map-hero.jpg";
 import baseImg from "@/assets/rtk-base-station.png";
 import roverImg from "@/assets/rtk-rover-handheld.png";
-import mapSample from "@/assets/digital-farm-map-sample.png";
+import mapSample from "@/assets/digital-farm-map-sample.jpg";
 
 const DigitalFarmMap = () => {
   const { t } = useSimpleLanguage();

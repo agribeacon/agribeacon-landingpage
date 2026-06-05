@@ -2,21 +2,27 @@ import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import logo from "@/assets/Logo.svg";
+import appStoreBadge from "@/assets/badge-appstore.svg";
+import googlePlayBadge from "@/assets/badge-googleplay.png";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 const APP_STORE_URL = "https://apps.apple.com/us/app/agribeacon-farm-management/id6754689259?l=vi";
 const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.farmmanagement.mobile";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
   const { t } = useSimpleLanguage();
+
+  const stores = [
+    { name: "App Store", url: APP_STORE_URL, badge: appStoreBadge, badgeClass: "h-11 w-auto" },
+    { name: "Google Play", url: GOOGLE_PLAY_URL, badge: googlePlayBadge, badgeClass: "h-16 w-auto -my-2.5" },
+  ];
 
   return (
     <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-8">
           {/* Brand */}
-          <div className="col-span-1 md:col-span-2">
+          <div>
             <Link to="/" className="flex items-center gap-2 mb-4 w-fit">
               <img src={logo} alt="AgriBeacon" className="h-10 w-auto" />
             </Link>
@@ -43,55 +49,35 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold mb-4">{t('footer.quickLinks')}</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/solutions" className="hover:text-primary transition-colors">{t('footer.solutions')}</Link></li>
-              <li><Link to="/technology" className="hover:text-primary transition-colors">{t('footer.technology')}</Link></li>
-              <li><Link to="/best-practices" className="hover:text-primary transition-colors">{t('nav.resources.bestPractices')}</Link></li>
-              <li><Link to="/about" className="hover:text-primary transition-colors">{t('nav.about.aboutUs')}</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">{t('nav.contact')}</Link></li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="font-semibold mb-4">{t('footer.resources')}</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.documentation')}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.support')}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.privacy')}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.terms')}</a></li>
-            </ul>
-          </div>
-
-          {/* Download App QR Codes */}
-          <div>
-            <h3 className="font-semibold mb-4">{t('footer.downloadApp')}</h3>
-            <div className="flex gap-6">
-              <a
-                href={APP_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col items-center gap-1 group"
-              >
-                <div className="bg-white p-1.5 rounded-md border border-border group-hover:border-primary transition-colors">
-                  <QRCodeSVG value={APP_STORE_URL} size={80} />
+          {/* Download App */}
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold mb-1 text-center">{t('footer.downloadApp')}</h3>
+            <p className="text-sm text-muted-foreground mb-5 text-center">{t('footer.scanToDownload')}</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-8">
+              {stores.map((store) => (
+                <div key={store.name} className="flex flex-row items-center gap-5">
+                  {/* Store badge */}
+                  <a
+                    href={store.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity hover:opacity-80"
+                    aria-label={store.name}
+                  >
+                    <img src={store.badge} alt={store.name} className={store.badgeClass} />
+                  </a>
+                  {/* QR code */}
+                  <a
+                    href={store.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white p-2.5 rounded-2xl border border-border shadow-sm hover:border-primary hover:shadow-md transition-all"
+                    aria-label={`${t('footer.downloadApp')} – ${store.name}`}
+                  >
+                    <QRCodeSVG value={store.url} size={120} />
+                  </a>
                 </div>
-                <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors">App Store</span>
-              </a>
-              <a
-                href={GOOGLE_PLAY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col items-center gap-1 group"
-              >
-                <div className="bg-white p-1.5 rounded-md border border-border group-hover:border-primary transition-colors">
-                  <QRCodeSVG value={GOOGLE_PLAY_URL} size={80} />
-                </div>
-                <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors">Google Play</span>
-              </a>
+              ))}
             </div>
           </div>
         </div>

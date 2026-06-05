@@ -61,7 +61,7 @@ const translations = {
     'home.products.robotBadge': 'New',
     'home.products.iotTitle': 'IoT Sensors',
     'home.products.iotDesc': 'Soil, water, and weather sensors for real-time decisions.',
-    'home.products.aiTitle': 'Than Nong AI Assistant',
+    'home.products.aiTitle': 'Tieu Than Nong AI Assistant',
     'home.products.aiDesc': 'AI-powered assistant for agronomy, diagnostics, and planning.',
     'home.products.aiBadge': 'AI Core',
     'home.products.learnMore': 'Learn more',
@@ -83,7 +83,7 @@ const translations = {
     'home.flow.step1': 'Collect',
     'home.flow.step1Sub': 'IoT / Drone / Voice',
     'home.flow.step2': 'AI Analysis',
-    'home.flow.step2Sub': 'Thần Nông Engine',
+    'home.flow.step2Sub': 'Tiểu Thần Nông Engine',
     'home.flow.step3': 'Action',
     'home.flow.step3Sub': 'Irrigate / Fertilize / Alert',
 
@@ -266,15 +266,15 @@ const translations = {
 
     'aiAssistant.badge': 'AI Core',
     'aiAssistant.heroTitle': 'AI Assistant ',
-    'aiAssistant.heroHighlight': 'Thần Nông',
+    'aiAssistant.heroHighlight': 'Tiểu Thần Nông',
     'aiAssistant.heroDesc': "The farmer's central touchpoint. Eliminates data entry barriers with a friendly voice/chat interface — AI understands natural language.",
     'aiAssistant.tryFree': 'Try for free',
-    'aiAssistant.aiName': 'Thần Nông AI',
+    'aiAssistant.aiName': 'Tiểu Thần Nông AI',
     'aiAssistant.aiMsg': '"Plot 3 irrigation complete. Recommend NPK fertilization on Apr 15."',
     'aiAssistant.featuresTitle': 'Key Features',
     'aiAssistant.featuresSub': 'Designed for farmers — simple, fast, accurate',
     'aiAssistant.feat1Title': 'Voice Input & Natural Language',
-    'aiAssistant.feat1Desc': 'Speak or text briefly in the field — "Plot 3 irrigation done today" — Thần Nông records it automatically.',
+    'aiAssistant.feat1Desc': 'Speak or text briefly in the field — "Plot 3 irrigation done today" — Tiểu Thần Nông records it automatically.',
     'aiAssistant.feat2Title': '3-line Summary Reports',
     'aiAssistant.feat2Desc': 'No need to read long reports. AI summarizes farm status into 3 lines every morning.',
     'aiAssistant.feat3Title': 'Proactive Alerts',
@@ -284,7 +284,7 @@ const translations = {
     'aiAssistant.wf1Step': 'Listen / Read',
     'aiAssistant.wf1Desc': 'Farmer speaks or types a message',
     'aiAssistant.wf2Step': 'AI Analysis',
-    'aiAssistant.wf2Desc': 'Thần Nông processes & understands context',
+    'aiAssistant.wf2Desc': 'Tiểu Thần Nông processes & understands context',
     'aiAssistant.wf3Step': 'Command',
     'aiAssistant.wf3Desc': 'Auto irrigate, log entry, alert',
 
@@ -392,11 +392,11 @@ const translations = {
     'farmOs.model3Desc': 'Simple interface, easy to use for small and medium farms.',
     
     // Technology menu
-    'nav.technology.platform': 'Farm Management OS',
+    'nav.technology.platform': 'SutaGrow Farm Management OS',
     'nav.technology.uav': 'Precision RTK UAV',
     'nav.technology.robot': 'Autonomous Robot',
     'nav.technology.iot': 'IoT Sensors',
-    'nav.technology.ai': 'Than Nong AI Assistant',
+    'nav.technology.ai': 'Tieu Than Nong AI Assistant',
     'nav.technology.connectivity': 'Connectivity',
     'nav.technology.all': 'All Products',
     
@@ -435,7 +435,7 @@ const translations = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
     'footer.builtFor': 'Built for sustainable agriculture.',
-    'footer.downloadApp': 'Download the app',
+    'footer.downloadApp': 'Download SutaGrow app on mobile',
     'footer.scanToDownload': 'Scan the QR code to download',
 
     // About Page
@@ -1370,7 +1370,7 @@ const translations = {
     'home.products.robotBadge': 'Mới',
     'home.products.iotTitle': 'Cảm biến IoT',
     'home.products.iotDesc': 'Cảm biến đất, nước và thời tiết cho quyết định thời gian thực.',
-    'home.products.aiTitle': 'Trợ lý AI Thần Nông',
+    'home.products.aiTitle': 'Trợ lý AI Tiểu Thần Nông',
     'home.products.aiDesc': 'Trợ lý AI hỗ trợ nông học, chẩn đoán và lập kế hoạch.',
     'home.products.aiBadge': 'AI Core',
     'home.products.learnMore': 'Tìm hiểu thêm',
@@ -1392,7 +1392,7 @@ const translations = {
     'home.flow.step1': 'Thu thập',
     'home.flow.step1Sub': 'IoT / Drone / Voice',
     'home.flow.step2': 'AI Phân tích',
-    'home.flow.step2Sub': 'Thần Nông Engine',
+    'home.flow.step2Sub': 'Tiểu Thần Nông Engine',
     'home.flow.step3': 'Hành động',
     'home.flow.step3Sub': 'Tưới / Bón / Cảnh báo',
 
@@ -1575,15 +1575,15 @@ const translations = {
 
     'aiAssistant.badge': 'AI Core',
     'aiAssistant.heroTitle': 'Trợ lý ',
-    'aiAssistant.heroHighlight': 'Thần Nông',
+    'aiAssistant.heroHighlight': 'Tiểu Thần Nông',
     'aiAssistant.heroDesc': 'Điểm chạm trung tâm của người nông dân. Giải quyết triệt để rào cản nhập liệu với giao diện voice/chat thân thiện — AI hiểu ngôn ngữ tự nhiên.',
     'aiAssistant.tryFree': 'Dùng thử miễn phí',
-    'aiAssistant.aiName': 'Thần Nông AI',
+    'aiAssistant.aiName': 'Tiểu Thần Nông AI',
     'aiAssistant.aiMsg': '"Lô 3 đã tưới xong. Đề xuất bón NPK ngày 15/04."',
     'aiAssistant.featuresTitle': 'Tính năng chính',
     'aiAssistant.featuresSub': 'Thiết kế cho người nông dân — đơn giản, nhanh, chính xác',
     'aiAssistant.feat1Title': 'Nhập giọng nói & Ngôn ngữ tự nhiên',
-    'aiAssistant.feat1Desc': 'Nói hoặc nhắn tin ngắn gọn ngay tại vườn — "Hôm nay tưới lô 3 xong rồi" — Thần Nông tự ghi nhận.',
+    'aiAssistant.feat1Desc': 'Nói hoặc nhắn tin ngắn gọn ngay tại vườn — "Hôm nay tưới lô 3 xong rồi" — Tiểu Thần Nông tự ghi nhận.',
     'aiAssistant.feat2Title': 'Báo cáo tóm tắt 3 dòng',
     'aiAssistant.feat2Desc': 'Không cần đọc report dài. AI tổng hợp tình trạng trang trại thành 3 dòng mỗi sáng.',
     'aiAssistant.feat3Title': 'Cảnh báo chủ động',
@@ -1593,7 +1593,7 @@ const translations = {
     'aiAssistant.wf1Step': 'Nghe / Đọc',
     'aiAssistant.wf1Desc': 'Nông dân nói hoặc gõ tin nhắn',
     'aiAssistant.wf2Step': 'AI Phân tích',
-    'aiAssistant.wf2Desc': 'Thần Nông xử lý & hiểu ngữ cảnh',
+    'aiAssistant.wf2Desc': 'Tiểu Thần Nông xử lý & hiểu ngữ cảnh',
     'aiAssistant.wf3Step': 'Ra lệnh',
     'aiAssistant.wf3Desc': 'Tự động tưới, ghi nhật ký, cảnh báo',
 
@@ -1701,11 +1701,11 @@ const translations = {
     'farmOs.model3Desc': 'Giao diện đơn giản, dễ sử dụng cho nông trại vừa và nhỏ.',
     
     // Technology menu
-    'nav.technology.platform': 'Hệ điều hành quản lý nông trại',
+    'nav.technology.platform': 'Hệ điều hành quản lý nông trại SutaGrow',
     'nav.technology.uav': 'UAV chính xác RTK',
     'nav.technology.robot': 'Robot tự hành',
     'nav.technology.iot': 'Cảm biến IoT',
-    'nav.technology.ai': 'Trợ lý AI Thần Nông',
+    'nav.technology.ai': 'Trợ lý AI Tiểu Thần Nông',
     'nav.technology.connectivity': 'Kết nối',
     'nav.technology.all': 'Tất cả sản phẩm',
     
@@ -1744,7 +1744,7 @@ const translations = {
     'footer.privacy': 'Chính sách bảo mật',
     'footer.terms': 'Điều khoản dịch vụ',
     'footer.builtFor': 'Xây dựng cho nông nghiệp bền vững.',
-    'footer.downloadApp': 'Tải ứng dụng',
+    'footer.downloadApp': 'Tải ứng dụng SutaGrow trên điện thoại',
     'footer.scanToDownload': 'Quét mã QR để tải về',
 
     // About Page
@@ -2679,7 +2679,7 @@ const translations = {
     'home.products.robotBadge': '新',
     'home.products.iotTitle': 'IoTセンサー',
     'home.products.iotDesc': 'リアルタイム判断のための土壌、水、気象センサー。',
-    'home.products.aiTitle': 'Thần Nông AIアシスタント',
+    'home.products.aiTitle': 'Tiểu Thần Nông AIアシスタント',
     'home.products.aiDesc': '農学、診断、計画のためのAI搭載アシスタント。',
     'home.products.aiBadge': 'AI Core',
     'home.products.learnMore': '詳細を見る',
@@ -2701,7 +2701,7 @@ const translations = {
     'home.flow.step1': '収集',
     'home.flow.step1Sub': 'IoT / ドローン / 音声',
     'home.flow.step2': 'AI分析',
-    'home.flow.step2Sub': 'Thần Nông エンジン',
+    'home.flow.step2Sub': 'Tiểu Thần Nông エンジン',
     'home.flow.step3': 'アクション',
     'home.flow.step3Sub': '灌漑 / 施肥 / アラート',
 
@@ -2884,15 +2884,15 @@ const translations = {
 
     'aiAssistant.badge': 'AIコア',
     'aiAssistant.heroTitle': 'AIアシスタント ',
-    'aiAssistant.heroHighlight': 'Thần Nông',
+    'aiAssistant.heroHighlight': 'Tiểu Thần Nông',
     'aiAssistant.heroDesc': '農家の中心的接点。音声/チャットインターフェースでデータ入力の障壁を排除 — AIが自然言語を理解。',
     'aiAssistant.tryFree': '無料で試す',
-    'aiAssistant.aiName': 'Thần Nông AI',
+    'aiAssistant.aiName': 'Tiểu Thần Nông AI',
     'aiAssistant.aiMsg': '"区画3の灌漑完了。4月15日にNPK施肥を推奨。"',
     'aiAssistant.featuresTitle': '主な機能',
     'aiAssistant.featuresSub': '農家向け設計 — シンプル、高速、正確',
     'aiAssistant.feat1Title': '音声入力 & 自然言語',
-    'aiAssistant.feat1Desc': '畑で簡単に話すか入力 — "今日区画3の灌漑完了" — Thần Nôngが自動記録。',
+    'aiAssistant.feat1Desc': '畑で簡単に話すか入力 — "今日区画3の灌漑完了" — Tiểu Thần Nôngが自動記録。',
     'aiAssistant.feat2Title': '3行要約レポート',
     'aiAssistant.feat2Desc': '長いレポート不要。AIが毎朝農場状況を3行に要約。',
     'aiAssistant.feat3Title': '先手アラート',
@@ -2902,7 +2902,7 @@ const translations = {
     'aiAssistant.wf1Step': '聞く / 読む',
     'aiAssistant.wf1Desc': '農家が話すかメッセージ入力',
     'aiAssistant.wf2Step': 'AI分析',
-    'aiAssistant.wf2Desc': 'Thần Nôngが処理・文脈理解',
+    'aiAssistant.wf2Desc': 'Tiểu Thần Nôngが処理・文脈理解',
     'aiAssistant.wf3Step': '指令',
     'aiAssistant.wf3Desc': '自動灌漑、日誌記録、アラート',
 
@@ -3010,11 +3010,11 @@ const translations = {
     'farmOs.model3Desc': '中小農場向けのシンプルで使いやすいインターフェース。',
     
     // Technology menu
-    'nav.technology.platform': '農場管理OS',
+    'nav.technology.platform': 'SutaGrow 農場管理OS',
     'nav.technology.uav': '精密RTK UAV',
     'nav.technology.robot': '自律ロボット',
     'nav.technology.iot': 'IoTセンサー',
-    'nav.technology.ai': 'Thần農AIアシスタント',
+    'nav.technology.ai': 'Tiểu Thần農AIアシスタント',
     'nav.technology.connectivity': '接続性',
     'nav.technology.all': 'すべての製品',
     
@@ -3053,7 +3053,7 @@ const translations = {
     'footer.privacy': 'プライバシーポリシー',
     'footer.terms': '利用規約',
     'footer.builtFor': '持続可能な農業のために構築。',
-    'footer.downloadApp': 'アプリをダウンロード',
+    'footer.downloadApp': 'SutaGrowアプリをスマホでダウンロード',
     'footer.scanToDownload': 'QRコードをスキャンしてダウンロード',
 
     // About Page

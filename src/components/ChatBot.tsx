@@ -15,7 +15,7 @@ const starterMessages: ChatMessage[] = [
     id: "welcome",
     role: "assistant",
     content:
-      "Xin chào, mình là Thần Nông AI của AgriBeacon. Bạn có thể hỏi về canh tác, cảm biến IoT, UAV, robot, bản đồ nông trại, dự báo năng suất hoặc giải pháp AgriBeacon.",
+      "Xin chào, mình là Tiểu Thần Nông AI của AgriBeacon. Bạn có thể hỏi về canh tác, cảm biến IoT, UAV, robot, bản đồ nông trại, dự báo năng suất hoặc giải pháp AgriBeacon.",
   },
 ];
 
@@ -182,7 +182,7 @@ const ChatBot = () => {
                 <Sprout className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <h2 className="truncate text-sm font-semibold text-foreground">Thần Nông AI</h2>
+                <h2 className="truncate text-sm font-semibold text-foreground">Tiểu Thần Nông AI</h2>
                 <p className="truncate text-xs text-muted-foreground">Trợ lý AgriBeacon</p>
               </div>
             </div>
@@ -253,7 +253,7 @@ const ChatBot = () => {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Hỏi Thần Nông AI..."
+                placeholder="Hỏi Tiểu Thần Nông AI..."
                 rows={1}
                 className="max-h-28 min-h-11 resize-none rounded-xl"
                 disabled={loading}
@@ -273,7 +273,7 @@ const ChatBot = () => {
         aria-label={open ? "Đóng chat" : "Mở chat"}
       >
         {open ? <X className="mr-2 h-5 w-5" /> : <MessageCircle className="mr-2 h-5 w-5" />}
-        Thần Nông AI
+        Tiểu Thần Nông AI
       </Button>
     </div>
   );
