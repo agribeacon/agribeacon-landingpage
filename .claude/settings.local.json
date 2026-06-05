@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/drone-card.png\" \"D:/Desktop/saas/AGRIBEACON/src/assets/drone-card.png\")",
+      "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/iot-soil-sensor.png\" \"D:/Desktop/saas/AGRIBEACON/src/assets/iot-soil-sensor.png\")",
+      "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/ai-analytics-card.jpg\" \"D:/Desktop/saas/AGRIBEACON/src/assets/ai-analytics-card.jpg\")"
+    ]
+  }
+}

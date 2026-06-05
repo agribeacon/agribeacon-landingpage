@@ -1,0 +1,165 @@
+import fs from "node:fs";
+import path from "node:path";
+
+const ROOT = process.cwd();
+const OUTPUT = path.join(ROOT, "api/generated/agribeacon-knowledge.ts");
+const SOURCES = [
+  "src/pages",
+  "src/components/ContactSalesDialog.tsx",
+  "src/components/Footer.tsx",
+  "src/components/Navbar.tsx",
+  "src/components/PricingCalculator.tsx",
+  "src/components/ProductDetailModal.tsx",
+  "src/contexts/SimpleLanguageContext.tsx",
+];
+
+const EXCLUDED_DIRS = new Set(["ui"]);
+const MAX_CHUNK_LENGTH = 1800;
+
+const walk = (entry) => {
+  const absolute = path.join(ROOT, entry);
+  if (!fs.existsSync(absolute)) return [];
+  const stat = fs.statSync(absolute);
+  if (stat.isFile()) return [absolute];
+
+  return fs.readdirSync(absolute).flatMap((name) => {
+    if (EXCLUDED_DIRS.has(name)) return [];
+    return walk(path.relative(ROOT, path.join(absolute, name)));
+  });
+};
+
+const decodeEscapes = (value) =>
+  value
+    .replace(/\\n/g, " ")
+    .replace(/\\'/g, "'")
+    .replace(/\\"/g, '"')
+    .replace(/\\`/g, "`");
+
+const normalizeLine = (line) =>
+  line
+    .replace(/className=\{?"[^"]*"\}?/g, " ")
+    .replace(/className=\{?`[^`]*`\}?/g, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[{}()[\],;]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const extractQuotedStrings = (line) => {
+  const results = [];
+  const pattern = /(['"`])((?:\\.|(?!\1).)*)\1/g;
+  let match;
+
+  while ((match = pattern.exec(line))) {
+    const value = decodeEscapes(match[2]).trim();
+    if (value.length < 2) continue;
+    if (/^[@./#]/.test(value)) continue;
+    if (/^(sm|md|lg|xl|2xl|default|outline|ghost|secondary|destructive)$/.test(value)) continue;
+    if (/^[a-z0-9_/-]+\.(tsx?|jsx?|css|png|jpe?g|svg|webp)$/i.test(value)) continue;
+    if (/^[a-z0-9_/-]+$/i.test(value) && value.length < 4) continue;
+    results.push(value);
+  }
+
+  return results;
+};
+
+const extractTranslationLines = (content) => {
+  const lines = [];
+
+  for (const raw of content.split(/\r?\n/)) {
+    const trimmed = raw.trim();
+    if (!trimmed || trimmed.startsWith("//")) continue;
+
+    const keyMatch = trimmed.match(/^['"]([^'"]+)['"]\s*:/);
+    const qaMatch = trimmed.match(/(?:^|[,{}]\s*)(q|a)\s*:/);
+    const strings = extractQuotedStrings(trimmed);
+    if (strings.length === 0) continue;
+
+    if (keyMatch) {
+      const key = keyMatch[1];
+      const values = strings.filter((item) => item !== key);
+      if (values.length > 0) lines.push(`${key}: ${values.join(" | ")}`);
+      continue;
+    }
+
+    if (qaMatch) {
+      lines.push(`faq.${qaMatch[1]}: ${strings.join(" | ")}`);
+    }
+  }
+
+  return lines;
+};
+
+const extractSourceLines = (content) => {
+  const lines = [];
+  const usefulLine = /(price|pricing|plan|addon|hardware|rent|buy|warranty|faq|feature|description|title|name|cta|contact|cart|tax|vat|sensor|robot|drone|uav|iot|rtk|farm|map|trace|yield|resource|policy|terms|privacy|bảo hành|giá|thuê|mua|cảm biến|chính sách|t\()/i;
+
+  for (const raw of content.split(/\r?\n/)) {
+    const trimmed = raw.trim();
+    if (!trimmed || trimmed.startsWith("import ") || trimmed.startsWith("export default")) continue;
+    if (trimmed.includes("className=")) continue;
+    if (!usefulLine.test(trimmed)) continue;
+
+    const quoted = extractQuotedStrings(trimmed);
+    const cleaned = normalizeLine(trimmed);
+    const lineParts = [...quoted, cleaned].filter(Boolean);
+    const line = [...new Set(lineParts)].join(" | ");
+
+    if (line.length > 6) lines.push(line);
+  }
+
+  return lines;
+};
+
+const makeTitle = (relativePath) =>
+  relativePath
+    .replace(/^src\//, "")
+    .replace(/\.(tsx?|jsx?)$/, "")
+    .replace(/[/-]/g, " ");
+
+const chunkLines = (relativePath, lines) => {
+  const chunks = [];
+  let current = [];
+  let currentLength = 0;
+
+  for (const line of lines) {
+    if (currentLength + line.length > MAX_CHUNK_LENGTH && current.length > 0) {
+      chunks.push(current.join("\n"));
+      current = [];
+      currentLength = 0;
+    }
+
+    current.push(line);
+    currentLength += line.length + 1;
+  }
+
+  if (current.length > 0) chunks.push(current.join("\n"));
+
+  return chunks.map((text, index) => ({
+    id: `${relativePath.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase()}-${index + 1}`,
+    source: relativePath,
+    title: `${makeTitle(relativePath)}${chunks.length > 1 ? ` #${index + 1}` : ""}`,
+    text,
+  }));
+};
+
+const files = [...new Set(SOURCES.flatMap(walk))]
+  .filter((file) => /\.(tsx?|jsx?)$/.test(file))
+  .sort();
+
+const chunks = files.flatMap((file) => {
+  const relativePath = path.relative(ROOT, file);
+  const content = fs.readFileSync(file, "utf8");
+  const lines = relativePath.endsWith("SimpleLanguageContext.tsx")
+    ? extractTranslationLines(content)
+    : extractSourceLines(content);
+
+  return chunkLines(relativePath, [...new Set(lines)]);
+});
+
+fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
+fs.writeFileSync(
+  OUTPUT,
+  `// Auto-generated by scripts/build-chatbot-knowledge.mjs. Do not edit by hand.\n\nexport type KnowledgeChunk = {\n  id: string;\n  source: string;\n  title: string;\n  text: string;\n};\n\nexport const AGRIBEACON_KNOWLEDGE = ${JSON.stringify(chunks, null, 2)} as const satisfies readonly KnowledgeChunk[];\n`,
+);
+
+console.log(`Generated ${chunks.length} knowledge chunks at ${path.relative(ROOT, OUTPUT)}`);
