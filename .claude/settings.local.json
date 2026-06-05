@@ -4,7 +4,11 @@
       "Bash(npx tsc *)",
       "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/drone-card.png\" \"D:/Desktop/saas/AGRIBEACON/src/assets/drone-card.png\")",
       "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/iot-soil-sensor.png\" \"D:/Desktop/saas/AGRIBEACON/src/assets/iot-soil-sensor.png\")",
-      "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/ai-analytics-card.jpg\" \"D:/Desktop/saas/AGRIBEACON/src/assets/ai-analytics-card.jpg\")"
+      "Bash(cp \"D:/Desktop/saas/agri-beacon-solutions-revamp/src/assets/ai-analytics-card.jpg\" \"D:/Desktop/saas/AGRIBEACON/src/assets/ai-analytics-card.jpg\")",
+      "Bash(perl -i -pe 's/Buy Tree/SutaMarket/g' src/components/PricingCalculator.tsx src/contexts/SimpleLanguageContext.tsx)",
+      "Bash(ls -la bun.lockb package-lock.json)",
+      "Bash(ls node_modules/.bin/vite)",
+      "Bash(npm install *)"
     ]
   }
 }

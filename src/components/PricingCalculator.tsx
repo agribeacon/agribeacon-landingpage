@@ -26,7 +26,7 @@ const addonModules = [
 
 const addonNameKeys: Record<string, string> = {
   "ai-analytics": "AI Analytics",
-  "buy-tree": "Buy Tree",
+  "buy-tree": "SutaMarket",
   "vector": "vector",
 };
 

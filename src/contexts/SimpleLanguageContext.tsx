@@ -49,7 +49,7 @@ const translations = {
     'home.products.title': 'Our Products',
     'home.products.subtitle': 'From integrated farm management platform to precision hardware — everything you need in one ecosystem.',
     'home.products.farmOsBadge': 'SaaS',
-    'home.products.farmOsTitle': 'Farm Management OS',
+    'home.products.farmOsTitle': 'SutaGrow Farm Management OS',
     'home.products.farmOsDesc': 'The integrated B2B operating system to plan, monitor, and operate your entire farm in one place.',
     'home.products.coreTitle': 'Core Technology',
     'home.products.coreSubtitle': 'Precision hardware designed for perennial plant farms.',
@@ -364,7 +364,7 @@ const translations = {
     'uav.flightA': 'Max flight time 72 min. Wind resistance up to Beaufort Force 5 (38 km/h).',
 
     'farmOs.badge': 'SaaS Multi-Platform',
-    'farmOs.heroTitle': 'Farm Management ',
+    'farmOs.heroTitle': 'SutaGrow Farm Management ',
     'farmOs.heroHighlight': 'OS',
     'farmOs.heroDesc': 'Take full control of farm operations in the palm of your hand. Digitize daily processes, manage workflows, and monitor multi-farm operations in real-time across all devices (Web, iOS, Android).',
     'farmOs.modulesTitle': 'Core Modules',
@@ -435,7 +435,9 @@ const translations = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
     'footer.builtFor': 'Built for sustainable agriculture.',
-    
+    'footer.downloadApp': 'Download the app',
+    'footer.scanToDownload': 'Scan the QR code to download',
+
     // About Page
     'about.title': 'About AgriBeacon',
     'about.subtitle': 'Guiding the future of agriculture with intelligent technology',
@@ -990,9 +992,9 @@ const translations = {
     'addons.aiAssistant.name': 'AI Farm Assistant',
     'addons.aiAssistant.priceLabel': 'From 130,000₫',
     'addons.aiAssistant.description': '130,000₫/50 queries — buy additional packs anytime',
-    'addons.buy-tree.name': 'Buy Tree',
+    'addons.buy-tree.name': 'SutaMarket',
     'addons.buy-tree.shortDesc': 'Revenue-share model — online B2C tree marketplace, order & shipping management',
-    'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.name': 'SutaMarket',
     'addons.buyTree.priceLabel': 'From 5%',
     'addons.buyTree.description': 'Revenue-share model — online B2C tree marketplace, order & shipping management',
     'addons.vector.name': 'Farm Vectorization Service',
@@ -1141,7 +1143,7 @@ const translations = {
     'addons.aiAssistant.detail.featuresTitle': 'Key Features',
 
     'addons.buyTree.detail.tagline': 'Online B2C marketplace for your trees — zero upfront cost',
-    'addons.buyTree.detail.overview': 'Buy Tree is an integrated online marketplace that connects your farm directly to consumers. List your trees, manage orders, and handle shipping — all from the AgriBeacon platform. Pay only a 5% revenue share on successful sales, with no monthly fees or upfront costs.',
+    'addons.buyTree.detail.overview': 'SutaMarket is an integrated online marketplace that connects your farm directly to consumers. List your trees, manage orders, and handle shipping — all from the AgriBeacon platform. Pay only a 5% revenue share on successful sales, with no monthly fees or upfront costs.',
     'addons.buyTree.detail.features': ['Zero upfront cost — revenue share only', 'Integrated product listing & catalog management', 'Built-in order management system', 'Shipping & logistics tracking', 'Customer reviews & ratings', 'Payment processing included', 'SEO-optimized product pages', 'Analytics dashboard for sales performance'],
     'addons.buyTree.detail.featuresTitle': 'Key Features',
 
@@ -1260,7 +1262,7 @@ const translations = {
       },
       {
         q: 'How do add-on modules work?',
-        a: 'Add-on modules can be toggled on/off for any SaaS plan. AI Analytics costs 120,000₫/month, AI Farm Assistant charges per 130,000₫/50 queries pack, Buy Tree charges a % of actual revenue, and Farm Vectorization charges per m².',
+        a: 'Add-on modules can be toggled on/off for any SaaS plan. AI Analytics costs 120,000₫/month, AI Farm Assistant charges per 130,000₫/50 queries pack, SutaMarket charges a % of actual revenue, and Farm Vectorization charges per m².',
       },
       {
         q: 'Does the hardware come with warranty?',
@@ -1356,7 +1358,7 @@ const translations = {
     'home.products.title': 'Sản phẩm của chúng tôi',
     'home.products.subtitle': 'Từ nền tảng quản lý nông trại tích hợp đến phần cứng chính xác — mọi thứ bạn cần trong một hệ sinh thái.',
     'home.products.farmOsBadge': 'SaaS',
-    'home.products.farmOsTitle': 'Hệ điều hành quản lý nông trại',
+    'home.products.farmOsTitle': 'Hệ điều hành quản lý nông trại SutaGrow',
     'home.products.farmOsDesc': 'Hệ điều hành B2B tích hợp giúp bạn lập kế hoạch, giám sát và vận hành toàn bộ nông trại tại một nơi duy nhất.',
     'home.products.coreTitle': 'Công nghệ cốt lõi',
     'home.products.coreSubtitle': 'Phần cứng chính xác thiết kế cho các trang trại cây lâu năm.',
@@ -1672,7 +1674,7 @@ const translations = {
 
     'farmOs.badge': 'SaaS Đa Nền Tảng',
     'farmOs.heroTitle': 'Hệ Điều Hành ',
-    'farmOs.heroHighlight': 'Quản Lý Nông Trại',
+    'farmOs.heroHighlight': 'Quản Lý Nông Trại SutaGrow',
     'farmOs.heroDesc': 'Kiểm soát toàn diện hoạt động nông trại ngay trong lòng bàn tay. Số hóa quy trình hàng ngày, quản lý công việc và theo dõi đa nông trại theo thời gian thực trên mọi thiết bị (Web, iOS, Android).',
     'farmOs.modulesTitle': 'Các Phân Hệ Cốt Lõi',
     'farmOs.modulesSub': 'Tất cả trong một nền tảng duy nhất',
@@ -1742,7 +1744,9 @@ const translations = {
     'footer.privacy': 'Chính sách bảo mật',
     'footer.terms': 'Điều khoản dịch vụ',
     'footer.builtFor': 'Xây dựng cho nông nghiệp bền vững.',
-    
+    'footer.downloadApp': 'Tải ứng dụng',
+    'footer.scanToDownload': 'Quét mã QR để tải về',
+
     // About Page
     'about.title': 'Về AgriBeacon',
     'about.subtitle': 'Dẫn dắt tương lai nông nghiệp với công nghệ thông minh',
@@ -2297,9 +2301,9 @@ const translations = {
     'addons.aiAssistant.name': 'Trợ lý AI Tiểu Thần Nông',
     'addons.aiAssistant.priceLabel': 'Chỉ từ 130.000₫',
     'addons.aiAssistant.description': '130.000₫/50 truy vấn — mua thêm không giới hạn gói mua',
-    'addons.buy-tree.name': 'Buy Tree',
+    'addons.buy-tree.name': 'SutaMarket',
     'addons.buy-tree.shortDesc': 'Chia sẻ theo doanh thu thực tế — nền tảng bán cây trực tuyến B2C, quản lý đơn hàng & vận chuyển',
-    'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.name': 'SutaMarket',
     'addons.buyTree.priceLabel': 'Chỉ từ 5%',
     'addons.buyTree.description': 'Chia sẻ theo doanh thu thực tế — nền tảng bán cây trực tuyến B2C, quản lý đơn hàng & vận chuyển',
     'addons.vector.name': 'Dịch vụ Vector hóa nông trại',
@@ -2448,7 +2452,7 @@ const translations = {
     'addons.aiAssistant.detail.featuresTitle': 'Tính năng chính',
 
     'addons.buyTree.detail.tagline': 'Sàn thương mại B2C cho cây — không chi phí ban đầu',
-    'addons.buyTree.detail.overview': 'Buy Tree là sàn thương mại trực tuyến tích hợp, kết nối nông trại trực tiếp với người tiêu dùng. Đăng bán cây, quản lý đơn hàng, và xử lý vận chuyển — tất cả từ nền tảng AgriBeacon. Chỉ trả 5% hoa hồng trên doanh thu thực tế.',
+    'addons.buyTree.detail.overview': 'SutaMarket là sàn thương mại trực tuyến tích hợp, kết nối nông trại trực tiếp với người tiêu dùng. Đăng bán cây, quản lý đơn hàng, và xử lý vận chuyển — tất cả từ nền tảng AgriBeacon. Chỉ trả 5% hoa hồng trên doanh thu thực tế.',
     'addons.buyTree.detail.features': ['Không chi phí ban đầu — chỉ chia sẻ doanh thu', 'Quản lý danh mục & sản phẩm tích hợp', 'Hệ thống quản lý đơn hàng tích hợp', 'Theo dõi vận chuyển & logistics', 'Đánh giá & xếp hạng khách hàng', 'Xử lý thanh toán tích hợp', 'Trang sản phẩm tối ưu SEO', 'Dashboard phân tích doanh số'],
     'addons.buyTree.detail.featuresTitle': 'Tính năng chính',
 
@@ -2567,7 +2571,7 @@ const translations = {
       },
       {
         q: 'Module bổ sung (Add-on) hoạt động như thế nào?',
-        a: 'Các module bổ sung có thể được bật/tắt linh hoạt cho bất kỳ gói SaaS nào. AI Analytics tính phí 120.000₫/tháng, Trợ lý AI Tiểu Thần Nông tính theo gói 130.000₫/50 truy vấn, Buy Tree tính % doanh thu thực tế, và Dịch vụ Vector hóa tính theo diện tích m².',
+        a: 'Các module bổ sung có thể được bật/tắt linh hoạt cho bất kỳ gói SaaS nào. AI Analytics tính phí 120.000₫/tháng, Trợ lý AI Tiểu Thần Nông tính theo gói 130.000₫/50 truy vấn, SutaMarket tính % doanh thu thực tế, và Dịch vụ Vector hóa tính theo diện tích m².',
       },
       {
         q: 'Phần cứng có được bảo hành không?',
@@ -2663,7 +2667,7 @@ const translations = {
     'home.products.title': '私たちの製品',
     'home.products.subtitle': '統合農場管理プラットフォームから精密ハードウェアまで — 必要なすべてを一つのエコシステムに。',
     'home.products.farmOsBadge': 'SaaS',
-    'home.products.farmOsTitle': '農場管理OS',
+    'home.products.farmOsTitle': 'SutaGrow 農場管理OS',
     'home.products.farmOsDesc': '農場全体の計画、監視、運用を一元化する統合B2B運用システム。',
     'home.products.coreTitle': 'コア技術',
     'home.products.coreSubtitle': '多年生植物農場のために設計された精密ハードウェア。',
@@ -2978,7 +2982,7 @@ const translations = {
     'uav.flightA': '最大飛行時間72分。ビューフォートスケール5（38km/h）までの耐風性。',
 
     'farmOs.badge': 'SaaS マルチプラットフォーム',
-    'farmOs.heroTitle': '農場管理 ',
+    'farmOs.heroTitle': 'SutaGrow 農場管理 ',
     'farmOs.heroHighlight': 'OS',
     'farmOs.heroDesc': 'すべてのデバイス（Web、iOS、Android）でリアルタイムに農場運営を完全管理。日次業務のデジタル化、ワークフロー管理、多農場の一元監視を実現します。',
     'farmOs.modulesTitle': 'コアモジュール',
@@ -3049,7 +3053,9 @@ const translations = {
     'footer.privacy': 'プライバシーポリシー',
     'footer.terms': '利用規約',
     'footer.builtFor': '持続可能な農業のために構築。',
-    
+    'footer.downloadApp': 'アプリをダウンロード',
+    'footer.scanToDownload': 'QRコードをスキャンしてダウンロード',
+
     // About Page
     'about.title': 'AgriBeaconについて',
     'about.subtitle': 'インテリジェント技術で農業の未来を導く',
@@ -3524,9 +3530,9 @@ const translations = {
     'addons.aiAssistant.name': 'AI農業アシスタント',
     'addons.aiAssistant.priceLabel': '130,000₫〜',
     'addons.aiAssistant.description': '130,000₫/50クエリ — 追加パック購入可能',
-    'addons.buy-tree.name': 'Buy Tree',
+    'addons.buy-tree.name': 'SutaMarket',
     'addons.buy-tree.shortDesc': '売上連動型 — オンラインB2C樹木マーケットプレイス、注文＆配送管理',
-    'addons.buyTree.name': 'Buy Tree',
+    'addons.buyTree.name': 'SutaMarket',
     'addons.buyTree.priceLabel': '5%〜',
     'addons.buyTree.description': '売上連動型 — オンラインB2C樹木マーケットプレイス、注文＆配送管理',
     'addons.vector.name': '農場ベクトル化サービス',
@@ -3675,7 +3681,7 @@ const translations = {
     'addons.aiAssistant.detail.featuresTitle': '主な特徴',
 
     'addons.buyTree.detail.tagline': '樹木のオンラインB2Cマーケットプレイス — 初期費用ゼロ',
-    'addons.buyTree.detail.overview': 'Buy Treeは、農場と消費者を直接つなぐ統合オンラインマーケットプレイスです。樹木を出品し、注文を管理し、出荷を処理 — すべてAgriBeaconプラットフォームから。月額料金や初期費用なし、成功した販売に対して5%のレベニューシェアのみ。',
+    'addons.buyTree.detail.overview': 'SutaMarketは、農場と消費者を直接つなぐ統合オンラインマーケットプレイスです。樹木を出品し、注文を管理し、出荷を処理 — すべてAgriBeaconプラットフォームから。月額料金や初期費用なし、成功した販売に対して5%のレベニューシェアのみ。',
     'addons.buyTree.detail.features': ['初期費用ゼロ — レベニューシェアのみ', '統合された製品リスト＆カタログ管理', '内蔵注文管理システム', '配送＆物流追跡', '顧客レビュー＆評価', '決済処理込み', 'SEO最適化された製品ページ', '販売実績分析ダッシュボード'],
     'addons.buyTree.detail.featuresTitle': '主な特徴',
 
@@ -3794,7 +3800,7 @@ const translations = {
       },
       {
         q: 'アドオンモジュールはどのように機能しますか？',
-        a: 'アドオンモジュールはどのSaaSプランでもオン/オフが可能です。AI Analyticsは月額120,000₫、AI農業アシスタントは130,000₫/50クエリパック、Buy Treeは実際の売上の%、農場ベクトル化はm²単位で課金されます。',
+        a: 'アドオンモジュールはどのSaaSプランでもオン/オフが可能です。AI Analyticsは月額120,000₫、AI農業アシスタントは130,000₫/50クエリパック、SutaMarketは実際の売上の%、農場ベクトル化はm²単位で課金されます。',
       },
       {
         q: 'ハードウェアには保証がありますか？',

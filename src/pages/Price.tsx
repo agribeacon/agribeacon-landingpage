@@ -583,18 +583,13 @@ const Price = () => {
             <Button variant="secondary" size="lg">
               {t("cta.freeTrial")}
             </Button>
-            <Button variant="outline" size="lg" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="outline" size="lg" className="bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
               {t("cta.contactConsult")}
             </Button>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-border py-8 px-4">
-        <div className="container mx-auto text-center text-sm text-muted-foreground">
-          {t("footer.copyright")}
-        </div>
-      </footer>
     </div>
   );
 };
