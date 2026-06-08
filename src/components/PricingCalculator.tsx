@@ -6,9 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
+import { useCart } from "@/contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("vi-VN").format(price);
+
+// Calculator addon id (kebab) -> cart/translation key (camelCase)
+const addonKeyMap: Record<string, string> = {
+  "ai-analytics": "aiAnalytics",
+  "ai-assistant": "aiAssistant",
+  "buy-tree": "buyTree",
+  "vector": "vector",
+};
 
 const saasPlans = [
   { id: "starter", price: 0, farms: 1 },
@@ -50,6 +60,8 @@ type HardwareMode = "buy" | "rent";
 
 const PricingCalculator = () => {
   const { t } = useSimpleLanguage();
+  const { addItem } = useCart();
+  const navigate = useNavigate();
   const [billing, setBilling] = useState<"sixMonths" | "oneYear" | "twoYears">("sixMonths");
   const [selectedPlan, setSelectedPlan] = useState("professional");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
@@ -89,6 +101,82 @@ const PricingCalculator = () => {
     setHardwareMode({});
     setBilling("sixMonths");
     setAiQueryPacks(0);
+  };
+
+  // Push the current selection into the cart, then go to checkout.
+  // Enterprise has no self-serve price, so route to the sales form instead.
+  const handleStartTrial = () => {
+    const plan = saasPlans.find((p) => p.id === selectedPlan);
+    if (plan?.id === "enterprise") {
+      navigate("/contact-sales");
+      return;
+    }
+
+    if (plan && plan.price > 0) {
+      addItem({
+        id: `plan-${plan.id}-${billing}`,
+        type: "plan",
+        name: t(`plans.${plan.id}.name`),
+        price: Math.round(plan.price * billingMultiplier),
+        billing,
+        metadata: { key: plan.id },
+      });
+    }
+
+    selectedAddons.forEach((id) => {
+      if (id === "ai-assistant") return; // handled via the query-pack slider below
+      const addon = addonModules.find((a) => a.id === id);
+      if (!addon) return;
+      const key = addonKeyMap[id];
+      addItem({
+        id: `addon-${key}-${billing}`,
+        type: "addon",
+        name: t(`addons.${key}.name`),
+        price: Math.round(addon.price * billingMultiplier),
+        billing,
+        metadata: { key },
+      });
+    });
+
+    if (aiQueryPacks > 0) {
+      addItem({
+        id: `addon-aiAssistant-${billing}`,
+        type: "addon",
+        name: t("addons.aiAssistant.name"),
+        price: Math.round(130000 * billingMultiplier),
+        billing,
+        quantity: aiQueryPacks,
+        metadata: { key: "aiAssistant" },
+      });
+    }
+
+    hardwareItems.forEach((hw) => {
+      const qty = hardwareQty[hw.id] || 0;
+      if (qty <= 0) return;
+      const key = hwNameMap[hw.id];
+      if (getMode(hw.id) === "rent" && hw.rentPrice > 0) {
+        addItem({
+          id: `hardware-${key}-rent-${billing}`,
+          type: "hardware",
+          name: t(`hardware.${key}.name`),
+          price: Math.round(hw.rentPrice * billingMultiplier),
+          billing,
+          quantity: qty,
+          metadata: { key, isRental: true },
+        });
+      } else {
+        addItem({
+          id: `hardware-${key}-buy-onetime`,
+          type: "hardware",
+          name: t(`hardware.${key}.name`),
+          price: hw.buyPrice,
+          quantity: qty,
+          metadata: { key, isRental: false },
+        });
+      }
+    });
+
+    navigate("/cart");
   };
 
   const estimate = useMemo(() => {
@@ -393,7 +481,7 @@ const PricingCalculator = () => {
                 <Separator />
 
                 <div className="space-y-2">
-                  <Button className="w-full" disabled={estimate.isEnterprise}>
+                  <Button className="w-full" onClick={handleStartTrial}>
                     {estimate.isEnterprise ? t("costEstimator.contactConsult") : t("costEstimator.startTrial")}
                   </Button>
                   <Button variant="outline" className="w-full" onClick={reset}>
