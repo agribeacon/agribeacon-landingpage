@@ -32,9 +32,9 @@ const addonNameKeys: Record<string, string> = {
 
 const hardwareItems = [
   { id: "drone", buyPrice: 62000000, rentPrice: 0, unit: "chiếc" },
-  { id: "robot", buyPrice: 136000000, rentPrice: 9900000, unit: "chiếc" },
+  { id: "robot", buyPrice: 180000000, rentPrice: 16800000, unit: "chiếc" },
   { id: "soil-sensor", buyPrice: 4200000, rentPrice: 0, unit: "chiếc" },
-  { id: "water-sensor", buyPrice: 16000000, rentPrice: 0, unit: "chiếc" },
+  { id: "water-sensor", buyPrice: 45000000, rentPrice: 0, unit: "chiếc" },
   { id: "rtk", buyPrice: 25000000, rentPrice: 0, unit: "chiếc" },
 ];
 
@@ -50,15 +50,17 @@ type HardwareMode = "buy" | "rent";
 
 const PricingCalculator = () => {
   const { t } = useSimpleLanguage();
-  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+  const [billing, setBilling] = useState<"sixMonths" | "oneYear" | "twoYears">("sixMonths");
   const [selectedPlan, setSelectedPlan] = useState("professional");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [hardwareQty, setHardwareQty] = useState<Record<string, number>>({});
   const [hardwareMode, setHardwareMode] = useState<Record<string, HardwareMode>>({});
   const [aiQueryPacks, setAiQueryPacks] = useState(0);
 
-  const yearlyDiscount = 0.8;
-  const billingMultiplier = billing === "yearly" ? yearlyDiscount : 1;
+  const billingTerms = ["sixMonths", "oneYear", "twoYears"] as const;
+  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 0.9, twoYears: 0.8 };
+  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "-10%", twoYears: "-20%" };
+  const billingMultiplier = discountMap[billing];
 
   const toggleAddon = (id: string) => {
     setSelectedAddons((prev) =>
@@ -85,7 +87,7 @@ const PricingCalculator = () => {
     setSelectedAddons([]);
     setHardwareQty({});
     setHardwareMode({});
-    setBilling("monthly");
+    setBilling("sixMonths");
     setAiQueryPacks(0);
   };
 
@@ -116,7 +118,9 @@ const PricingCalculator = () => {
 
     const monthlyTotal = planPrice + addonsTotal + hwRentTotal;
     const yearlyTotal = monthlyTotal * 12;
-    const savingsPerMonth = billing === "yearly" ? Math.round((planPrice + addonsTotal) * 0.2) : 0;
+    const savingsPerMonth = billingMultiplier < 1
+      ? Math.round((planPrice + addonsTotal) / billingMultiplier * (1 - billingMultiplier))
+      : 0;
 
     return {
       planPrice,
@@ -155,23 +159,21 @@ const PricingCalculator = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex gap-3">
-                  <Button
-                    variant={billing === "monthly" ? "default" : "outline"}
-                    onClick={() => setBilling("monthly")}
-                    className="flex-1"
-                  >
-                    {t("hero.monthly")}
-                  </Button>
-                  <Button
-                    variant={billing === "yearly" ? "default" : "outline"}
-                    onClick={() => setBilling("yearly")}
-                    className="flex-1"
-                  >
-                    {t("hero.yearly")}
-                    <Badge variant="secondary" className="ml-2">
-                      {t("hero.yearlyDiscount")}
-                    </Badge>
-                  </Button>
+                  {billingTerms.map((term) => (
+                    <Button
+                      key={term}
+                      variant={billing === term ? "default" : "outline"}
+                      onClick={() => setBilling(term)}
+                      className="flex-1"
+                    >
+                      {t(`hero.${term}`)}
+                      {billingDiscountLabel[term] && (
+                        <Badge variant="secondary" className="ml-2">
+                          {billingDiscountLabel[term]}
+                        </Badge>
+                      )}
+                    </Button>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -366,7 +368,7 @@ const PricingCalculator = () => {
                   <span className="text-lg">{formatPrice(estimate.monthlyTotal)}₫</span>
                 </div>
 
-                {billing === "yearly" && (
+                {billingMultiplier < 1 && (
                   <>
                     <div className="flex justify-between text-sm">
                       <span>{t("costEstimator.yearlyCost")}</span>
