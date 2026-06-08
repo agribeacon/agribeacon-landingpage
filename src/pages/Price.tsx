@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, ShoppingCart, Info } from "lucide-react";
@@ -414,6 +415,21 @@ const Price = () => {
                     <CardTitle className="text-base">{t(`addons.${addon.key}.name`)}</CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1">
+                    <div className="mb-3">
+                      {addon.key === "aiAnalytics" ? (
+                        <>
+                          <span className="text-2xl font-bold text-foreground">{formatPrice(addon.price)}₫</span>
+                          <span className="text-sm text-muted-foreground">{t(addon.priceSuffixKey)}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-2xl font-bold text-foreground">{t(`addons.${addon.key}.priceLabel`)}</span>
+                          {addon.priceSuffixKey && (
+                            <span className="text-sm text-muted-foreground"> {t(addon.priceSuffixKey)}</span>
+                          )}
+                        </>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground">{t(`addons.${addon.key}.description`)}</p>
                   </CardContent>
                   <CardFooter className="flex gap-2 mt-auto">
@@ -477,35 +493,39 @@ const Price = () => {
                     <div className="space-y-3">
                       {/* Buy outright option */}
                       <div className="rounded-lg border border-border bg-muted/40 p-3">
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="text-sm font-medium text-foreground">{t("hardware.buyOutright")}</p>
                             <p className="text-xs text-muted-foreground">{t("hardware.buyDesc")}</p>
                           </div>
-                          <div className="flex flex-col gap-1.5 shrink-0">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => openDetailModal('hardware', hw.key, String(t(`hardware.${hw.key}.name`)), hw.buyPrice, false)}
-                            >
-                              <Info className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
-                            >
-                              <ShoppingCart className="h-3.5 w-3.5" />
-                            </Button>
+                          <div className="text-right shrink-0">
+                            <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.buyPrice)}₫</p>
+                            <p className="text-xs text-muted-foreground">{t("hardware.perUnit")}</p>
                           </div>
+                        </div>
+                        <div className="flex justify-end gap-1.5 mt-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => openDetailModal('hardware', hw.key, String(t(`hardware.${hw.key}.name`)), hw.buyPrice, false)}
+                          >
+                            <Info className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleAddHardwareToCart(hw.key, hw.buyPrice, false)}
+                          >
+                            <ShoppingCart className="h-3.5 w-3.5" />
+                          </Button>
                         </div>
                       </div>
 
                       {/* Rent bundle option */}
                       {hw.rentPrice && (
                         <div className="rounded-lg border border-primary/30 bg-accent p-3">
-                          <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-start justify-between gap-3">
                             <div>
                               <div className="flex items-center gap-2">
                                 <p className="text-sm font-medium text-foreground">{t("hardware.rentBundle")}</p>
@@ -513,23 +533,27 @@ const Price = () => {
                               </div>
                               <p className="text-xs text-muted-foreground">{t("hardware.rentDesc")}</p>
                             </div>
-                            <div className="flex flex-col gap-1.5 shrink-0">
-                              <Button
-                                variant="outline"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => openDetailModal('hardware', hw.key, String(t(`hardware.${hw.key}.name`)), hw.rentPrice!, true)}
-                              >
-                                <Info className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => handleAddHardwareToCart(hw.key, hw.rentPrice!, true)}
-                              >
-                                <ShoppingCart className="h-3.5 w-3.5" />
-                              </Button>
+                            <div className="text-right shrink-0">
+                              <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.rentPrice!)}₫</p>
+                              <p className="text-xs text-muted-foreground">{t("hardware.perUnitMonth")}</p>
                             </div>
+                          </div>
+                          <div className="flex justify-end gap-1.5 mt-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => openDetailModal('hardware', hw.key, String(t(`hardware.${hw.key}.name`)), hw.rentPrice!, true)}
+                            >
+                              <Info className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => handleAddHardwareToCart(hw.key, hw.rentPrice!, true)}
+                            >
+                              <ShoppingCart className="h-3.5 w-3.5" />
+                            </Button>
                           </div>
                         </div>
                       )}
@@ -538,6 +562,23 @@ const Price = () => {
                 </Card>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Cost estimator CTA */}
+      <section className="px-4 pb-20">
+        <div className="container mx-auto">
+          <div className="rounded-2xl border border-border bg-muted/40 p-10 text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              {t("costEstimator.title")}
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              {t("costEstimator.subtitle")}
+            </p>
+            <Link to="/cost-estimator">
+              <Button size="lg">{t("costEstimator.cta")}</Button>
+            </Link>
           </div>
         </div>
       </section>
