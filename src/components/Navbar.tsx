@@ -12,14 +12,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Badge } from "@/components/ui/badge";
 import logo from "@/assets/Logo.svg";
-import ContactSalesDialog from "./ContactSalesDialog";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
 
 const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [contactSalesOpen, setContactSalesOpen] = useState(false);
   const { t } = useSimpleLanguage();
   const { itemCount } = useCart();
 
@@ -176,22 +174,21 @@ const Navbar = () => {
               </Link>
             </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-primary text-primary hover:bg-primary/10 ml-2"
-              onClick={() => setContactSalesOpen(true)}
-            >
-              {t('nav.contactSales')}
-            </Button>
+            <Link to="/contact-sales" className="ml-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-primary text-primary hover:bg-primary/10"
+              >
+                {t('nav.contactSales')}
+              </Button>
+            </Link>
             <Link to="/contact">
               <Button size="sm" className="bg-gradient-to-r from-primary to-secondary hover:shadow-glow transition-all">
                 {t('nav.tryForFree')}
               </Button>
             </Link>
           </div>
-          
-          <ContactSalesDialog open={contactSalesOpen} onOpenChange={setContactSalesOpen} />
 
           {/* Mobile Menu Button */}
           <button
@@ -285,16 +282,14 @@ const Navbar = () => {
 
               {/* CTA Buttons */}
               <div className="pt-2 space-y-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full border-primary text-primary"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setContactSalesOpen(true);
-                  }}
-                >
-                  {t('nav.contactSales')}
-                </Button>
+                <Link to="/contact-sales" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="outline"
+                    className="w-full border-primary text-primary"
+                  >
+                    {t('nav.contactSales')}
+                  </Button>
+                </Link>
                 <Link to="/contact" className="w-full" onClick={() => setMobileMenuOpen(false)}>
                   <Button className="bg-gradient-to-r from-primary to-secondary w-full">
                     {t('nav.tryForFree')}
