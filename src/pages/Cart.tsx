@@ -156,7 +156,7 @@ const Cart = () => {
                         </Badge>
                         {item.billing && (
                           <Badge variant="outline" className="text-xs">
-                            {item.billing === "yearly" ? t("cart.yearly") : t("cart.monthly")}
+                            {t(`cart.${item.billing}`)}
                           </Badge>
                         )}
                         {item.metadata?.isRental && (

@@ -13,7 +13,7 @@ const formatPrice = (price: number) =>
   new Intl.NumberFormat("vi-VN").format(price);
 
 const Price = () => {
-  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+  const [billing, setBilling] = useState<"sixMonths" | "oneYear" | "twoYears">("sixMonths");
   const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string; price: number; isRental: boolean }>({
     open: false,
     title: "",
@@ -25,10 +25,14 @@ const Price = () => {
   const { t } = useSimpleLanguage();
   const { addItem } = useCart();
   const { toast } = useToast();
-  const yearlyDiscount = 0.8;
+  // Billing terms: 6 months (no discount), 1 year (-10%), 2 years (-20%)
+  const billingTerms = ["sixMonths", "oneYear", "twoYears"] as const;
+  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 0.9, twoYears: 0.8 };
+  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "-10%", twoYears: "-20%" };
+  const discount = discountMap[billing];
 
   const planKeys = ["starter", "professional", "business", "enterprise"] as const;
-  const planPrices = [0, -1, -1, -1];
+  const planPrices = [0, 599000, 2400000, -1];
   const planPopular = [false, true, false, false];
   const planCtaVariants = ["outline", "default", "outline", "outline"] as const;
 
@@ -41,9 +45,9 @@ const Price = () => {
 
   const hwConfigs = [
     { icon: Plane, key: "drone", buyPrice: 62000000, rentPrice: null },
-    { icon: Bot, key: "robot", buyPrice: 136000000, rentPrice: 9900000 },
+    { icon: Bot, key: "robot", buyPrice: 180000000, rentPrice: 16800000 },
     { icon: Sprout, key: "soilSensor", buyPrice: 4200000, rentPrice: null },
-    { icon: Droplets, key: "waterSensor", buyPrice: 16000000, rentPrice: null },
+    { icon: Droplets, key: "waterSensor", buyPrice: 45000000, rentPrice: null },
     { icon: Radio, key: "rtk", buyPrice: 25000000, rentPrice: null },
   ];
 
@@ -136,13 +140,13 @@ const Price = () => {
       id: `plan-${planKey}-${billing}`,
       type: 'plan',
       name: t(`plans.${planKey}.name`),
-      price: billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      price: Math.round(price * discount),
       billing,
       metadata: { key: planKey },
     });
     toast({
       title: t('cart.added') || 'Added to cart',
-      description: `${t(`plans.${planKey}.name`)} (${billing === 'yearly' ? t('hero.yearly') : t('hero.monthly')})`,
+      description: `${t(`plans.${planKey}.name`)} (${t(`hero.${billing}`)})`,
       duration: 2000,
     });
   };
@@ -152,7 +156,7 @@ const Price = () => {
       id: `addon-${addonKey}-${billing}`,
       type: 'addon',
       name: t(`addons.${addonKey}.name`),
-      price: billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      price: Math.round(price * discount),
       billing,
       metadata: { key: addonKey },
     });
@@ -168,13 +172,13 @@ const Price = () => {
       id: `hardware-${hwKey}-${isRental ? 'rent' : 'buy'}-${isRental ? billing : 'onetime'}`,
       type: 'hardware',
       name: t(`hardware.${hwKey}.name`),
-      price: isRental && billing === 'yearly' ? Math.round(price * yearlyDiscount) : price,
+      price: isRental ? Math.round(price * discount) : price,
       billing: isRental ? billing : undefined,
       metadata: { key: hwKey, isRental },
     });
     toast({
       title: t('cart.added') || 'Added to cart',
-      description: `${t(`hardware.${hwKey}.name`)} (${isRental ? (billing === 'yearly' ? t('hero.yearly') : t('hero.monthly')) : t('hardware.buyOutright')})`,
+      description: `${t(`hardware.${hwKey}.name`)} (${isRental ? t(`hero.${billing}`) : t('hardware.buyOutright')})`,
       duration: 2000,
     });
   };
@@ -192,7 +196,7 @@ const Price = () => {
         type={detailModal.type}
         productKey={detailModal.key}
         isRental={detailModal.isRental}
-        priceLabel={detailModal.price > 0 ? `${detailModal.type === 'hardware' ? t('hardware.fromPrice') + ' ' : ''}${formatPrice(detailModal.price)}₫${detailModal.isRental ? (billing === 'yearly' ? '/' + t('cart.year') : '/' + t('cart.month')) : ''}` : undefined}
+        priceLabel={detailModal.price > 0 ? `${detailModal.type === 'hardware' ? t('hardware.fromPrice') + ' ' : ''}${formatPrice(detailModal.isRental ? Math.round(detailModal.price * discount) : detailModal.price)}₫${detailModal.isRental ? '/' + t('cart.month') : ''}` : undefined}
         onAddToCart={() => {
           if (detailModal.type === 'hardware') {
             handleAddHardwareToCart(detailModal.key, detailModal.price, detailModal.isRental);
@@ -216,27 +220,22 @@ const Price = () => {
         </p>
 
         <div className="inline-flex items-center gap-1 bg-muted rounded-full p-1">
-          <button
-            onClick={() => setBilling("monthly")}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-              billing === "monthly"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t("hero.monthly")}
-          </button>
-          <button
-            onClick={() => setBilling("yearly")}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-              billing === "yearly"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t("hero.yearly")}
-            <span className="ml-1.5 text-xs opacity-80">{t("hero.yearlyDiscount")}</span>
-          </button>
+          {billingTerms.map((term) => (
+            <button
+              key={term}
+              onClick={() => setBilling(term)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                billing === term
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t(`hero.${term}`)}
+              {billingDiscountLabel[term] && (
+                <span className="ml-1.5 text-xs opacity-80">{billingDiscountLabel[term]}</span>
+              )}
+            </button>
+          ))}
         </div>
       </section>
 
@@ -282,15 +281,17 @@ const Price = () => {
                       <span className="text-3xl font-bold text-foreground">{t("plans.contact")}</span>
                     ) : (
                       <div>
-                        <span className="text-3xl font-bold text-foreground">
-                          {formatPrice(
-                            billing === "yearly"
-                              ? Math.round(price * yearlyDiscount)
-                              : price
-                          )}
-                          ₫
-                        </span>
-                        <span className="text-sm text-muted-foreground">{t("plans.perMonth")}</span>
+                        <div>
+                          <span className="text-3xl font-bold text-foreground">
+                            {formatPrice(Math.round(price * discount))}₫
+                          </span>
+                          <span className="text-sm text-muted-foreground">{t("plans.perMonth")}</span>
+                        </div>
+                        {discount < 1 && (
+                          <span className="mt-1 inline-block rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                            {t("costEstimator.savingsPerMonth")} {formatPrice(Math.round(price * (1 - discount)))}₫
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
