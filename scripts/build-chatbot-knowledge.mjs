@@ -5,7 +5,6 @@ const ROOT = process.cwd();
 const OUTPUT = path.join(ROOT, "api/generated/agribeacon-knowledge.ts");
 const SOURCES = [
   "src/pages",
-  "src/components/ContactSalesDialog.tsx",
   "src/components/Footer.tsx",
   "src/components/Navbar.tsx",
   "src/components/PricingCalculator.tsx",
