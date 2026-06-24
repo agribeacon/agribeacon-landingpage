@@ -285,7 +285,7 @@ const Navbar = () => {
                 <Link to="/contact-sales" className="w-full" onClick={() => setMobileMenuOpen(false)}>
                   <Button
                     variant="outline"
-                    className="w-full border-primary text-primary"
+                    className="w-full border-primary text-primary mb-2"
                   >
                     {t('nav.contactSales')}
                   </Button>
