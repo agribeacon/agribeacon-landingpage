@@ -202,7 +202,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-fade-in-up">
+          <div className="md:hidden py-4 border-t border-border animate-fade-in-up max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain">
             <div className="flex flex-col gap-2">
               {/* Technology Menu */}
               <div className="border-b border-border pb-2 mb-2">
