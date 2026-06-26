@@ -1329,6 +1329,80 @@ const translations = {
     'cart.phonePlaceholder': 'Enter your phone number',
     'cart.checkout': 'Request Quote',
     'cart.checkoutNote': 'Our sales team will contact you with a detailed quote.',
+
+    // Navigation – Help
+    'nav.help': 'Help',
+    'nav.help.desc': 'Guides and answers to get the most out of SutaGrow.',
+
+    // Help Center
+    'help.badge': 'Help Center',
+    'help.title': 'How to use SutaGrow',
+    'help.subtitle': 'A quick start guide to set up your farm and run daily operations — plus answers to the most common questions.',
+    'help.openWebApp': 'Open Web App',
+    'help.getAndroid': 'Android App',
+    'help.getIos': 'iOS App',
+    'help.steps.badge': 'Getting Started',
+    'help.steps.title': 'Up and running in 6 steps',
+    'help.steps.subtitle': 'Works the same on Web, iOS, and Android. Sign in once and your data syncs across every device.',
+    'help.steps': [
+      {
+        title: '1. Create your account',
+        desc: 'Sign up on the web app at farm.agribeacon.tech or download the mobile app. Create your organization, then invite your team and assign their roles.',
+      },
+      {
+        title: '2. Set up farm, zones & plots',
+        desc: 'Add your farm and draw growing zones and plots on the map. Record the area, crop type, and status of each plot so everything is tracked per season.',
+      },
+      {
+        title: '3. Plan seasons & crops',
+        desc: 'Open a new season, set the farming calendar, and assign crops to each plot. Track season progress and record harvest yield as you go.',
+      },
+      {
+        title: '4. Assign tasks & manage workforce',
+        desc: 'Create tasks, assign them to workers, and track attendance and productivity in real time. Field staff update progress directly from the mobile app.',
+      },
+      {
+        title: '5. Track finance, inventory & sales',
+        desc: 'Log expenses and revenue, manage fertilizer and pesticide stock, and record orders and customers to see cost and profit per season.',
+      },
+      {
+        title: '6. View reports & ask the AI Assistant',
+        desc: 'Monitor KPIs on the dashboard, connect IoT sensors for live data, and ask the built-in AI Assistant questions about your farm in plain language.',
+      },
+    ],
+    'help.faq.badge': 'FAQ',
+    'help.faq.title': 'Frequently asked questions',
+    'help.faq.subtitle': "Can't find what you're looking for? Reach out to our team below.",
+    'help.faq': [
+      {
+        q: 'Is there a free trial?',
+        a: 'Yes. The Starter plan is free forever for small farms, with full access to the dashboard, crop management, and a monthly allowance of AI Assistant queries. No payment is required to get started.',
+      },
+      {
+        q: 'Which devices can I use?',
+        a: 'SutaGrow runs on the web (farm.agribeacon.tech) and on iOS and Android. Sign in with the same account and your data stays in sync across all of them.',
+      },
+      {
+        q: 'Do I need drones or IoT sensors to start?',
+        a: 'No. The Farm Management OS works on its own for planning, tasks, finance, and reporting. UAV, robot, and IoT hardware are optional add-ons you can connect later as your farm grows.',
+      },
+      {
+        q: 'Can I manage more than one farm?',
+        a: 'Yes. You can manage multiple farms under a single organization with branch-level permissions — ideal for enterprises and cooperatives aggregating many growers.',
+      },
+      {
+        q: 'How is my data kept secure?',
+        a: 'Your data is stored securely in the cloud, backed up regularly, and only accessible to members you invite, based on the role you assign each of them.',
+      },
+      {
+        q: 'How do I get help or training?',
+        a: 'Use the in-app AI Assistant for instant answers, or contact our team using the buttons below. We also help new teams with onboarding and setup.',
+      },
+    ],
+    'help.support.title': 'Still need a hand?',
+    'help.support.subtitle': 'Our team is happy to help you get set up or answer any questions about SutaGrow.',
+    'help.support.contact': 'Contact Support',
+    'help.support.sales': 'Talk to Sales',
   },
   vi: {
     'home.hero.badge': 'Công nghệ nông nghiệp chính xác',
@@ -2644,6 +2718,80 @@ const translations = {
     'cart.phonePlaceholder': 'Nhập số điện thoại',
     'cart.checkout': 'Yêu cầu báo giá',
     'cart.checkoutNote': 'Đội ngũ kinh doanh sẽ liên hệ bạn với báo giá chi tiết.',
+
+    // Navigation – Help
+    'nav.help': 'Trợ giúp',
+    'nav.help.desc': 'Hướng dẫn và giải đáp để dùng SutaGrow hiệu quả nhất.',
+
+    // Help Center
+    'help.badge': 'Trung tâm trợ giúp',
+    'help.title': 'Cách sử dụng SutaGrow',
+    'help.subtitle': 'Hướng dẫn nhanh để thiết lập nông trại và vận hành hằng ngày — kèm giải đáp các câu hỏi thường gặp.',
+    'help.openWebApp': 'Mở App Web',
+    'help.getAndroid': 'App Android',
+    'help.getIos': 'App iOS',
+    'help.steps.badge': 'Bắt đầu',
+    'help.steps.title': 'Sẵn sàng vận hành chỉ với 6 bước',
+    'help.steps.subtitle': 'Hoạt động giống nhau trên Web, iOS và Android. Đăng nhập một lần, dữ liệu đồng bộ trên mọi thiết bị.',
+    'help.steps': [
+      {
+        title: '1. Tạo tài khoản',
+        desc: 'Đăng ký trên app web tại farm.agribeacon.tech hoặc tải app di động. Tạo tổ chức của bạn, sau đó mời thành viên và phân quyền cho từng người.',
+      },
+      {
+        title: '2. Thiết lập nông trại, vùng & lô',
+        desc: 'Thêm nông trại và vẽ các vùng canh tác, lô thửa trên bản đồ. Ghi nhận diện tích, loại cây và tình trạng của từng lô để theo dõi theo mùa vụ.',
+      },
+      {
+        title: '3. Lập kế hoạch mùa vụ & cây trồng',
+        desc: 'Mở mùa vụ mới, đặt lịch canh tác và gán cây trồng cho từng lô. Theo dõi tiến độ mùa vụ và ghi nhận sản lượng thu hoạch trong quá trình canh tác.',
+      },
+      {
+        title: '4. Giao việc & quản lý nhân lực',
+        desc: 'Tạo công việc, phân công cho người lao động và theo dõi chấm công, năng suất theo thời gian thực. Nhân sự ngoài đồng cập nhật tiến độ ngay trên app di động.',
+      },
+      {
+        title: '5. Theo dõi tài chính, kho & bán hàng',
+        desc: 'Ghi nhận chi phí và doanh thu, quản lý kho phân bón và thuốc bảo vệ thực vật, lưu đơn hàng và khách hàng để xem chi phí và lợi nhuận theo mùa vụ.',
+      },
+      {
+        title: '6. Xem báo cáo & hỏi Trợ lý AI',
+        desc: 'Theo dõi KPI trên dashboard, kết nối cảm biến IoT để có dữ liệu trực tiếp, và hỏi Trợ lý AI tích hợp về nông trại của bạn bằng ngôn ngữ tự nhiên.',
+      },
+    ],
+    'help.faq.badge': 'Câu hỏi thường gặp',
+    'help.faq.title': 'Câu hỏi thường gặp',
+    'help.faq.subtitle': 'Không tìm thấy điều bạn cần? Liên hệ đội ngũ của chúng tôi bên dưới.',
+    'help.faq': [
+      {
+        q: 'Có dùng thử miễn phí không?',
+        a: 'Có. Gói Starter miễn phí trọn đời cho nông trại nhỏ, với đầy đủ dashboard, quản lý cây trồng và lượt hỏi Trợ lý AI hằng tháng. Bạn có thể bắt đầu mà không cần thanh toán.',
+      },
+      {
+        q: 'Tôi dùng được trên những thiết bị nào?',
+        a: 'SutaGrow chạy trên web (farm.agribeacon.tech) cùng iOS và Android. Đăng nhập cùng một tài khoản và dữ liệu sẽ đồng bộ trên tất cả thiết bị.',
+      },
+      {
+        q: 'Có cần drone hay cảm biến IoT để bắt đầu không?',
+        a: 'Không. Hệ điều hành quản lý nông trại tự hoạt động độc lập cho việc lập kế hoạch, giao việc, tài chính và báo cáo. UAV, robot và thiết bị IoT là tùy chọn có thể kết nối sau khi nông trại mở rộng.',
+      },
+      {
+        q: 'Tôi có quản lý được nhiều nông trại không?',
+        a: 'Có. Bạn có thể quản lý nhiều nông trại trong cùng một tổ chức với phân quyền theo chi nhánh — phù hợp cho doanh nghiệp và hợp tác xã tổng hợp dữ liệu của nhiều nông hộ.',
+      },
+      {
+        q: 'Dữ liệu của tôi được bảo mật thế nào?',
+        a: 'Dữ liệu được lưu trữ an toàn trên cloud, sao lưu định kỳ và chỉ những thành viên bạn mời mới truy cập được, theo đúng vai trò bạn phân cho mỗi người.',
+      },
+      {
+        q: 'Tôi nhận hỗ trợ hoặc đào tạo bằng cách nào?',
+        a: 'Dùng Trợ lý AI trong app để được giải đáp tức thì, hoặc liên hệ đội ngũ của chúng tôi qua các nút bên dưới. Chúng tôi cũng hỗ trợ các đội mới làm quen và thiết lập ban đầu.',
+      },
+    ],
+    'help.support.title': 'Vẫn cần hỗ trợ?',
+    'help.support.subtitle': 'Đội ngũ của chúng tôi sẵn sàng giúp bạn thiết lập hoặc giải đáp mọi thắc mắc về SutaGrow.',
+    'help.support.contact': 'Liên hệ hỗ trợ',
+    'help.support.sales': 'Trao đổi với Kinh doanh',
   },
   ja: {
     'home.hero.badge': '精密農業テクノロジー',
@@ -3961,6 +4109,80 @@ const translations = {
     'cart.phonePlaceholder': '電話番号を入力してください',
     'cart.checkout': '見積もり依頼',
     'cart.checkoutNote': '営業チームが詳細な見積もりをご連絡いたします。',
+
+    // Navigation – Help
+    'nav.help': 'ヘルプ',
+    'nav.help.desc': 'SutaGrowを最大限に活用するためのガイドと回答。',
+
+    // Help Center
+    'help.badge': 'ヘルプセンター',
+    'help.title': 'SutaGrowの使い方',
+    'help.subtitle': '農場を設定し日々の運用を始めるためのクイックスタートガイドと、よくある質問への回答をまとめました。',
+    'help.openWebApp': 'Webアプリを開く',
+    'help.getAndroid': 'Androidアプリ',
+    'help.getIos': 'iOSアプリ',
+    'help.steps.badge': 'はじめに',
+    'help.steps.title': '6ステップで運用開始',
+    'help.steps.subtitle': 'Web・iOS・Androidで同じように使えます。一度ログインすればデータはすべての端末で同期されます。',
+    'help.steps': [
+      {
+        title: '1. アカウントを作成',
+        desc: 'Webアプリ farm.agribeacon.tech で登録するか、モバイルアプリをダウンロードします。組織を作成し、メンバーを招待して各自の役割を割り当てます。',
+      },
+      {
+        title: '2. 農場・ゾーン・区画を設定',
+        desc: '農場を追加し、地図上に栽培ゾーンと区画を描きます。各区画の面積・作物・状態を記録し、シーズンごとに管理します。',
+      },
+      {
+        title: '3. シーズンと作物を計画',
+        desc: '新しいシーズンを開始し、農作業カレンダーを設定して各区画に作物を割り当てます。シーズンの進捗を追跡し、収穫量を記録します。',
+      },
+      {
+        title: '4. タスクの割り当てと人員管理',
+        desc: 'タスクを作成して作業員に割り当て、出勤と生産性をリアルタイムで管理します。現場スタッフはモバイルアプリから直接進捗を更新できます。',
+      },
+      {
+        title: '5. 財務・在庫・販売を管理',
+        desc: '支出と収益を記録し、肥料や農薬の在庫を管理し、注文と顧客を登録してシーズンごとの費用と利益を把握します。',
+      },
+      {
+        title: '6. レポート確認とAIアシスタント活用',
+        desc: 'ダッシュボードでKPIを確認し、IoTセンサーを接続してリアルタイムデータを取得し、内蔵のAIアシスタントに農場について自然な言葉で質問できます。',
+      },
+    ],
+    'help.faq.badge': 'よくある質問',
+    'help.faq.title': 'よくある質問',
+    'help.faq.subtitle': 'お探しの情報が見つかりませんか？下記より当社チームへお問い合わせください。',
+    'help.faq': [
+      {
+        q: '無料トライアルはありますか？',
+        a: 'はい。Starterプランは小規模農場向けに永久無料で、ダッシュボード、作物管理、毎月のAIアシスタント利用枠をフルに使えます。お支払いなしで始められます。',
+      },
+      {
+        q: 'どの端末で使えますか？',
+        a: 'SutaGrowはWeb（farm.agribeacon.tech）とiOS・Androidで動作します。同じアカウントでログインすれば、すべての端末でデータが同期されます。',
+      },
+      {
+        q: '始めるのにドローンやIoTセンサーは必要ですか？',
+        a: 'いいえ。農場管理OSは計画・タスク・財務・レポートだけで単独で機能します。UAV・ロボット・IoT機器は任意のアドオンで、農場の拡大に合わせて後から接続できます。',
+      },
+      {
+        q: '複数の農場を管理できますか？',
+        a: 'はい。支店単位の権限設定により、1つの組織で複数の農場を管理できます。多数の生産者を取りまとめる企業や協同組合に最適です。',
+      },
+      {
+        q: 'データはどのように保護されますか？',
+        a: 'データはクラウドに安全に保存され、定期的にバックアップされます。アクセスできるのはあなたが招待したメンバーのみで、各自に割り当てた役割に基づきます。',
+      },
+      {
+        q: 'サポートやトレーニングはどう受けられますか？',
+        a: 'アプリ内のAIアシスタントで即座に回答を得られます。または下記のボタンから当社チームへお問い合わせください。新しいチームの導入と初期設定もサポートします。',
+      },
+    ],
+    'help.support.title': 'お困りですか？',
+    'help.support.subtitle': '当社チームが初期設定のお手伝いや、SutaGrowに関するご質問にお答えします。',
+    'help.support.contact': 'サポートに問い合わせ',
+    'help.support.sales': '営業に相談',
   },
 };
 

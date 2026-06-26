@@ -32,6 +32,7 @@ import RobotRental from "./pages/RobotRental";
 import YieldPlanning from "./pages/YieldPlanning";
 import ResourceManagement from "./pages/ResourceManagement";
 import Traceability from "./pages/Traceability";
+import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/ai/yield-planning" element={<YieldPlanning />} />
               <Route path="/ai/resource-management" element={<ResourceManagement />} />
               <Route path="/ai/traceability" element={<Traceability />} />
+              <Route path="/help" element={<Help />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

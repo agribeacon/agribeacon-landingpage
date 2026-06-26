@@ -84,6 +84,12 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-4">
+            <Link to="/help" className="hover:text-primary transition-colors">{t('nav.help')}</Link>
+            <Link to="/best-practices" className="hover:text-primary transition-colors">{t('nav.resources.bestPractices')}</Link>
+            <Link to="/price" className="hover:text-primary transition-colors">{t('nav.pricing')}</Link>
+            <Link to="/contact" className="hover:text-primary transition-colors">{t('nav.about.contact')}</Link>
+          </div>
           <p>{t('footer.copyright').replace('© 2024 AgriBeacon. ', '')} {t('footer.builtFor')}</p>
         </div>
       </div>

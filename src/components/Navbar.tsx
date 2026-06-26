@@ -131,6 +131,15 @@ const Navbar = () => {
                   </Link>
                 </NavigationMenuItem>
 
+                {/* Help Link */}
+                <NavigationMenuItem>
+                  <Link to="/help">
+                    <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                      {t('nav.help')}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
                 {/* About Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-sm font-medium">
@@ -261,6 +270,18 @@ const Navbar = () => {
                 >
                   <span>{t('nav.pricing')}</span>
                   <span className="text-xs text-muted-foreground">{t('nav.pricing.desc')}</span>
+                </Link>
+              </div>
+
+              {/* Help */}
+              <div className="border-b border-border pb-2 mb-2">
+                <Link
+                  to="/help"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-foreground/70 hover:bg-muted flex flex-col gap-1"
+                >
+                  <span>{t('nav.help')}</span>
+                  <span className="text-xs text-muted-foreground">{t('nav.help.desc')}</span>
                 </Link>
               </div>
 
