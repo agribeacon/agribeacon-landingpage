@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>AgriBeacon — Brochure lật trang · AGRI VIETNAM 2026</title>
+<meta name="description" content="AgriBeacon — precision AgriTech: drone, robot phun, cảm biến IoT, AI Thần Nông & nền tảng quản lý nông trại. Brochure lật trang tương tác, AGRI VIETNAM 2026." />
+<meta property="og:title" content="AgriBeacon — Brochure AGRI VIETNAM 2026" />
+<meta property="og:description" content="Lật từng trang brochure AgriTech của AgriBeacon ngay trên trình duyệt." />
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16241c; --green:#1f8a54; --green-700:#156b41; --green-900:#0f3d28;
+    --lime:#8fce4a; --paper:#f7f9f6; --line:rgba(255,255,255,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:"Be Vietnam Pro",system-ui,sans-serif; color:#eaf3ec;
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #1c5a3a 0%, transparent 60%),
+      radial-gradient(900px 600px at 90% 110%, #0c2c1d 0%, transparent 55%),
+      linear-gradient(180deg, #0f3d28 0%, #0a2a1b 100%);
+    background-attachment:fixed;
+    min-height:100dvh; display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  /* subtle floating grain dots */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.5;
+    background-image:radial-gradient(rgba(143,206,74,.10) 1px, transparent 1px);
+    background-size:26px 26px;
+    mask-image:radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+
+  header.bar{
+    display:flex; align-items:center; gap:12px; padding:14px 20px; z-index:5;
+    flex:0 0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px}
+  .brand img{width:30px; height:30px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+  .brand b{font-size:17px}
+  .brand span{color:var(--lime); font-weight:600}
+  .bar .spacer{flex:1}
+  .tag{
+    font-size:12px; font-weight:600; color:#bfe6cb; opacity:.85;
+    border:1px solid var(--line); padding:5px 11px; border-radius:999px;
+    white-space:nowrap;
+  }
+
+  /* ---- Stage ---- */
+  .stage{
+    flex:1 1 auto; position:relative; display:flex; align-items:center; justify-content:center;
+    padding:6px 16px 0; min-height:0;
+  }
+  #book{ width:100%; height:100%; touch-action:pan-y; }
+  #book .stf__parent{ margin:0 auto; }
+  /* page-flip injects .stf__parent; we just give pages a paper look */
+  .page{
+    background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,.04);
+    background-size:cover; background-position:center;
+  }
+  .page img{width:100%; height:100%; display:block; object-fit:cover}
+  .page--cover{box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+
+  .hint{
+    position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    font-size:12px; color:#bfe6cb; opacity:.7; pointer-events:none;
+    display:flex; align-items:center; gap:7px; transition:opacity .4s;
+  }
+  .hint svg{width:15px;height:15px}
+
+  /* ---- Controls ---- */
+  .controls{
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:10px;
+    padding:14px 16px calc(14px + env(safe-area-inset-bottom)); z-index:5;
+  }
+  .btn{
+    appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.06);
+    color:#eaf3ec; width:46px; height:46px; border-radius:50%; cursor:pointer;
+    display:grid; place-items:center; transition:transform .12s, background .2s, opacity .2s;
+    backdrop-filter:blur(6px);
+  }
+  .btn:hover{background:rgba(143,206,74,.18); transform:translateY(-1px)}
+  .btn:active{transform:scale(.94)}
+  .btn:disabled{opacity:.3; cursor:default; transform:none}
+  .btn svg{width:22px;height:22px}
+  .counter{
+    min-width:88px; text-align:center; font-weight:600; font-size:14px;
+    color:#dff3e4; letter-spacing:.3px; user-select:none;
+  }
+  .counter b{color:var(--lime)}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; height:46px; padding:0 18px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.06);
+    color:#eaf3ec; text-decoration:none; font-weight:600; font-size:14px; cursor:pointer;
+    backdrop-filter:blur(6px); transition:background .2s, transform .12s;
+  }
+  .pill:hover{background:rgba(143,206,74,.18); transform:translateY(-1px)}
+  .pill svg{width:18px;height:18px}
+  .pill.primary{background:var(--lime); color:#163a10; border-color:transparent}
+  .pill.primary:hover{background:#9fd95f}
+
+  .loader{
+    position:fixed; inset:0; display:grid; place-items:center; z-index:20;
+    background:linear-gradient(180deg,#0f3d28,#0a2a1b); transition:opacity .5s;
+  }
+  .loader .ring{
+    width:54px;height:54px;border-radius:50%;
+    border:3px solid rgba(143,206,74,.25); border-top-color:var(--lime);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loader.hide{opacity:0; pointer-events:none}
+
+  /* ---- Zoom viewer ---- */
+  .viewer{
+    position:fixed; inset:0; z-index:40; display:none;
+    background:rgba(6,20,13,.96); overflow:hidden; touch-action:none;
+    align-items:center; justify-content:center;
+  }
+  .viewer.open{display:flex}
+  .viewer img{
+    position:absolute; top:50%; left:50%;
+    max-width:none; max-height:none; will-change:transform;
+    transform-origin:center center; user-select:none; -webkit-user-drag:none; touch-action:none;
+    box-shadow:0 20px 60px -10px rgba(0,0,0,.7);
+  }
+  .vclose{
+    position:absolute; top:calc(12px + env(safe-area-inset-top)); right:14px; z-index:2;
+    width:46px;height:46px;border-radius:50%; border:1px solid var(--line);
+    background:rgba(0,0,0,.35); color:#eaf3ec; cursor:pointer; display:grid; place-items:center;
+    backdrop-filter:blur(6px);
+  }
+  .vclose svg{width:22px;height:22px}
+  .vnav{
+    position:absolute; bottom:calc(16px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    z-index:2; display:flex; align-items:center; gap:12px;
+    background:rgba(0,0,0,.35); border:1px solid var(--line); border-radius:999px;
+    padding:6px 10px; backdrop-filter:blur(6px);
+  }
+  .vcount{font-weight:600; font-size:14px; color:#dff3e4; min-width:54px; text-align:center}
+  .vhint{
+    position:absolute; top:calc(14px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
+    z-index:2; font-size:12px; color:#bfe6cb; background:rgba(0,0,0,.3);
+    padding:6px 12px; border-radius:999px; transition:opacity .4s; pointer-events:none; text-align:center;
+    max-width:88vw;
+  }
+  .vhint.hide{opacity:0}
+
+  @media (max-width:640px){
+    .brand b{font-size:15px} .tag{display:none}
+    .pill span.lbl{display:none} .pill{padding:0; width:46px; justify-content:center}
+    .controls{gap:8px}
+  }
+</style>
+</head>
+<body>
+  <div class="loader" id="loader"><div class="ring"></div></div>
+
+  <header class="bar">
+    <a class="brand" href="https://agribeacon.tech" target="_blank" rel="noopener">
+      <img src="assets/logo-mark.svg" alt="AgriBeacon" />
+      <b>AgriBeacon</b><span>Brochure</span>
+    </a>
+    <div class="spacer"></div>
+    <div class="tag">AGRI VIETNAM 2026 · SECC, HCMC</div>
+  </header>
+
+  <!-- Pinch / drag / double-tap zoom viewer (mobile + desktop) -->
+  <div class="viewer" id="viewer" aria-hidden="true">
+    <img id="viewerImg" alt="" draggable="false" />
+    <button class="vclose" id="vclose" aria-label="Đóng">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="vnav">
+      <button class="btn" id="vprev" aria-label="Trang trước"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <span class="vcount" id="vcount">1 / 18</span>
+      <button class="btn" id="vnext" aria-label="Trang sau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+    <div class="vhint" id="vhint">Chụm 2 ngón hoặc nhấn đúp để phóng to · kéo để di chuyển</div>
+  </div>
+
+  <main class="stage">
+    <div id="book"></div>
+    <div class="hint" id="hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      Chạm hoặc kéo mép trang để lật
+    </div>
+  </main>
+
+  <nav class="controls">
+    <button class="btn" id="prev" aria-label="Trang trước">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="counter"><b id="cur">1</b> / <span id="total">18</span></div>
+    <button class="btn" id="next" aria-label="Trang sau">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="btn" id="zoom" aria-label="Phóng to trang" title="Phóng to để đọc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+    </button>
+    <button class="btn" id="fs" aria-label="Toàn màn hình" title="Toàn màn hình">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg>
+    </button>
+    <a class="pill primary" href="assets/AgriBeacon-Brochure.pdf" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      <span class="lbl">Tải PDF</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <script>
+    const TOTAL = 18;
+    const bookEl = document.getElementById('book');
+    const $cur = document.getElementById('cur');
+    const $prev = document.getElementById('prev');
+    const $next = document.getElementById('next');
+    let pf, loaded = 0, curPage = 1;
+
+    // Build real <img> pages → HTML render mode. The browser paints each <img>
+    // at native/retina resolution (no canvas downscaling), so pages stay crisp.
+    for (let i=1; i<=TOTAL; i++){
+      const div = document.createElement('div');
+      const hard = (i===1 || i===TOTAL);
+      div.className = 'page' + (hard ? ' page--cover' : '');
+      if (hard) div.setAttribute('data-density','hard');
+      const img = document.createElement('img');
+      img.src = `assets/pages/page-${String(i).padStart(2,'0')}.webp`;
+      img.alt = `AgriBeacon brochure — trang ${i}`;
+      img.draggable = false;
+      img.onload = img.onerror = ()=>{ if(++loaded===TOTAL) hideLoader(); };
+      div.appendChild(img);
+      bookEl.appendChild(div);
+    }
+
+    function init(){
+      // base page ratio = 1400 x 1963 (w x h). Stretch fits this to #book,
+      // honouring both block width AND height.
+      // Open-book spread (2 facing pages) on tablet/desktop; collapses to a
+      // single readable page on phones. The cover/back stay single (showCover).
+      const wantSpread = window.matchMedia('(min-width: 820px)').matches;
+      pf = new St.PageFlip(bookEl, {
+        width: 1400, height: 1963,
+        size: 'stretch',
+        minWidth: 340, maxWidth: 2800,
+        minHeight: 476, maxHeight: 1963,
+        drawShadow: true,
+        maxShadowOpacity: 0.55,
+        flippingTime: 700,
+        // false → always render two facing pages (book spread); true → allow
+        // auto-collapse to a single portrait page on narrow screens.
+        usePortrait: !wantSpread,
+        showCover: true,
+        mobileScrollSupport: false,
+        swipeDistance: 18,
+        clickEventForward: false,
+      });
+
+      pf.loadFromHTML(bookEl.querySelectorAll('.page'));
+
+      pf.on('flip', e=>{
+        curPage = Math.min(e.data + 1, TOTAL);
+        $cur.textContent = curPage;
+        $prev.disabled = e.data <= 0;
+        $next.disabled = e.data >= TOTAL-1;
+        const hint = document.getElementById('hint');
+        if (hint) hint.style.opacity = 0;
+        if (viewer.classList.contains('open')) showInViewer(curPage);
+      });
+
+      document.getElementById('total').textContent = TOTAL;
+      $prev.disabled = true;
+    }
+    init();
+
+    function hideLoader(){
+      const l = document.getElementById('loader');
+      l.classList.add('hide');
+      setTimeout(()=>l.remove(), 600);
+    }
+
+    // Controls
+    $prev.addEventListener('click', ()=> pf && pf.flipPrev());
+    $next.addEventListener('click', ()=> pf && pf.flipNext());
+    document.addEventListener('keydown', e=>{
+      if(!pf || document.getElementById('viewer').classList.contains('open')) return;
+      if(e.key==='ArrowLeft') pf.flipPrev();
+      if(e.key==='ArrowRight') pf.flipNext();
+    });
+
+    // Fullscreen — hide the button entirely where the API is missing (iOS Safari)
+    const fsBtn = document.getElementById('fs');
+    if (!document.documentElement.requestFullscreen){
+      fsBtn.style.display = 'none';
+    } else {
+      fsBtn.addEventListener('click', ()=>{
+        try{
+          if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+          else document.exitFullscreen();
+        }catch(_){}
+      });
+    }
+
+    // ---- Zoom viewer: pinch (2 ngón) · kéo · nhấn đúp ----
+    const viewer  = document.getElementById('viewer');
+    const vImg    = document.getElementById('viewerImg');
+    const vCount  = document.getElementById('vcount');
+    const vHint   = document.getElementById('vhint');
+    const srcOf   = n => `assets/pages/page-${String(n).padStart(2,'0')}.webp`;
+    let vScale=1, vx=0, vy=0, baseW=0, baseH=0;
+
+    function showInViewer(n){
+      vImg.src = srcOf(n);
+      vCount.textContent = `${n} / ${TOTAL}`;
+      document.getElementById('vprev').disabled = n<=1;
+      document.getElementById('vnext').disabled = n>=TOTAL;
+      // reset transform once the new image knows its size
+      vImg.onload = ()=>{ fitViewer(); };
+      if (vImg.complete && vImg.naturalWidth) fitViewer();
+    }
+    function fitViewer(){
+      const vw = viewer.clientWidth, vh = viewer.clientHeight;
+      const ar = (vImg.naturalWidth||1400)/(vImg.naturalHeight||1963);
+      // contain within viewport, leaving room for chrome
+      baseW = Math.min(vw*0.96, vh*0.96*ar);
+      baseH = baseW/ar;
+      vScale = 1; vx = 0; vy = 0;
+      applyV();
+    }
+    function applyV(){
+      vImg.style.width  = baseW+'px';
+      vImg.style.height = baseH+'px';
+      // origin centre → scale grows around the centred element; pan in screen px
+      vImg.style.transform =
+        `translate(-50%,-50%) translate(${vx}px,${vy}px) scale(${vScale})`;
+    }
+    function clampPan(){
+      const maxX = Math.max(0, (baseW*vScale - viewer.clientWidth)/2);
+      const maxY = Math.max(0, (baseH*vScale - viewer.clientHeight)/2);
+      vx = Math.max(-maxX, Math.min(maxX, vx));
+      vy = Math.max(-maxY, Math.min(maxY, vy));
+    }
+    function openViewer(){
+      viewer.classList.add('open');
+      viewer.setAttribute('aria-hidden','false');
+      vHint.classList.remove('hide');
+      showInViewer(curPage);
+      setTimeout(()=>vHint.classList.add('hide'), 2600);
+    }
+    function closeViewer(){
+      viewer.classList.remove('open');
+      viewer.setAttribute('aria-hidden','true');
+    }
+    document.getElementById('zoom').addEventListener('click', openViewer);
+    document.getElementById('vclose').addEventListener('click', closeViewer);
+    document.getElementById('vprev').addEventListener('click', ()=>{ if(curPage>1){ pf.flipPrev(); } });
+    document.getElementById('vnext').addEventListener('click', ()=>{ if(curPage<TOTAL){ pf.flipNext(); } });
+
+    // gesture handling via Pointer Events
+    const pts = new Map();
+    let startDist=0, startScale=1, startMidX=0, startMidY=0, startVx=0, startVy=0;
+    let panId=null, panX=0, panY=0;
+
+    vImg.addEventListener('pointerdown', e=>{
+      vImg.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      vHint.classList.add('hide');
+      if (pts.size===2){
+        const [a,b] = [...pts.values()];
+        startDist = Math.hypot(a.x-b.x, a.y-b.y) || 1;
+        startScale = vScale;
+        startMidX = (a.x+b.x)/2; startMidY = (a.y+b.y)/2;
+        startVx = vx; startVy = vy;
+      } else if (pts.size===1){
+        panId = e.pointerId; panX = e.clientX; panY = e.clientY;
+        startVx = vx; startVy = vy;
+      }
+    });
+    vImg.addEventListener('pointermove', e=>{
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      if (pts.size>=2){
+        const [a,b] = [...pts.values()];
+        const dist = Math.hypot(a.x-b.x, a.y-b.y) || 1;
+        vScale = Math.max(1, Math.min(5, startScale * (dist/startDist)));
+        vx = startVx; vy = startVy;
+        clampPan(); applyV();
+      } else if (e.pointerId===panId && vScale>1){
+        vx = startVx + (e.clientX - panX);
+        vy = startVy + (e.clientY - panY);
+        clampPan(); applyV();
+      }
+    });
+    function endPointer(e){
+      pts.delete(e.pointerId);
+      if (pts.size<2 && pts.size>0){
+        // one finger remains → continue panning from it
+        const [only] = [...pts.entries()];
+        panId = only[0]; panX = only[1].x; panY = only[1].y; startVx = vx; startVy = vy;
+      }
+      if (pts.size===0 && vScale<1.02){ vScale=1; vx=0; vy=0; applyV(); }
+    }
+    vImg.addEventListener('pointerup', endPointer);
+    vImg.addEventListener('pointercancel', endPointer);
+
+    // double-tap / double-click to toggle zoom at point
+    let lastTap=0;
+    vImg.addEventListener('click', e=>{
+      const now = Date.now();
+      if (now-lastTap < 300){
+        if (vScale>1){ vScale=1; vx=0; vy=0; }
+        else {
+          // zoom toward the tapped point, then keep it on-screen
+          vScale = 2.6;
+          const rect = viewer.getBoundingClientRect();
+          vx = (rect.width/2  - (e.clientX-rect.left)) * (vScale-1);
+          vy = (rect.height/2 - (e.clientY-rect.top))  * (vScale-1);
+          clampPan();
+        }
+        applyV();
+      }
+      lastTap = now;
+    });
+    // wheel zoom on desktop
+    viewer.addEventListener('wheel', e=>{
+      if (!viewer.classList.contains('open')) return;
+      e.preventDefault();
+      vScale = Math.max(1, Math.min(5, vScale - Math.sign(e.deltaY)*0.18));
+      if (vScale===1){ vx=0; vy=0; }
+      clampPan(); applyV();
+    }, {passive:false});
+    // Esc closes, arrows flip while open
+    document.addEventListener('keydown', e=>{
+      if (!viewer.classList.contains('open')) return;
+      if (e.key==='Escape') closeViewer();
+      if (e.key==='ArrowLeft' && curPage>1) pf.flipPrev();
+      if (e.key==='ArrowRight' && curPage<TOTAL) pf.flipNext();
+    });
+    window.addEventListener('resize', ()=>{ if(viewer.classList.contains('open')) fitViewer(); });
+
+    // Resize → re-stretch to the new container size (keeps current page)
+    let rt;
+    window.addEventListener('resize', ()=>{
+      if(!pf) return;
+      clearTimeout(rt);
+      rt = setTimeout(()=> pf.update(), 160);
+    });
+
+    // safety: never leave the loader stuck if an image stalls
+    setTimeout(hideLoader, 4000);
+  </script>
+</body>
+</html>
