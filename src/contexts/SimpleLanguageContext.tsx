@@ -402,6 +402,8 @@ const translations = {
     
     // Resources menu
     'nav.resources.bestPractices': 'Best Practices',
+    'nav.resources.brochure': 'Brochure',
+    'nav.resources.brochure.desc': 'Flip-through AgriTech brochure',
     
     // About menu
     'nav.about.aboutUs': 'About Us',
@@ -1791,6 +1793,8 @@ const translations = {
     
     // Resources menu
     'nav.resources.bestPractices': 'Thực hành tốt nhất',
+    'nav.resources.brochure': 'Brochure',
+    'nav.resources.brochure.desc': 'Brochure AgriTech lật trang',
     
     // About menu
     'nav.about.aboutUs': 'Về chúng tôi',
@@ -3180,6 +3184,8 @@ const translations = {
     
     // Resources menu
     'nav.resources.bestPractices': 'ベストプラクティス',
+    'nav.resources.brochure': 'ブローシャー',
+    'nav.resources.brochure.desc': 'めくる AgriTech ブローシャー',
     
     // About menu
     'nav.about.aboutUs': '会社について',
