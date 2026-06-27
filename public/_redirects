@@ -1,2 +1,4 @@
-/brochureVI    /brochureVI/index.html   200
+/brochureVI/*    /brochure/:splat   301
+/brochureVI    /brochure   301
+/brochure    /brochure/index.html   200
 /*    /index.html   200

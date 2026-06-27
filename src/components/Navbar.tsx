@@ -37,7 +37,7 @@ const Navbar = () => {
   const resourcesMenu = [
     { name: t('nav.resources.bestPractices'), path: "/best-practices", description: t('nav.resources.bestPractices.desc'), external: false },
     // Static flip-book page served outside the SPA router → full navigation via <a>.
-    { name: t('nav.resources.brochure'), path: "/brochureVI", description: t('nav.resources.brochure.desc'), external: true },
+    { name: t('nav.resources.brochure'), path: "/brochure", description: t('nav.resources.brochure.desc'), external: true },
   ];
 
   const aboutMenu = [

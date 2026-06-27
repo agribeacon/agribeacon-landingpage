@@ -87,7 +87,7 @@ const Footer = () => {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-4">
             <Link to="/help" className="hover:text-primary transition-colors">{t('nav.help')}</Link>
             <Link to="/best-practices" className="hover:text-primary transition-colors">{t('nav.resources.bestPractices')}</Link>
-            <a href="/brochureVI" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{t('nav.resources.brochure')}</a>
+            <a href="/brochure" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{t('nav.resources.brochure')}</a>
             <Link to="/price" className="hover:text-primary transition-colors">{t('nav.pricing')}</Link>
             <Link to="/contact" className="hover:text-primary transition-colors">{t('nav.about.contact')}</Link>
           </div>
