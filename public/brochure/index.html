@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <!-- Anchor every relative asset path to this folder so the page works whether
      it is opened as /brochure or /brochure/ (no broken images either way). -->
 <base href="/brochure/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>AgriBeacon — Brochure lật trang · AGRI VIETNAM 2026</title>
-<meta name="description" content="AgriBeacon — precision AgriTech: drone, robot phun, cảm biến IoT, AI Thần Nông & nền tảng quản lý nông trại. Brochure lật trang tương tác, AGRI VIETNAM 2026." />
+<title>AgriBeacon — Interactive Brochure · AGRI VIETNAM 2026</title>
+<meta name="description" content="AgriBeacon — precision AgriTech: drones, spraying robots, IoT sensors, AI assistant, and farm management platform. Interactive brochure, AGRI VIETNAM 2026." />
 <meta property="og:title" content="AgriBeacon — Brochure AGRI VIETNAM 2026" />
 <meta property="og:description" content="Lật từng trang brochure AgriTech của AgriBeacon ngay trên trình duyệt." />
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
@@ -43,16 +43,30 @@
     display:flex; align-items:center; gap:12px; padding:14px 20px; z-index:5;
     flex:0 0 auto;
   }
-  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px}
+  .brand{
+    display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+    color:#f4fff7; text-decoration:none;
+  }
+  .brand:visited{color:#f4fff7}
+  .brand:hover{color:#ffffff}
   .brand img{width:30px; height:30px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
-  .brand b{font-size:17px}
-  .brand span{color:var(--lime); font-weight:600}
+  .brand b{font-size:17px; color:inherit}
+  .brand span{color:#c8f071; font-weight:700}
   .bar .spacer{flex:1}
   .tag{
     font-size:12px; font-weight:600; color:#bfe6cb; opacity:.85;
     border:1px solid var(--line); padding:5px 11px; border-radius:999px;
     white-space:nowrap;
   }
+  .lang-switch{display:flex; align-items:center; gap:6px}
+  .lang-btn{
+    appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.06);
+    color:#dff3e4; height:30px; min-width:42px; border-radius:999px;
+    font:700 12px/1 "Be Vietnam Pro",system-ui,sans-serif; cursor:pointer;
+    transition:background .2s, color .2s, transform .12s;
+  }
+  .lang-btn:hover{background:rgba(143,206,74,.18); transform:translateY(-1px)}
+  .lang-btn.active{background:var(--lime); color:#163a10; border-color:transparent}
 
   /* ---- Stage ---- */
   .stage{
@@ -156,6 +170,7 @@
 
   @media (max-width:640px){
     .brand b{font-size:15px} .tag{display:none}
+    .lang-btn{height:28px; min-width:38px; font-size:11px}
     .pill span.lbl{display:none} .pill{padding:0; width:46px; justify-content:center}
     .controls{gap:8px}
   }
@@ -170,59 +185,137 @@
       <b>AgriBeacon</b><span>Brochure</span>
     </a>
     <div class="spacer"></div>
+    <div class="lang-switch" aria-label="Brochure language">
+      <button class="lang-btn" type="button" data-lang="en">EN</button>
+      <button class="lang-btn" type="button" data-lang="vi">VI</button>
+    </div>
     <div class="tag">AGRI VIETNAM 2026 · SECC, HCMC</div>
   </header>
 
   <!-- Pinch / drag / double-tap zoom viewer (mobile + desktop) -->
   <div class="viewer" id="viewer" aria-hidden="true">
     <img id="viewerImg" alt="" draggable="false" />
-    <button class="vclose" id="vclose" aria-label="Đóng">
+    <button class="vclose" id="vclose" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
     <div class="vnav">
-      <button class="btn" id="vprev" aria-label="Trang trước"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="btn" id="vprev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <span class="vcount" id="vcount">1 / 18</span>
-      <button class="btn" id="vnext" aria-label="Trang sau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button class="btn" id="vnext" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
-    <div class="vhint" id="vhint">Chụm 2 ngón hoặc nhấn đúp để phóng to · kéo để di chuyển</div>
+    <div class="vhint" id="vhint">Pinch or double-tap to zoom · drag to move</div>
   </div>
 
   <main class="stage">
     <div id="book"></div>
     <div class="hint" id="hint">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      Chạm hoặc kéo mép trang để lật
+      <span id="hintLabel">Tap or drag the page edge to flip</span>
     </div>
   </main>
 
   <nav class="controls">
-    <button class="btn" id="prev" aria-label="Trang trước">
+    <button class="btn" id="prev" aria-label="Previous page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <div class="counter"><b id="cur">1</b> / <span id="total">18</span></div>
-    <button class="btn" id="next" aria-label="Trang sau">
+    <button class="btn" id="next" aria-label="Next page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
-    <button class="btn" id="zoom" aria-label="Phóng to trang" title="Phóng to để đọc">
+    <button class="btn" id="zoom" aria-label="Zoom page" title="Zoom to read">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
     </button>
-    <button class="btn" id="fs" aria-label="Toàn màn hình" title="Toàn màn hình">
+    <button class="btn" id="fs" aria-label="Fullscreen" title="Fullscreen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg>
     </button>
-    <a class="pill primary" href="assets/AgriBeacon-Brochure.pdf" download>
+    <a class="pill primary" id="downloadPdf" href="assets/AgriBeacon-Brochure-EN.pdf" download>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      <span class="lbl">Tải PDF</span>
+      <span class="lbl" id="downloadLabel">Download PDF</span>
     </a>
   </nav>
 
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
   <script>
     const TOTAL = 18;
+    const LANGS = {
+      en: {
+        dir: 'assets/pages-en',
+        pdf: 'assets/AgriBeacon-Brochure-EN.pdf',
+        title: 'AgriBeacon — Interactive Brochure · AGRI VIETNAM 2026',
+        description: 'AgriBeacon — precision AgriTech: drones, spraying robots, IoT sensors, AI assistant, and farm management platform. Interactive brochure, AGRI VIETNAM 2026.',
+        pageAlt: 'AgriBeacon brochure — page',
+        download: 'Download PDF',
+        flipHint: 'Tap or drag the page edge to flip',
+        zoomHint: 'Pinch or double-tap to zoom · drag to move',
+        close: 'Close',
+        prev: 'Previous page',
+        next: 'Next page',
+        zoom: 'Zoom page',
+        zoomTitle: 'Zoom to read',
+        fullscreen: 'Fullscreen',
+      },
+      vi: {
+        dir: 'assets/pages',
+        pdf: 'assets/AgriBeacon-Brochure.pdf',
+        title: 'AgriBeacon — Brochure lật trang · AGRI VIETNAM 2026',
+        description: 'AgriBeacon — precision AgriTech: drone, robot phun, cảm biến IoT, AI Thần Nông & nền tảng quản lý nông trại. Brochure lật trang tương tác, AGRI VIETNAM 2026.',
+        pageAlt: 'AgriBeacon brochure — trang',
+        download: 'Tải PDF',
+        flipHint: 'Chạm hoặc kéo mép trang để lật',
+        zoomHint: 'Chụm 2 ngón hoặc nhấn đúp để phóng to · kéo để di chuyển',
+        close: 'Đóng',
+        prev: 'Trang trước',
+        next: 'Trang sau',
+        zoom: 'Phóng to trang',
+        zoomTitle: 'Phóng to để đọc',
+        fullscreen: 'Toàn màn hình',
+      },
+    };
+    const params = new URLSearchParams(window.location.search);
+    const hashLang = window.location.hash.replace(/^#/, '');
+    const requestedLang = params.get('lang') || hashLang;
+    const savedLang = (() => {
+      try { return localStorage.getItem('language'); }
+      catch (_) { return null; }
+    })();
+    const currentLang = LANGS[requestedLang] ? requestedLang : (savedLang === 'vi' ? 'vi' : 'en');
+    const copy = LANGS[currentLang];
+    document.documentElement.lang = currentLang;
+    document.title = copy.title;
+    const descriptionMeta = document.querySelector('meta[name="description"]');
+    if (descriptionMeta) descriptionMeta.setAttribute('content', copy.description);
+    try { localStorage.setItem('language', currentLang); } catch (_) {}
+
     const bookEl = document.getElementById('book');
     const $cur = document.getElementById('cur');
     const $prev = document.getElementById('prev');
     const $next = document.getElementById('next');
     let pf, loaded = 0, curPage = 1;
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      const lang = btn.getAttribute('data-lang');
+      btn.classList.toggle('active', lang === currentLang);
+      btn.setAttribute('aria-pressed', lang === currentLang ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        if (lang === currentLang) return;
+        try { localStorage.setItem('language', lang); } catch (_) {}
+        window.location.assign(`${window.location.pathname}?lang=${lang}`);
+      });
+    });
+
+    document.getElementById('downloadPdf').href = copy.pdf;
+    document.getElementById('downloadLabel').textContent = copy.download;
+    document.getElementById('hintLabel').textContent = copy.flipHint;
+    document.getElementById('vhint').textContent = copy.zoomHint;
+    document.getElementById('vclose').setAttribute('aria-label', copy.close);
+    document.getElementById('prev').setAttribute('aria-label', copy.prev);
+    document.getElementById('next').setAttribute('aria-label', copy.next);
+    document.getElementById('vprev').setAttribute('aria-label', copy.prev);
+    document.getElementById('vnext').setAttribute('aria-label', copy.next);
+    document.getElementById('zoom').setAttribute('aria-label', copy.zoom);
+    document.getElementById('zoom').setAttribute('title', copy.zoomTitle);
+    document.getElementById('fs').setAttribute('aria-label', copy.fullscreen);
+    document.getElementById('fs').setAttribute('title', copy.fullscreen);
 
     // Build real <img> pages → HTML render mode. The browser paints each <img>
     // at native/retina resolution (no canvas downscaling), so pages stay crisp.
@@ -232,8 +325,8 @@
       div.className = 'page' + (hard ? ' page--cover' : '');
       if (hard) div.setAttribute('data-density','hard');
       const img = document.createElement('img');
-      img.src = `assets/pages/page-${String(i).padStart(2,'0')}.webp`;
-      img.alt = `AgriBeacon brochure — trang ${i}`;
+      img.src = `${copy.dir}/page-${String(i).padStart(2,'0')}.webp`;
+      img.alt = `${copy.pageAlt} ${i}`;
       img.draggable = false;
       img.onload = img.onerror = ()=>{ if(++loaded===TOTAL) hideLoader(); };
       div.appendChild(img);
@@ -313,7 +406,7 @@
     const vImg    = document.getElementById('viewerImg');
     const vCount  = document.getElementById('vcount');
     const vHint   = document.getElementById('vhint');
-    const srcOf   = n => `assets/pages/page-${String(n).padStart(2,'0')}.webp`;
+    const srcOf   = n => `${copy.dir}/page-${String(n).padStart(2,'0')}.webp`;
     let vScale=1, vx=0, vy=0, baseW=0, baseH=0;
 
     function showInViewer(n){

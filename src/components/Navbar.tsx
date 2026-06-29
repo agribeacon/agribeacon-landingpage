@@ -36,8 +36,6 @@ const Navbar = () => {
 
   const resourcesMenu = [
     { name: t('nav.resources.bestPractices'), path: "/best-practices", description: t('nav.resources.bestPractices.desc'), external: false },
-    // Static flip-book page served outside the SPA router → full navigation via <a>.
-    { name: t('nav.resources.brochure'), path: "/brochure", description: t('nav.resources.brochure.desc'), external: true },
   ];
 
   const aboutMenu = [
@@ -127,6 +125,15 @@ const Navbar = () => {
                       </div>
                     </div>
                   </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {/* Brochure Link */}
+                <NavigationMenuItem>
+                  <a href="/brochure">
+                    <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                      {t('nav.resources.brochure')}
+                    </NavigationMenuLink>
+                  </a>
                 </NavigationMenuItem>
 
                 {/* Pricing Link */}
@@ -269,6 +276,18 @@ const Navbar = () => {
                     <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cls}>{inner}</Link>
                   );
                 })}
+              </div>
+
+              {/* Brochure */}
+              <div className="border-b border-border pb-2 mb-2">
+                <a
+                  href="/brochure"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-foreground/70 hover:bg-muted flex flex-col gap-1"
+                >
+                  <span>{t('nav.resources.brochure')}</span>
+                  <span className="text-xs text-muted-foreground">{t('nav.resources.brochure.desc')}</span>
+                </a>
               </div>
 
               {/* Pricing */}

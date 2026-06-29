@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SimpleLanguageProvider } from "@/contexts/SimpleLanguageContext";
 import { CartProvider } from "@/contexts/CartContext";
@@ -36,6 +37,14 @@ import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+const BrochureRedirect = () => {
+  useEffect(() => {
+    window.location.replace(`/brochure/index.html${window.location.search}${window.location.hash}`);
+  }, []);
+
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -72,6 +81,7 @@ const App = () => (
               <Route path="/ai/resource-management" element={<ResourceManagement />} />
               <Route path="/ai/traceability" element={<Traceability />} />
               <Route path="/help" element={<Help />} />
+              <Route path="/brochure" element={<BrochureRedirect />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
