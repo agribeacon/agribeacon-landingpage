@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 
@@ -14,31 +13,31 @@ const formatPrice = (price: number) =>
 
 // Calculator addon id (kebab) -> cart/translation key (camelCase)
 const addonKeyMap: Record<string, string> = {
-  "ai-analytics": "aiAnalytics",
-  "ai-assistant": "aiAssistant",
-  "buy-tree": "buyTree",
-  "vector": "vector",
+  "extra-site": "extraSite",
+  "extra-user": "extraUser",
+  "ai-1000": "ai1000",
+  "ai-5000": "ai5000",
+  "ai-10000": "ai10000",
+  "sensor-data": "sensorData",
+  "gateway-data": "gatewayData",
 };
 
 const saasPlans = [
-  { id: "starter", price: 0, farms: 1 },
-  { id: "professional", price: 599000, farms: 2 },
-  { id: "business", price: 2400000, farms: 5 },
+  { id: "monitor", price: 0, farms: 1 },
+  { id: "manage", price: 399000, farms: 1 },
+  { id: "optimize", price: 699000, farms: 5 },
   { id: "enterprise", price: -1, farms: -1 },
 ];
 
 const addonModules = [
-  { id: "ai-analytics", price: 120000, isQueryPack: false, isRevShare: false, isPerArea: false },
-  { id: "ai-assistant", price: 130000, isQueryPack: true, isRevShare: false, isPerArea: false },
-  { id: "buy-tree", price: 0, isQueryPack: false, isRevShare: true, isPerArea: false },
-  { id: "vector", price: 0, isQueryPack: false, isRevShare: false, isPerArea: true },
+  { id: "extra-site", price: 99000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "extra-user", price: 29000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "ai-1000", price: 99000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "ai-5000", price: 299000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "ai-10000", price: 499000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "sensor-data", price: 79000, isQueryPack: false, isRevShare: false, isPerArea: false },
+  { id: "gateway-data", price: 199000, isQueryPack: false, isRevShare: false, isPerArea: false },
 ];
-
-const addonNameKeys: Record<string, string> = {
-  "ai-analytics": "AI Analytics",
-  "buy-tree": "SutaMarket",
-  "vector": "vector",
-};
 
 const hardwareItems = [
   { id: "drone", buyPrice: 62000000, rentPrice: 0, unit: "chiếc" },
@@ -63,15 +62,14 @@ const PricingCalculator = () => {
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [billing, setBilling] = useState<"sixMonths" | "oneYear" | "twoYears">("sixMonths");
-  const [selectedPlan, setSelectedPlan] = useState("professional");
+  const [selectedPlan, setSelectedPlan] = useState("manage");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [hardwareQty, setHardwareQty] = useState<Record<string, number>>({});
   const [hardwareMode, setHardwareMode] = useState<Record<string, HardwareMode>>({});
-  const [aiQueryPacks, setAiQueryPacks] = useState(0);
 
   const billingTerms = ["sixMonths", "oneYear", "twoYears"] as const;
-  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 0.9, twoYears: 0.8 };
-  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "-10%", twoYears: "-20%" };
+  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 1, twoYears: 1 };
+  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "", twoYears: "" };
   const billingMultiplier = discountMap[billing];
 
   const toggleAddon = (id: string) => {
@@ -95,12 +93,11 @@ const PricingCalculator = () => {
   };
 
   const reset = () => {
-    setSelectedPlan("professional");
+    setSelectedPlan("manage");
     setSelectedAddons([]);
     setHardwareQty({});
     setHardwareMode({});
     setBilling("sixMonths");
-    setAiQueryPacks(0);
   };
 
   // Push the current selection into the cart, then go to checkout.
@@ -124,7 +121,6 @@ const PricingCalculator = () => {
     }
 
     selectedAddons.forEach((id) => {
-      if (id === "ai-assistant") return; // handled via the query-pack slider below
       const addon = addonModules.find((a) => a.id === id);
       if (!addon) return;
       const key = addonKeyMap[id];
@@ -137,18 +133,6 @@ const PricingCalculator = () => {
         metadata: { key },
       });
     });
-
-    if (aiQueryPacks > 0) {
-      addItem({
-        id: `addon-aiAssistant-${billing}`,
-        type: "addon",
-        name: t("addons.aiAssistant.name"),
-        price: Math.round(130000 * billingMultiplier),
-        billing,
-        quantity: aiQueryPacks,
-        metadata: { key: "aiAssistant" },
-      });
-    }
 
     hardwareItems.forEach((hw) => {
       const qty = hardwareQty[hw.id] || 0;
@@ -190,8 +174,6 @@ const PricingCalculator = () => {
       return sum + Math.round(addon.price * billingMultiplier);
     }, 0);
 
-    const aiQueryCost = aiQueryPacks * 130000;
-
     const hwBuyTotal = Object.entries(hardwareQty).reduce((sum, [id, qty]) => {
       if (getMode(id) !== "buy" || qty === 0) return sum;
       const hw = hardwareItems.find((h) => h.id === id);
@@ -213,7 +195,6 @@ const PricingCalculator = () => {
     return {
       planPrice,
       addonsTotal,
-      aiQueryCost,
       hwBuyTotal,
       hwRentTotal,
       monthlyTotal,
@@ -221,7 +202,7 @@ const PricingCalculator = () => {
       savingsPerMonth,
       isEnterprise,
     };
-  }, [selectedPlan, selectedAddons, hardwareQty, hardwareMode, billing, aiQueryPacks, billingMultiplier]);
+  }, [selectedPlan, selectedAddons, hardwareQty, hardwareMode, billing, billingMultiplier]);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -311,8 +292,8 @@ const PricingCalculator = () => {
                         className="h-4 w-4"
                       />
                       <div>
-                        <p className="font-medium">{t(`addons.${addon.id}.name`)}</p>
-                        <p className="text-xs text-muted-foreground">{t(`addons.${addon.id}.shortDesc`)}</p>
+                        <p className="font-medium">{t(`addons.${addonKeyMap[addon.id]}.name`)}</p>
+                        <p className="text-xs text-muted-foreground">{t(`addons.${addonKeyMap[addon.id]}.shortDesc`)}</p>
                       </div>
                     </div>
                     <span className="text-sm font-semibold">
@@ -321,29 +302,12 @@ const PricingCalculator = () => {
                         : addon.isPerArea
                         ? t("costEstimator.fromArea")
                         : addon.isQueryPack
-                        ? t(`addons.${addon.id}.priceLabel`)
+                        ? t(`addons.${addonKeyMap[addon.id]}.priceLabel`)
                         : `${formatPrice(Math.round(addon.price * billingMultiplier))}₫${t("plans.perMonth")}`}
                     </span>
                   </div>
                 ))}
 
-                {selectedAddons.includes("ai-assistant") && (
-                  <div className="p-4 bg-muted rounded-lg">
-                    <label className="text-sm font-medium mb-2 block">
-                      {t("costEstimator.aiQueryLabel")} - {aiQueryPacks} {t("costEstimator.queryPack")}
-                    </label>
-                    <Slider
-                      value={[aiQueryPacks]}
-                      onValueChange={(v) => setAiQueryPacks(v[0])}
-                      max={20}
-                      step={1}
-                      className="mb-2"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {aiQueryPacks === 0 ? t("costEstimator.noPurchase") : `${formatPrice(aiQueryPacks * 130000)}₫`}
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -422,13 +386,6 @@ const PricingCalculator = () => {
                   <div className="flex justify-between text-sm">
                     <span>{t("costEstimator.addonsLabel")}</span>
                     <span className="font-semibold">{formatPrice(estimate.addonsTotal)}₫</span>
-                  </div>
-                )}
-
-                {estimate.aiQueryCost > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span>{t("costEstimator.aiQueryLabel")}</span>
-                    <span className="font-semibold">{formatPrice(estimate.aiQueryCost)}₫</span>
                   </div>
                 )}
 

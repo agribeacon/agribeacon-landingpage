@@ -7,52 +7,12 @@ import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 const Solutions = () => {
   const { t } = useSimpleLanguage();
 
-  const packages = [
-    {
-      name: t('solutions.package.starter.name'),
-      price: t('solutions.package.starter.price'),
-      description: t('solutions.package.starter.description'),
-      features: [
-        t('solutions.package.starter.feature1'),
-        t('solutions.package.starter.feature2'),
-        t('solutions.package.starter.feature3'),
-        t('solutions.package.starter.feature4'),
-        t('solutions.package.starter.feature5'),
-        t('solutions.package.starter.feature6'),
-      ],
-      popular: false,
-    },
-    {
-      name: t('solutions.package.professional.name'),
-      price: t('solutions.package.professional.price'),
-      description: t('solutions.package.professional.description'),
-      features: [
-        t('solutions.package.professional.feature1'),
-        t('solutions.package.professional.feature2'),
-        t('solutions.package.professional.feature3'),
-        t('solutions.package.professional.feature4'),
-        t('solutions.package.professional.feature5'),
-        t('solutions.package.professional.feature6'),
-        t('solutions.package.professional.feature7'),
-      ],
-      popular: true,
-    },
-    {
-      name: t('solutions.package.enterprise.name'),
-      price: t('solutions.package.enterprise.price'),
-      description: t('solutions.package.enterprise.description'),
-      features: [
-        t('solutions.package.enterprise.feature1'),
-        t('solutions.package.enterprise.feature2'),
-        t('solutions.package.enterprise.feature3'),
-        t('solutions.package.enterprise.feature4'),
-        t('solutions.package.enterprise.feature5'),
-        t('solutions.package.enterprise.feature6'),
-        t('solutions.package.enterprise.feature7'),
-        t('solutions.package.enterprise.feature8'),
-      ],
-      popular: false,
-    },
+  const packageKeys = ["monitor", "manage", "optimize", "enterprise"] as const;
+  const packagePrices = [
+    t("plans.freeWithHardware"),
+    `399.000đ${t("plans.perMonth")}`,
+    `699.000đ${t("plans.perMonth")}`,
+    t("plans.contact"),
   ];
 
   const saasFeatures = [
@@ -102,29 +62,32 @@ const Solutions = () => {
         </Card>
 
         {/* Pricing Packages */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {packages.map((pkg, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {packageKeys.map((key, index) => {
+            const features = t(`plans.${key}.features`);
+            const featureList = Array.isArray(features) ? features : [];
+
+            return (
             <Card
-              key={pkg.name}
+              key={key}
               className={`relative overflow-hidden transition-all duration-300 hover:-translate-y-2 ${
-                pkg.popular ? "border-primary border-2 shadow-tech" : "hover:shadow-card"
+                key === "manage" ? "border-primary border-2 shadow-tech" : "hover:shadow-card"
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              {pkg.popular && (
+              {key === "manage" && (
                 <div className="absolute top-0 right-0 bg-gradient-to-r from-primary to-secondary text-white px-4 py-1 text-sm font-medium">
                   {t('solutions.badge.popular')}
                 </div>
               )}
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+                <h3 className="text-2xl font-bold mb-2">{t(`plans.${key}.name`)}</h3>
                 <div className="mb-4">
-                  <span className={`${pkg.price === 'Contact us' ? 'text-3xl' : 'text-4xl'} font-bold text-primary`}>{pkg.price}</span>
-                  {pkg.price.startsWith && pkg.price.startsWith('$') && <span className="text-muted-foreground ml-2">one-time</span>}
+                  <span className={`${key === "enterprise" ? 'text-3xl' : 'text-4xl'} font-bold text-primary`}>{packagePrices[index]}</span>
                 </div>
-                <p className="text-muted-foreground mb-6 min-h-[3rem]">{pkg.description}</p>
+                <p className="text-muted-foreground mb-6 min-h-[3rem]">{t(`plans.${key}.description`)}</p>
                 <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature) => (
+                  {featureList.slice(0, 6).map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
                       <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -134,19 +97,20 @@ const Solutions = () => {
                 <Link to="/contact">
                   <Button
                     className={`w-full ${
-                      pkg.popular
+                      key === "manage"
                         ? "bg-gradient-to-r from-primary to-secondary hover:shadow-glow"
                         : ""
                     }`}
-                    variant={pkg.popular ? "default" : "outline"}
+                    variant={key === "manage" ? "default" : "outline"}
                   >
-                    {t('solutions.button.tryFree')}
+                    {t(`plans.${key}.cta`)}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {/* Additional Info */}

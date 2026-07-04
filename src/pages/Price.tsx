@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, ShoppingCart, Info } from "lucide-react";
+import { Check, X, Plane, Droplets, Radio, Bot, TreePine, Sprout, MapPinned, ShoppingCart, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,22 +26,25 @@ const Price = () => {
   const { t } = useSimpleLanguage();
   const { addItem } = useCart();
   const { toast } = useToast();
-  // Billing terms: 6 months (no discount), 1 year (-10%), 2 years (-20%)
+  // Billing terms are estimate periods only. Sales pack pricing has no term discount.
   const billingTerms = ["sixMonths", "oneYear", "twoYears"] as const;
-  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 0.9, twoYears: 0.8 };
-  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "-10%", twoYears: "-20%" };
+  const discountMap: Record<typeof billing, number> = { sixMonths: 1, oneYear: 1, twoYears: 1 };
+  const billingDiscountLabel: Record<typeof billing, string> = { sixMonths: "", oneYear: "", twoYears: "" };
   const discount = discountMap[billing];
 
-  const planKeys = ["starter", "professional", "business", "enterprise"] as const;
-  const planPrices = [0, 599000, 2400000, -1];
+  const planKeys = ["monitor", "manage", "optimize", "enterprise"] as const;
+  const planPrices = [0, 399000, 699000, -1];
   const planPopular = [false, true, false, false];
   const planCtaVariants = ["outline", "default", "outline", "outline"] as const;
 
   const addonConfigs = [
-    { icon: BarChart3, key: "aiAnalytics", price: 120000, useFormatted: false, priceSuffixKey: "addons.aiAnalytics.priceSuffix" },
-    { icon: Bot, key: "aiAssistant", price: 130000, useFormatted: true, priceSuffixKey: "" },
-    { icon: TreePine, key: "buyTree", price: 0, useFormatted: true, priceSuffixKey: "" },
-    { icon: MapPinned, key: "vector", price: 0, useFormatted: true, priceSuffixKey: "addons.vector.priceSuffix" },
+    { icon: MapPinned, key: "extraSite", price: 99000, priceSuffixKey: "addons.extraSite.priceSuffix" },
+    { icon: TreePine, key: "extraUser", price: 29000, priceSuffixKey: "addons.extraUser.priceSuffix" },
+    { icon: Bot, key: "ai1000", price: 99000, priceSuffixKey: "addons.aiCredit.priceSuffix" },
+    { icon: Bot, key: "ai5000", price: 299000, priceSuffixKey: "addons.aiCredit.priceSuffix" },
+    { icon: Bot, key: "ai10000", price: 499000, priceSuffixKey: "addons.aiCredit.priceSuffix" },
+    { icon: Radio, key: "sensorData", price: 79000, priceSuffixKey: "addons.sensorData.priceSuffix" },
+    { icon: Radio, key: "gatewayData", price: 199000, priceSuffixKey: "addons.gatewayData.priceSuffix" },
   ];
 
   const hwConfigs = [
@@ -54,83 +57,40 @@ const Price = () => {
 
   const comparisonData = [
     { category: t("comparison.categories.scaleAndLimits") },
-    { feature: t("comparison.features.organization"), values: [t("comparison.values.org1"), t("comparison.values.org1"), t("comparison.values.org2"), t("comparison.unlimited")] },
-    { feature: t("comparison.features.farmCount"), values: [t("comparison.values.farm1"), t("comparison.values.farm2"), t("comparison.values.farm5perOrg"), t("comparison.unlimited")] },
-    { feature: t("comparison.features.area"), values: [t("comparison.values.areaStarter"), t("comparison.values.areaPro"), t("comparison.values.areaBusiness"), t("comparison.values.areaEnterprise")] },
+    { feature: t("comparison.features.price"), values: [t("plans.freeWithHardware"), "399.000đ", "699.000đ", t("plans.contact")] },
+    { feature: t("comparison.features.farmCount"), values: [t("comparison.values.farm1"), t("comparison.values.farm1"), t("comparison.values.farm5"), t("comparison.values.custom")] },
+    { feature: t("comparison.features.activeUsers"), values: ["2", "5", "20", t("comparison.values.custom")] },
+    { feature: t("comparison.features.viewer"), values: [t("comparison.unlimited"), t("comparison.unlimited"), t("comparison.unlimited"), t("comparison.unlimited")] },
+    { feature: t("comparison.features.aiQuotaDay"), values: ["10", "30", "100", t("comparison.values.custom")] },
     { feature: t("comparison.features.storage"), values: [t("comparison.values.storage500mb"), t("comparison.values.storage5gb"), t("comparison.values.storage20gb"), t("comparison.unlimited")] },
-    { feature: t("comparison.features.aiAssistant"), values: [t("comparison.values.ai20"), t("comparison.values.ai100"), t("comparison.values.ai500"), t("comparison.unlimited")] },
 
     { category: t("comparison.categories.dashboardPlanning") },
     { feature: t("comparison.features.farmDashboard"), values: [true, true, true, true] },
-    { feature: t("comparison.features.gisView"), values: [true, true, true, true] },
-    { feature: t("comparison.features.gisEdit"), values: [false, true, true, true] },
-    { feature: t("comparison.features.gisSpatial"), values: [false, false, true, true] },
+    { feature: t("comparison.features.sensorMonitoring"), values: [true, true, true, true] },
+    { feature: t("comparison.features.basicAlerts"), values: [true, true, true, true] },
+    { feature: t("comparison.features.sensorHistory"), values: [t("comparison.values.basic"), t("comparison.values.standard"), t("comparison.values.standard"), t("comparison.values.custom")] },
 
     { category: t("comparison.categories.cropManagement") },
-    { feature: t("comparison.features.zones"), values: [true, true, true, true] },
-    { feature: t("comparison.features.soilNutrition"), values: [true, true, true, true] },
-    { feature: t("comparison.features.labData"), values: [true, true, true, true] },
-    { feature: t("comparison.features.waterSource"), values: [true, true, true, true] },
-
-    { category: t("comparison.categories.tasksRecommendations") },
-    { feature: t("comparison.features.dailyTasks"), values: [true, true, true, true] },
-    { feature: t("comparison.features.recommendations"), values: [true, true, true, true] },
-
-    { category: t("comparison.categories.inventoryPurchasing") },
+    { feature: t("comparison.features.activityLog"), values: [t("comparison.values.basic"), true, true, true] },
+    { feature: t("comparison.features.dailyTasks"), values: [false, true, true, true] },
+    { feature: t("comparison.features.staffBasic"), values: [false, true, true, true] },
     { feature: t("comparison.features.consumables"), values: [false, true, true, true] },
     { feature: t("comparison.features.warehouseManagement"), values: [false, true, true, true] },
-    { feature: t("comparison.features.purchasing"), values: [false, true, true, true] },
-
-    { category: t("comparison.categories.laborFinance") },
-    { feature: t("comparison.features.laborManagement"), values: [false, true, true, true] },
+    { feature: t("comparison.features.stockFlow"), values: [false, true, true, true] },
     { feature: t("comparison.features.incomeExpense"), values: [false, true, true, true] },
+    { feature: t("comparison.features.operatingReports"), values: [false, true, true, true] },
 
-    { category: t("comparison.categories.productionSales") },
-    { feature: t("comparison.features.seasonManagement"), values: [false, false, true, true] },
-    { feature: t("comparison.features.harvestManagement"), values: [false, false, true, true] },
-    { feature: t("comparison.features.retailTreeList"), values: [false, false, true, true] },
-    { feature: t("comparison.features.retailB2C"), values: [false, false, true, true] },
-    { feature: t("comparison.features.wholesaleB2B"), values: [false, false, true, true] },
-    { feature: t("comparison.features.crm"), values: [false, false, true, true] },
+    { category: t("comparison.categories.multiSiteScale") },
+    { feature: t("comparison.features.multiSiteDashboard"), values: [false, false, t("comparison.values.basic"), t("comparison.values.advanced")] },
+    { feature: t("comparison.features.siteComparison"), values: [false, false, true, true] },
+    { feature: t("comparison.features.traceabilityBasic"), values: [t("comparison.values.addon"), t("comparison.values.addon"), t("comparison.values.addonPreferred"), true] },
+    { feature: t("comparison.features.advancedTraceability"), values: [false, false, t("comparison.values.addon"), true] },
+    { feature: t("comparison.features.apiErp"), values: [false, false, t("comparison.values.addon"), true] },
+    { feature: t("comparison.features.customWorkflow"), values: [false, false, false, true] },
 
-    { category: t("comparison.categories.finance") },
-    { feature: t("comparison.features.cashFund"), values: [false, false, true, true] },
-    { feature: t("comparison.features.farmBudget"), values: [false, false, true, true] },
-    { feature: t("comparison.features.paymentRequest"), values: [false, false, true, true] },
-    { feature: t("comparison.features.advanceList"), values: [false, false, true, true] },
-
-    { category: t("comparison.categories.hrAssets") },
-    { feature: t("comparison.features.hrProfile"), values: [false, false, false, true] },
-    { feature: t("comparison.features.attendanceSummary"), values: [false, false, false, true] },
-    { feature: t("comparison.features.overtimeSummary"), values: [false, false, false, true] },
-    { feature: t("comparison.features.leaveSummary"), values: [false, false, false, true] },
-    { feature: t("comparison.features.payrollSheet"), values: [false, false, false, true] },
-    { feature: t("comparison.features.paymentHistory"), values: [false, false, false, true] },
-    { feature: t("comparison.features.assetManagement"), values: [false, false, false, true] },
-
-    { category: t("comparison.categories.reports") },
-    { feature: t("comparison.features.inventoryReport"), values: [false, true, true, true] },
-    { feature: t("comparison.features.soilQualityReport"), values: [false, true, true, true] },
-    { feature: t("comparison.features.waterQualityReport"), values: [false, true, true, true] },
-    { feature: t("comparison.features.incomeExpenseReport"), values: [false, true, true, true] },
-    { feature: t("comparison.features.operatingCostReport"), values: [false, false, true, true] },
-    { feature: t("comparison.features.customReport"), values: [false, false, false, true] },
-
-    { category: t("comparison.categories.settings") },
-    { feature: t("comparison.features.unitDeclaration"), values: [true, true, true, true] },
-    { feature: t("comparison.features.cropVariety"), values: [true, true, true, true] },
-    { feature: t("comparison.features.userPermissions"), values: [true, true, true, true] },
-    { feature: t("comparison.features.warehouseDeclaration"), values: [false, true, true, true] },
-    { feature: t("comparison.features.recommendationApproval"), values: [false, true, true, true] },
-    { feature: t("comparison.features.purchaseApproval"), values: [false, true, true, true] },
-    { feature: t("comparison.features.taskPricing"), values: [false, true, true, true] },
-    { feature: t("comparison.features.shiftConfig"), values: [false, true, true, true] },
-    { feature: t("comparison.features.harvestQuality"), values: [false, false, true, true] },
-    { feature: t("comparison.features.assetTypeConfig"), values: [false, false, false, true] },
-
-    { category: t("comparison.categories.integrationData") },
-    { feature: t("comparison.features.dataSync"), values: [false, true, true, true] },
-    { feature: t("comparison.features.apiIntegration"), values: [false, true, true, true] },
+    { category: t("comparison.categories.support") },
+    { feature: t("comparison.features.support"), values: [t("comparison.values.standard"), t("comparison.values.standard"), t("comparison.values.priorityAddon"), t("comparison.values.sla")] },
+    { feature: t("comparison.features.onboardingTraining"), values: [t("comparison.values.hardwareBased"), t("comparison.values.addon"), t("comparison.values.addonBundle"), t("comparison.values.custom")] },
   ];
 
   const faqItems = t("faq.items");
@@ -416,18 +376,9 @@ const Price = () => {
                   </CardHeader>
                   <CardContent className="flex-1">
                     <div className="mb-3">
-                      {addon.key === "aiAnalytics" ? (
-                        <>
-                          <span className="text-2xl font-bold text-foreground">{formatPrice(addon.price)}₫</span>
-                          <span className="text-sm text-muted-foreground">{t(addon.priceSuffixKey)}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-2xl font-bold text-foreground">{t(`addons.${addon.key}.priceLabel`)}</span>
-                          {addon.priceSuffixKey && (
-                            <span className="text-sm text-muted-foreground"> {t(addon.priceSuffixKey)}</span>
-                          )}
-                        </>
+                      <span className="text-2xl font-bold text-foreground">{formatPrice(addon.price)}₫</span>
+                      {addon.priceSuffixKey && (
+                        <span className="text-sm text-muted-foreground"> {t(addon.priceSuffixKey)}</span>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{t(`addons.${addon.key}.description`)}</p>
