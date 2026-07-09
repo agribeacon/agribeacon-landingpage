@@ -7,10 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SimpleLanguageProvider } from "@/contexts/SimpleLanguageContext";
 import { CartProvider } from "@/contexts/CartContext";
 import ScrollToTop from "./components/ScrollToTop";
-import TopMenuBar from "./components/TopMenuBar";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ChatBot from "./components/ChatBot";
+import LandingLayout from "./layouts/LandingLayout";
+import HelpLayout from "./layouts/HelpLayout";
 import Home from "./pages/Home";
 import Solutions from "./pages/Solutions";
 import Price from "./pages/Price";
@@ -55,38 +53,44 @@ const App = () => (
           <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <TopMenuBar />
-              <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/solutions" element={<Solutions />} />
-              <Route path="/price" element={<Price />} />
-              <Route path="/technology" element={<Technology />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/contact-sales" element={<ContactSales />} />
-              <Route path="/cost-estimator" element={<CostEstimator />} />
-              <Route path="/best-practices" element={<BestPractices />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/careers/:position" element={<JobDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/products/farm-os" element={<FarmOS />} />
-              <Route path="/products/uav" element={<UAV />} />
-              <Route path="/products/robot" element={<Robot />} />
-              <Route path="/products/iot" element={<IoT />} />
-              <Route path="/products/ai-assistant" element={<AIAssistant />} />
-              <Route path="/services/farm-map" element={<DigitalFarmMap />} />
-              <Route path="/services/robot-rental" element={<RobotRental />} />
-              <Route path="/ai/yield-planning" element={<YieldPlanning />} />
-              <Route path="/ai/resource-management" element={<ResourceManagement />} />
-              <Route path="/ai/traceability" element={<Traceability />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/brochure" element={<BrochureRedirect />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Footer />
-            <ChatBot />
+              <Routes>
+                {/* Trang marketing — khung landing (navbar + footer + chatbot) */}
+                <Route element={<LandingLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/solutions" element={<Solutions />} />
+                  <Route path="/price" element={<Price />} />
+                  <Route path="/technology" element={<Technology />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/contact-sales" element={<ContactSales />} />
+                  <Route path="/cost-estimator" element={<CostEstimator />} />
+                  <Route path="/best-practices" element={<BestPractices />} />
+                  <Route path="/careers" element={<Careers />} />
+                  <Route path="/careers/:position" element={<JobDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/products/farm-os" element={<FarmOS />} />
+                  <Route path="/products/uav" element={<UAV />} />
+                  <Route path="/products/robot" element={<Robot />} />
+                  <Route path="/products/iot" element={<IoT />} />
+                  <Route path="/products/ai-assistant" element={<AIAssistant />} />
+                  <Route path="/services/farm-map" element={<DigitalFarmMap />} />
+                  <Route path="/services/robot-rental" element={<RobotRental />} />
+                  <Route path="/ai/yield-planning" element={<YieldPlanning />} />
+                  <Route path="/ai/resource-management" element={<ResourceManagement />} />
+                  <Route path="/ai/traceability" element={<Traceability />} />
+                </Route>
+
+                {/* Help Center — khung riêng, không có navbar/footer landing */}
+                <Route element={<HelpLayout />}>
+                  <Route path="/help" element={<Help />} />
+                  <Route path="/help/:categorySlug" element={<Help />} />
+                  <Route path="/help/:categorySlug/:articleSlug" element={<Help />} />
+                </Route>
+
+                <Route path="/brochure" element={<BrochureRedirect />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </CartProvider>

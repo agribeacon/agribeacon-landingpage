@@ -5,7 +5,7 @@ export interface CartItem {
   type: 'plan' | 'addon' | 'hardware';
   name: string;
   price: number;
-  billing?: 'sixMonths' | 'oneYear' | 'twoYears';
+  billing?: 'oneYear' | 'twoYears';
   quantity?: number;
   metadata?: {
     key?: string;
