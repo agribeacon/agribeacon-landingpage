@@ -32,7 +32,9 @@ interface PlanView {
   excludedFeatures: string[];
   popular: boolean;
   priceType: "free" | "contact" | "paid";
-  monthly: number | null; // đã resolve theo kỳ
+  monthly: number | null; // giá bán (đã áp KM nếu có), theo kỳ
+  originalMonthly: number | null; // giá gốc gạch ngang khi có KM
+  promoLabel: string;
   ctaLabel?: string;
 }
 interface AddonView {
@@ -40,8 +42,10 @@ interface AddonView {
   icon: LucideIcon;
   name: string;
   description: string;
-  priceValue: number | null;
+  priceValue: number | null; // giá bán (đã áp KM)
   priceDisplay: string;
+  originalDisplay: string | null; // giá gốc gạch ngang khi có KM
+  promoLabel: string;
   detail?: ProductDetailData;
 }
 interface HwView {
@@ -50,10 +54,20 @@ interface HwView {
   name: string;
   description: string;
   specs: string[];
-  buyPrice: number | null;
-  rentValue: number | null;
+  buyPrice: number | null; // giá bán (đã áp KM)
+  buyOriginal: number | null;
+  rentValue: number | null; // giá bán (đã áp KM)
+  rentOriginal: number | null;
+  promoLabel: string;
   detail?: ProductDetailData;
 }
+
+// Nhãn KM: dùng promoLabel nếu có, ngược lại tính "-X%".
+const promoBadge = (label: string, original: number | null, promo: number | null): string => {
+  if (label) return label;
+  if (original && promo && original > promo) return `-${Math.round((1 - promo / original) * 100)}%`;
+  return "";
+};
 type ComparisonRow = { category: string } | { feature: string; values: (boolean | string)[] };
 
 const Price = () => {
@@ -79,17 +93,24 @@ const Price = () => {
   const plans: PlanView[] = useMemo(() => {
     const cat = (catalog?.items || []).filter((i) => i.kind === "plan");
     if (cat.length) {
-      return cat.map((it) => ({
-        key: it.key,
-        name: it.name,
-        subtitle: it.subtitle,
-        description: it.description,
-        features: it.features || [],
-        excludedFeatures: it.excludedFeatures || [],
-        popular: it.popular,
-        priceType: it.priceType,
-        monthly: it.priceType === "free" ? 0 : it.priceType === "contact" ? -1 : (it.prices?.[billing] ?? null),
-      }));
+      return cat.map((it) => {
+        const original = it.prices?.[billing] ?? null;
+        const promo = it.promoPrices?.[billing] ?? null;
+        const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+        return {
+          key: it.key,
+          name: it.name,
+          subtitle: it.subtitle,
+          description: it.description,
+          features: it.features || [],
+          excludedFeatures: it.excludedFeatures || [],
+          popular: it.popular,
+          priceType: it.priceType,
+          monthly: it.priceType === "free" ? 0 : it.priceType === "contact" ? -1 : (hasPromo ? promo : original),
+          originalMonthly: hasPromo ? original : null,
+          promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo) : "",
+        };
+      });
     }
     // FALLBACK tĩnh
     const keys = ["starter", "professional", "business", "enterprise"] as const;
@@ -110,6 +131,8 @@ const Price = () => {
         popular: popular[idx],
         priceType: b === 0 ? "free" : b === -1 ? "contact" : "paid",
         monthly,
+        originalMonthly: null,
+        promoLabel: "",
         ctaLabel: t(`plans.${key}.cta`) as string,
       };
     });
@@ -120,9 +143,19 @@ const Price = () => {
     const cat = (catalog?.items || []).filter((i) => i.kind === "addon");
     if (cat.length) {
       return cat.map((it) => {
-        const priceValue = it.prices?.[billing] ?? null;
-        const priceDisplay = priceValue != null ? `${formatPrice(priceValue)}₫${it.priceSuffix ? " " + it.priceSuffix : ""}` : (it.priceLabel || "");
-        return { key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description, priceValue, priceDisplay, detail: detailFrom(it) };
+        const original = it.prices?.[billing] ?? null;
+        const promo = it.promoPrices?.[billing] ?? null;
+        const hasPromo = promo != null && original != null && promo < original;
+        const priceValue = hasPromo ? promo : original;
+        const suffix = it.priceSuffix ? " " + it.priceSuffix : "";
+        const priceDisplay = priceValue != null ? `${formatPrice(priceValue)}₫${suffix}` : (it.priceLabel || "");
+        return {
+          key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
+          priceValue, priceDisplay,
+          originalDisplay: hasPromo ? `${formatPrice(original)}₫${suffix}` : null,
+          promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo) : "",
+          detail: detailFrom(it),
+        };
       });
     }
     // FALLBACK tĩnh
@@ -136,7 +169,7 @@ const Price = () => {
       const priceDisplay = c.price != null
         ? `${formatPrice(c.price)}₫${c.suffixKey ? " " + (t(c.suffixKey) as string) : ""}`
         : (t(`addons.${c.key}.priceLabel`) as string);
-      return { key: c.key, icon: c.icon, name: t(`addons.${c.key}.name`) as string, description: t(`addons.${c.key}.description`) as string, priceValue: c.price, priceDisplay };
+      return { key: c.key, icon: c.icon, name: t(`addons.${c.key}.name`) as string, description: t(`addons.${c.key}.description`) as string, priceValue: c.price, priceDisplay, originalDisplay: null, promoLabel: "" };
     });
   }, [catalog, billing, t]);
 
@@ -144,10 +177,23 @@ const Price = () => {
   const hardware: HwView[] = useMemo(() => {
     const cat = (catalog?.items || []).filter((i) => i.kind === "hardware");
     if (cat.length) {
-      return cat.map((it) => ({
-        key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
-        specs: it.specs || [], buyPrice: it.buyPrice ?? null, rentValue: it.rentPrices?.[billing] ?? null, detail: detailFrom(it),
-      }));
+      return cat.map((it) => {
+        const buyOrig = it.buyPrice ?? null;
+        const buyPromo = it.buyPromoPrice ?? null;
+        const hasBuyPromo = buyPromo != null && buyOrig != null && buyPromo < buyOrig;
+        const rentOrig = it.rentPrices?.[billing] ?? null;
+        const rentPromo = it.rentPromoPrices?.[billing] ?? null;
+        const hasRentPromo = rentPromo != null && rentOrig != null && rentPromo < rentOrig;
+        return {
+          key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description, specs: it.specs || [],
+          buyPrice: hasBuyPromo ? buyPromo : buyOrig,
+          buyOriginal: hasBuyPromo ? buyOrig : null,
+          rentValue: hasRentPromo ? rentPromo : rentOrig,
+          rentOriginal: hasRentPromo ? rentOrig : null,
+          promoLabel: promoBadge(it.promoLabel, hasBuyPromo ? buyOrig : rentOrig, hasBuyPromo ? buyPromo : rentPromo),
+          detail: detailFrom(it),
+        };
+      });
     }
     // FALLBACK tĩnh
     const cfgs = [
@@ -161,7 +207,8 @@ const Price = () => {
       const specs = t(`hardware.${c.key}.specs`);
       return {
         key: c.key, icon: c.icon, name: t(`hardware.${c.key}.name`) as string, description: t(`hardware.${c.key}.description`) as string,
-        specs: Array.isArray(specs) ? specs : [], buyPrice: c.buyPrice, rentValue: c.rent != null ? Math.round(c.rent * FALLBACK_DISCOUNT[billing]) : null,
+        specs: Array.isArray(specs) ? specs : [], buyPrice: c.buyPrice, buyOriginal: null,
+        rentValue: c.rent != null ? Math.round(c.rent * FALLBACK_DISCOUNT[billing]) : null, rentOriginal: null, promoLabel: "",
       };
     });
   }, [catalog, billing, t]);
@@ -247,6 +294,12 @@ const Price = () => {
     if (p.priceType === "contact" || p.monthly === -1 || p.monthly == null) return <span className="text-3xl font-bold text-foreground">{t("plans.contact")}</span>;
     return (
       <div>
+        {p.originalMonthly != null && (
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-sm text-muted-foreground line-through">{formatPrice(p.originalMonthly)}₫</span>
+            {p.promoLabel && <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">{p.promoLabel}</Badge>}
+          </div>
+        )}
         <span className="text-3xl font-bold text-foreground">{formatPrice(p.monthly)}₫</span>
         <span className="text-sm text-muted-foreground">{t("plans.perMonth")}</span>
       </div>
@@ -406,7 +459,15 @@ const Price = () => {
                   <CardTitle className="text-base">{addon.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <div className="mb-3"><span className="text-2xl font-bold text-foreground">{addon.priceDisplay}</span></div>
+                  <div className="mb-3">
+                    {addon.originalDisplay && (
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-sm text-muted-foreground line-through">{addon.originalDisplay}</span>
+                        {addon.promoLabel && <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">{addon.promoLabel}</Badge>}
+                      </div>
+                    )}
+                    <span className="text-2xl font-bold text-foreground">{addon.priceDisplay}</span>
+                  </div>
                   <p className="text-sm text-muted-foreground">{addon.description}</p>
                 </CardContent>
                 <CardFooter className="flex gap-2 mt-auto">
@@ -451,6 +512,7 @@ const Price = () => {
                             <p className="text-xs text-muted-foreground">{t("hardware.buyDesc")}</p>
                           </div>
                           <div className="text-right shrink-0">
+                            {hw.buyOriginal != null && <p className="text-xs text-muted-foreground line-through">{formatPrice(hw.buyOriginal)}₫</p>}
                             <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.buyPrice)}₫</p>
                             <p className="text-xs text-muted-foreground">{t("hardware.perUnit")}</p>
                           </div>
@@ -473,6 +535,7 @@ const Price = () => {
                             <p className="text-xs text-muted-foreground">{t("hardware.rentDesc")}</p>
                           </div>
                           <div className="text-right shrink-0">
+                            {hw.rentOriginal != null && <p className="text-xs text-muted-foreground line-through">{formatPrice(hw.rentOriginal)}₫</p>}
                             <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.rentValue)}₫</p>
                             <p className="text-xs text-muted-foreground">{t("hardware.perUnitMonth")}</p>
                           </div>
