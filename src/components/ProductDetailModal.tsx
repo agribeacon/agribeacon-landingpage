@@ -4,6 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Check, ShoppingCart } from "lucide-react";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
+export interface ProductDetailData {
+  tagline?: string;
+  overview?: string;
+  featuresTitle?: string;
+  features?: string[];
+  specTitle?: string;
+  specs?: Array<{ label: string; value: string }>;
+  useCasesTitle?: string;
+  useCases?: string[];
+  includedTitle?: string;
+  whatsIncluded?: string[];
+}
+
 interface ProductDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -13,29 +26,33 @@ interface ProductDetailModalProps {
   onAddToCart?: () => void;
   priceLabel?: string;
   isRental?: boolean;
+  // Nội dung động từ catalog (Admin CMS). Nếu có → ưu tiên; nếu không → fallback i18n.
+  detailData?: ProductDetailData;
 }
 
-export const ProductDetailModal = ({ open, onOpenChange, title, type, productKey, onAddToCart, priceLabel, isRental }: ProductDetailModalProps) => {
+export const ProductDetailModal = ({ open, onOpenChange, title, type, productKey, onAddToCart, priceLabel, isRental, detailData }: ProductDetailModalProps) => {
   const { t } = useSimpleLanguage();
 
   const prefix = type === 'hardware' ? `hardware.${productKey}.detail` : `addons.${productKey}.detail`;
+  const d = detailData;
 
-  const tagline = t(`${prefix}.tagline`) as string;
-  const overview = t(`${prefix}.overview`) as string;
-  const features = t(`${prefix}.features`);
-  const featuresTitle = t(`${prefix}.featuresTitle`) as string;
-  const featuresArray: string[] = Array.isArray(features) ? features : [];
+  const tRaw = (key: string) => {
+    const v = t(key);
+    return typeof v === 'string' && v !== key ? v : '';
+  };
+
+  const tagline = d ? (d.tagline || '') : tRaw(`${prefix}.tagline`);
+  const overview = d ? (d.overview || '') : tRaw(`${prefix}.overview`);
+  const featuresArray: string[] = d ? (d.features || []) : (Array.isArray(t(`${prefix}.features`)) ? (t(`${prefix}.features`) as unknown as string[]) : []);
+  const featuresTitle = d ? (d.featuresTitle || '') : tRaw(`${prefix}.featuresTitle`);
 
   // Hardware-specific fields
-  const specs = t(`${prefix}.specs`);
-  const specsArray: Array<{ label: string; value: string }> = Array.isArray(specs) ? specs : [];
-  const specTitle = t(`${prefix}.specTitle`) as string;
-  const useCases = t(`${prefix}.useCases`);
-  const useCasesArray: string[] = Array.isArray(useCases) ? useCases : [];
-  const useCasesTitle = t(`${prefix}.useCasesTitle`) as string;
-  const whatsIncluded = t(`${prefix}.whatsIncluded`);
-  const includedArray: string[] = Array.isArray(whatsIncluded) ? whatsIncluded : [];
-  const includedTitle = t(`${prefix}.includedTitle`) as string;
+  const specsArray: Array<{ label: string; value: string }> = d ? (d.specs || []) : (Array.isArray(t(`${prefix}.specs`)) ? (t(`${prefix}.specs`) as unknown as Array<{ label: string; value: string }>) : []);
+  const specTitle = d ? (d.specTitle || '') : tRaw(`${prefix}.specTitle`);
+  const useCasesArray: string[] = d ? (d.useCases || []) : (Array.isArray(t(`${prefix}.useCases`)) ? (t(`${prefix}.useCases`) as unknown as string[]) : []);
+  const useCasesTitle = d ? (d.useCasesTitle || '') : tRaw(`${prefix}.useCasesTitle`);
+  const includedArray: string[] = d ? (d.whatsIncluded || []) : (Array.isArray(t(`${prefix}.whatsIncluded`)) ? (t(`${prefix}.whatsIncluded`) as unknown as string[]) : []);
+  const includedTitle = d ? (d.includedTitle || '') : tRaw(`${prefix}.includedTitle`);
 
   const isHardware = type === 'hardware';
 
