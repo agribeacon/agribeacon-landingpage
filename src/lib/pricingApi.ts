@@ -38,6 +38,7 @@ export interface PricingItem {
   buyPromoPrice: number | null;
   rentPrices: { oneYear?: number | null; twoYears?: number | null };
   rentPromoPrices: { oneYear?: number | null; twoYears?: number | null };
+  promoPercent: number | null;
   promoEndsAt: string | null;
   name: string;
   subtitle: string;
@@ -64,7 +65,7 @@ export interface PricingComparisonGroup {
 export interface PricingConfig {
   billingTerms: { key: "oneYear" | "twoYears"; order: number; label: string }[];
   hero: { badge?: string; title?: string; subtitle?: string };
-  cta: { title?: string; subtitle?: string; primary?: string; secondary?: string };
+  cta: { title?: string; subtitle?: string; primary?: string; secondary?: string; primaryUrl?: string; secondaryUrl?: string };
   comparison: { title: string; subtitle: string; groups: PricingComparisonGroup[] };
   faq: { q: string; a: string }[];
 }

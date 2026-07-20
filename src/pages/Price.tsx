@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
@@ -59,13 +59,21 @@ interface HwView {
   detail?: ProductDetailData;
 }
 
-// Nhãn KM: dùng promoLabel nếu có, ngược lại tính "-X%".
-const promoBadge = (label: string, original: number | null, promo: number | null): string => {
+const promoBadge = (label: string, original: number | null, promo: number | null, percent?: number | null): string => {
   if (label) return label;
+  if (percent != null) return `-${percent}%`;
   if (original && promo && original > promo) return `-${Math.round((1 - promo / original) * 100)}%`;
   return "";
 };
 type ComparisonRow = { category: string } | { feature: string; values: (boolean | string)[] };
+
+// Bọc nút CTA bằng đường dẫn: URL ngoài (http/https) → thẻ <a> tab mới; path nội bộ → <Link>.
+// Không có url → trả nguyên nút (không điều hướng).
+const CtaLink = ({ url, children }: { url?: string; children: ReactElement }): ReactElement => {
+  if (!url) return children;
+  if (/^https?:\/\//i.test(url)) return <a href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
+  return <Link to={url}>{children}</Link>;
+};
 
 const Price = () => {
   const [billing, setBilling] = useState<BillingKey>("oneYear");
@@ -103,7 +111,7 @@ const Price = () => {
         priceType: it.priceType,
         monthly: it.priceType === "free" ? 0 : it.priceType === "contact" ? -1 : (hasPromo ? promo : original),
         originalMonthly: hasPromo ? original : null,
-        promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo) : "",
+        promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo, it.promoPercent) : "",
       };
     });
   }, [catalog, billing]);
@@ -121,7 +129,7 @@ const Price = () => {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
         priceValue, priceDisplay,
         originalDisplay: hasPromo ? `${formatPrice(original)}₫${suffix}` : null,
-        promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo) : "",
+        promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo, it.promoPercent) : "",
         detail: detailFrom(it),
       };
     });
@@ -142,7 +150,7 @@ const Price = () => {
         buyOriginal: hasBuyPromo ? buyOrig : null,
         rentValue: hasRentPromo ? rentPromo : rentOrig,
         rentOriginal: hasRentPromo ? rentOrig : null,
-        promoLabel: promoBadge(it.promoLabel, hasBuyPromo ? buyOrig : rentOrig, hasBuyPromo ? buyPromo : rentPromo),
+        promoLabel: promoBadge(it.promoLabel, hasBuyPromo ? buyOrig : rentOrig, hasBuyPromo ? buyPromo : rentPromo, it.promoPercent),
         detail: detailFrom(it),
       };
     });
@@ -516,8 +524,12 @@ const Price = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{cta?.title || t("cta.title")}</h2>
           <p className="text-primary-foreground/80 max-w-xl mx-auto mb-8">{cta?.subtitle || t("cta.subtitle")}</p>
           <div className="flex items-center justify-center gap-4">
-            <Button variant="secondary" size="lg">{cta?.primary || t("cta.freeTrial")}</Button>
-            <Button variant="outline" size="lg" className="bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">{cta?.secondary || t("cta.contactConsult")}</Button>
+            <CtaLink url={cta?.primaryUrl}>
+              <Button variant="secondary" size="lg">{cta?.primary || t("cta.freeTrial")}</Button>
+            </CtaLink>
+            <CtaLink url={cta?.secondaryUrl}>
+              <Button variant="outline" size="lg" className="bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">{cta?.secondary || t("cta.contactConsult")}</Button>
+            </CtaLink>
           </div>
         </div>
       </section>
