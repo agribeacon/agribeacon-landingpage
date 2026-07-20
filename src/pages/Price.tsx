@@ -270,9 +270,9 @@ const Price = () => {
 
       {/* SaaS Plans */}
       <section className="container mx-auto px-4 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="flex flex-wrap justify-center gap-5">
           {plans.map((p) => (
-            <Card key={p.key} className={`relative flex flex-col ${p.popular ? "border-primary shadow-lg shadow-primary/10 scale-[1.02]" : "border-border"}`}>
+            <Card key={p.key} className={`relative flex flex-col w-full md:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] ${p.popular ? "border-primary shadow-lg shadow-primary/10 scale-[1.02]" : "border-border"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <Badge className="bg-primary text-primary-foreground shadow-sm">{t("plans.popular")}</Badge>
@@ -347,11 +347,15 @@ const Price = () => {
                   return (
                     <tr key={i} className="border-t border-border hover:bg-muted/20 transition-colors">
                       <td className="py-3 px-5 text-foreground">{row.feature}</td>
-                      {row.values.map((val, j) => (
-                        <td key={j} className="text-center py-3 px-4">
-                          {val === true ? <Check className="h-4 w-4 text-primary mx-auto" /> : val === false ? <X className="h-4 w-4 text-muted-foreground/30 mx-auto" /> : <span className="text-xs text-muted-foreground font-medium">{val}</span>}
-                        </td>
-                      ))}
+                      {/* Render đúng theo số gói đang hiển thị — values có thể lệch khi admin thêm/xóa gói */}
+                      {plans.map((p, j) => {
+                        const val = row.values[j] ?? false;
+                        return (
+                          <td key={p.key} className="text-center py-3 px-4">
+                            {val === true ? <Check className="h-4 w-4 text-primary mx-auto" /> : val === false ? <X className="h-4 w-4 text-muted-foreground/30 mx-auto" /> : <span className="text-xs text-muted-foreground font-medium">{val}</span>}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}
@@ -369,9 +373,9 @@ const Price = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{t("addons.title")}</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">{t("addons.subtitle")}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             {addons.map((addon) => (
-              <Card key={addon.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full">
+              <Card key={addon.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full w-full md:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)]">
                 <CardHeader className="pb-3">
                   <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-2">
                     <addon.icon className="h-5 w-5 text-accent-foreground" />
@@ -408,9 +412,9 @@ const Price = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{t("hardware.title")}</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">{t("hardware.subtitle")}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             {hardware.map((hw) => (
-              <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full">
+              <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full w-full md:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]">
                 <CardHeader>
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
                     <hw.icon className="h-6 w-6 text-primary" />
