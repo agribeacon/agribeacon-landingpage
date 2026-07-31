@@ -39,7 +39,8 @@ interface AddonView {
   icon: LucideIcon;
   name: string;
   description: string;
-  priceValue: number | null; // giá bán (đã áp KM)
+  priceType: string; // 'free' | 'contact' | 'paid'
+  priceValue: number | null; // giá bán (đã áp KM); null khi Liên hệ
   priceDisplay: string;
   originalDisplay: string | null; // giá gốc gạch ngang khi có KM
   promoLabel: string;
@@ -51,6 +52,7 @@ interface HwView {
   name: string;
   description: string;
   specs: string[];
+  priceType: string; // 'free' | 'contact' | 'paid'
   buyPrice: number | null; // giá bán (đã áp KM)
   buyOriginal: number | null;
   rentValue: number | null; // giá bán (đã áp KM)
@@ -77,8 +79,8 @@ const CtaLink = ({ url, children }: { url?: string; children: ReactElement }): R
 
 const Price = () => {
   const [billing, setBilling] = useState<BillingKey>("oneYear");
-  const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string; price: number; isRental: boolean; detail?: ProductDetailData }>({
-    open: false, title: "", type: "", key: "", price: 0, isRental: false, detail: undefined,
+  const [detailModal, setDetailModal] = useState<{ open: boolean; title: string; type: string; key: string; price: number; isRental: boolean; contact: boolean; detail?: ProductDetailData }>({
+    open: false, title: "", type: "", key: "", price: 0, isRental: false, contact: false, detail: undefined,
   });
   const { t, language } = useSimpleLanguage();
   const { catalog, loading } = usePricingCatalog(language);
@@ -119,21 +121,29 @@ const Price = () => {
   // ---- Add-ons (từ catalog) ----
   const addons: AddonView[] = useMemo(() => {
     return (catalog?.items || []).filter((i) => i.kind === "addon").map((it) => {
+      const isContact = it.priceType === "contact";
+      const isFree = it.priceType === "free";
       const original = it.prices?.[billing] ?? null;
       const promo = it.promoPrices?.[billing] ?? null;
-      const hasPromo = promo != null && original != null && promo < original;
-      const priceValue = hasPromo ? promo : original;
+      const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+      // Liên hệ → không có giá số; Miễn phí → 0; còn lại lấy giá (đã áp KM).
+      const priceValue = isContact ? null : isFree ? 0 : (hasPromo ? promo : original);
       const suffix = it.priceSuffix ? " " + it.priceSuffix : "";
-      const priceDisplay = priceValue != null ? `${formatPrice(priceValue)}₫${suffix}` : (it.priceLabel || "");
+      const priceDisplay = isContact
+        ? t("plans.contact")
+        : isFree
+          ? t("plans.free")
+          : (priceValue != null ? `${formatPrice(priceValue)}₫${suffix}` : (it.priceLabel || ""));
       return {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
+        priceType: it.priceType,
         priceValue, priceDisplay,
         originalDisplay: hasPromo ? `${formatPrice(original)}₫${suffix}` : null,
         promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo, it.promoPercent) : "",
         detail: detailFrom(it),
       };
     });
-  }, [catalog, billing]);
+  }, [catalog, billing, t]);
 
   // ---- Hardware (từ catalog) ----
   const hardware: HwView[] = useMemo(() => {
@@ -146,6 +156,7 @@ const Price = () => {
       const hasRentPromo = rentPromo != null && rentOrig != null && rentPromo < rentOrig;
       return {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description, specs: it.specs || [],
+        priceType: it.priceType,
         buyPrice: hasBuyPromo ? buyPromo : buyOrig,
         buyOriginal: hasBuyPromo ? buyOrig : null,
         rentValue: hasRentPromo ? rentPromo : rentOrig,
@@ -191,8 +202,8 @@ const Price = () => {
     toast({ title: t("cart.added") || "Added to cart", description: `${h.name} (${isRental ? terms.find((x) => x.key === billing)?.label : t("hardware.buyOutright")})`, duration: 2000 });
   };
 
-  const openDetailModal = (type: string, key: string, title: string, price: number, isRental: boolean, detail?: ProductDetailData) => {
-    setDetailModal({ open: true, type, key, title, price, isRental, detail });
+  const openDetailModal = (type: string, key: string, title: string, price: number, isRental: boolean, contact: boolean, detail?: ProductDetailData) => {
+    setDetailModal({ open: true, type, key, title, price, isRental, contact, detail });
   };
 
   const planPriceLabel = (p: PlanView) => {
@@ -244,7 +255,8 @@ const Price = () => {
         productKey={detailModal.key}
         isRental={detailModal.isRental}
         detailData={detailModal.detail}
-        onAddToCart={() => {
+        contactHref={detailModal.contact ? "/contact" : undefined}
+        onAddToCart={detailModal.contact ? undefined : () => {
           if (detailModal.type === "hardware") {
             const h = hardware.find((x) => x.key === detailModal.key);
             if (h) handleAddHardwareToCart(h, detailModal.isRental);
@@ -311,14 +323,21 @@ const Price = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  variant={p.popular ? "default" : "outline"}
-                  className="w-full"
-                  onClick={() => handleAddPlanToCart(p)}
-                  disabled={p.priceType === "contact"}
-                >
-                  {p.priceType === "contact" ? (p.ctaLabel || t("plans.enterprise.cta")) : (<><ShoppingCart className="h-4 w-4 mr-2" />{t("cart.addToCart") || "Add to Cart"}</>)}
-                </Button>
+                {p.priceType === "contact" ? (
+                  // Gói báo giá không thêm vào giỏ được, nên nút dẫn thẳng sang trang liên hệ
+                  <Button asChild variant={p.popular ? "default" : "outline"} className="w-full">
+                    <Link to="/contact">{p.ctaLabel || t("plans.enterprise.cta")}</Link>
+                  </Button>
+                ) : (
+                  <Button
+                    variant={p.popular ? "default" : "outline"}
+                    className="w-full"
+                    onClick={() => handleAddPlanToCart(p)}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {t("cart.addToCart") || "Add to Cart"}
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}
@@ -403,8 +422,15 @@ const Price = () => {
                   <p className="text-sm text-muted-foreground">{addon.description}</p>
                 </CardContent>
                 <CardFooter className="flex gap-2 mt-auto">
-                  <Button variant="outline" size="sm" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.detail)}>{t("addons.detail")}</Button>
-                  <Button size="sm" className="flex-1" onClick={() => handleAddAddonToCart(addon)}><ShoppingCart className="h-4 w-4 mr-2" />{t("cart.addToCart") || "Add to Cart"}</Button>
+                  <Button variant="outline" size="sm" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.priceType === "contact", addon.detail)}>{t("addons.detail")}</Button>
+                  {addon.priceType === "contact" ? (
+                    // Add-on Liên hệ không thêm vào giỏ được → nút dẫn sang trang liên hệ
+                    <Button asChild size="sm" className="flex-1">
+                      <Link to="/contact">{t("plans.contact")}</Link>
+                    </Button>
+                  ) : (
+                    <Button size="sm" className="flex-1" onClick={() => handleAddAddonToCart(addon)}><ShoppingCart className="h-4 w-4 mr-2" />{t("cart.addToCart") || "Add to Cart"}</Button>
+                  )}
                 </CardFooter>
               </Card>
             ))}
@@ -450,7 +476,7 @@ const Price = () => {
                           </div>
                         </div>
                         <div className="flex justify-end gap-1.5 mt-2">
-                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.buyPrice ?? 0, false, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
+                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.buyPrice ?? 0, false, false, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
                           <Button size="icon" className="h-7 w-7" onClick={() => handleAddHardwareToCart(hw, false)}><ShoppingCart className="h-3.5 w-3.5" /></Button>
                         </div>
                       </div>
@@ -473,8 +499,20 @@ const Price = () => {
                           </div>
                         </div>
                         <div className="flex justify-end gap-1.5 mt-2">
-                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.rentValue ?? 0, true, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
+                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.rentValue ?? 0, true, false, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
                           <Button size="icon" className="h-7 w-7" onClick={() => handleAddHardwareToCart(hw, true)}><ShoppingCart className="h-3.5 w-3.5" /></Button>
+                        </div>
+                      </div>
+                    )}
+                    {/* Liên hệ: không có giá mua/thuê → hiện CTA liên hệ thay vì để trống */}
+                    {hw.priceType === "contact" && (
+                      <div className="rounded-lg border border-border bg-muted/40 p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-lg font-bold text-foreground">{t("plans.contact")}</p>
+                          <div className="flex gap-1.5 shrink-0">
+                            <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, 0, false, true, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
+                            <Button asChild size="sm" className="h-7"><Link to="/contact">{t("plans.contact")}</Link></Button>
+                          </div>
                         </div>
                       </div>
                     )}

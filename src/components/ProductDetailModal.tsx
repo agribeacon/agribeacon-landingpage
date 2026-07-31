@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Check, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
 export interface ProductDetailData {
@@ -26,11 +27,13 @@ interface ProductDetailModalProps {
   onAddToCart?: () => void;
   priceLabel?: string;
   isRental?: boolean;
+  // Sản phẩm "Liên hệ" → không thêm vào giỏ; hiện nút dẫn sang trang liên hệ.
+  contactHref?: string;
   // Nội dung động từ catalog (Admin CMS). Nếu có → ưu tiên; nếu không → fallback i18n.
   detailData?: ProductDetailData;
 }
 
-export const ProductDetailModal = ({ open, onOpenChange, title, type, productKey, onAddToCart, priceLabel, isRental, detailData }: ProductDetailModalProps) => {
+export const ProductDetailModal = ({ open, onOpenChange, title, type, productKey, onAddToCart, priceLabel, isRental, contactHref, detailData }: ProductDetailModalProps) => {
   const { t } = useSimpleLanguage();
 
   const prefix = type === 'hardware' ? `hardware.${productKey}.detail` : `addons.${productKey}.detail`;
@@ -138,8 +141,14 @@ export const ProductDetailModal = ({ open, onOpenChange, title, type, productKey
             </div>
           )}
 
-          {/* Add to Cart */}
-          {onAddToCart && (
+          {/* CTA: Liên hệ (không thêm giỏ) hoặc Thêm vào giỏ */}
+          {contactHref ? (
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <Button asChild size="lg" className="w-full" onClick={() => onOpenChange(false)}>
+                <Link to={contactHref}>{t('plans.contact')}</Link>
+              </Button>
+            </div>
+          ) : onAddToCart && (
             <div className="flex items-center justify-between pt-4 border-t border-border">
               <Button size="lg" className="w-full" onClick={() => { onAddToCart(); onOpenChange(false); }}>
                 <ShoppingCart className="h-4 w-4 mr-2" />

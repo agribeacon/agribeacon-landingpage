@@ -5,19 +5,83 @@ import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+/** Khoảng hở tối thiểu giữa dropdown và mép màn hình khi phải kéo vào cho khỏi tràn */
+const VIEWPORT_EDGE_MARGIN = 16;
+
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Root
-    ref={ref}
-    className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
-    {...props}
-  >
-    {children}
-    <NavigationMenuViewport />
-  </NavigationMenuPrimitive.Root>
-));
+>(({ className, children, onValueChange, ...props }, ref) => {
+  const rootRef = React.useRef<React.ElementRef<typeof NavigationMenuPrimitive.Root> | null>(null);
+  const viewportRef = React.useRef<HTMLDivElement | null>(null);
+  const [openValue, setOpenValue] = React.useState("");
+  const [offset, setOffset] = React.useState(0);
+
+  const setRefs = React.useCallback(
+    (node: React.ElementRef<typeof NavigationMenuPrimitive.Root> | null) => {
+      rootRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
+
+  const handleValueChange = React.useCallback(
+    (value: string) => {
+      setOpenValue(value);
+      onValueChange?.(value);
+    },
+    [onValueChange],
+  );
+
+  // Radix neo viewport vào mép trái của Root nên mọi dropdown đều bung ra ở menu
+  // đầu tiên. Đo vị trí trigger đang mở rồi đẩy viewport về đúng dưới menu đó.
+  React.useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root || !openValue) return;
+
+    const update = () => {
+      // aria-expanded để chỉ khớp trigger, không dính nhầm element khác trong dropdown
+      const trigger = root.querySelector<HTMLElement>('button[data-state="open"][aria-expanded="true"]');
+      if (!trigger) return;
+
+      const rootLeft = root.getBoundingClientRect().left;
+      let next = trigger.getBoundingClientRect().left - rootLeft;
+
+      // Menu nằm sát phải (vd "Giới thiệu") có thể đẩy dropdown tràn khỏi màn hình
+      const width = viewportRef.current?.offsetWidth ?? 0;
+      if (width > 0) {
+        const maxLeft = window.innerWidth - VIEWPORT_EDGE_MARGIN - width - rootLeft;
+        const minLeft = VIEWPORT_EDGE_MARGIN - rootLeft;
+        next = Math.max(minLeft, Math.min(next, maxLeft));
+      }
+
+      setOffset(next);
+    };
+
+    // Chờ Radix set xong --radix-navigation-menu-viewport-width rồi mới đo bề ngang
+    const frame = requestAnimationFrame(update);
+    update();
+
+    window.addEventListener("resize", update);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", update);
+    };
+  }, [openValue]);
+
+  return (
+    <NavigationMenuPrimitive.Root
+      ref={setRefs}
+      className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
+      onValueChange={handleValueChange}
+      {...props}
+    >
+      {children}
+      <NavigationMenuViewport ref={viewportRef} style={{ left: offset }} />
+    </NavigationMenuPrimitive.Root>
+  );
+});
 NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 
 const NavigationMenuList = React.forwardRef<
@@ -73,17 +137,17 @@ NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
 
 const NavigationMenuLink = NavigationMenuPrimitive.Link;
 
+// ref + style gắn vào div bọc ngoài vì đó mới là phần được canh theo trigger đang mở
 const NavigationMenuViewport = React.forwardRef<
-  React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
+  HTMLDivElement,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
->(({ className, ...props }, ref) => (
-  <div className={cn("absolute left-0 top-full flex justify-center")}>
+>(({ className, style, ...props }, ref) => (
+  <div ref={ref} style={style} className={cn("absolute top-full flex justify-center")}>
     <NavigationMenuPrimitive.Viewport
       className={cn(
         "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
         className,
       )}
-      ref={ref}
       {...props}
     />
   </div>
