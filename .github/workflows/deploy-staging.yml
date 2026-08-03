@@ -1,0 +1,26 @@
+name: Deploy to STAGING
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+
+# Huỷ deploy cũ đang chạy/chờ khi có commit mới hơn
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy landing page to staging.agribeacon.tech
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} '/opt/landingpage-staging/deploy.sh'
+          rm -f ~/.ssh/deploy_key
