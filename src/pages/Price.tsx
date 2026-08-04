@@ -61,6 +61,13 @@ interface HwView {
   detail?: ProductDetailData;
 }
 
+// KM chỉ hợp lệ khi có giá gốc và giá KM > 0 và thấp hơn giá gốc. Ô "Giá KM" bị nhập 0
+// thay vì bỏ trống là dữ liệu rác, không phải "khuyến mãi còn 0đ" — nếu coi là KM thì
+// trang giá hiện 0₫ trong khi CMS/báo giá vẫn theo giá gốc. (KM hết hạn đã bị BE lọc
+// ở /public/pricing nên ở đây không cần kiểm tra promoEndsAt.)
+const isValidPromo = (original: number | null, promo: number | null): boolean =>
+  promo != null && promo > 0 && original != null && promo < original;
+
 const promoBadge = (label: string, original: number | null, promo: number | null, percent?: number | null): string => {
   if (label) return label;
   if (percent != null) return `-${percent}%`;
@@ -101,7 +108,7 @@ const Price = () => {
     return (catalog?.items || []).filter((i) => i.kind === "plan").map((it) => {
       const original = it.prices?.[billing] ?? null;
       const promo = it.promoPrices?.[billing] ?? null;
-      const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+      const hasPromo = it.priceType === "paid" && isValidPromo(original, promo);
       return {
         key: it.key,
         name: it.name,
@@ -125,7 +132,7 @@ const Price = () => {
       const isFree = it.priceType === "free";
       const original = it.prices?.[billing] ?? null;
       const promo = it.promoPrices?.[billing] ?? null;
-      const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+      const hasPromo = it.priceType === "paid" && isValidPromo(original, promo);
       // Liên hệ → không có giá số; Miễn phí → 0; còn lại lấy giá (đã áp KM).
       const priceValue = isContact ? null : isFree ? 0 : (hasPromo ? promo : original);
       const suffix = it.priceSuffix ? " " + it.priceSuffix : "";
@@ -150,10 +157,10 @@ const Price = () => {
     return (catalog?.items || []).filter((i) => i.kind === "hardware").map((it) => {
       const buyOrig = it.buyPrice ?? null;
       const buyPromo = it.buyPromoPrice ?? null;
-      const hasBuyPromo = buyPromo != null && buyOrig != null && buyPromo < buyOrig;
+      const hasBuyPromo = isValidPromo(buyOrig, buyPromo);
       const rentOrig = it.rentPrices?.[billing] ?? null;
       const rentPromo = it.rentPromoPrices?.[billing] ?? null;
-      const hasRentPromo = rentPromo != null && rentOrig != null && rentPromo < rentOrig;
+      const hasRentPromo = isValidPromo(rentOrig, rentPromo);
       return {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description, specs: it.specs || [],
         priceType: it.priceType,
