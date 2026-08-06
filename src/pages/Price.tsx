@@ -314,6 +314,12 @@ const Price = () => {
     addItem({ id: `addon-${a.key}-${billing}`, type: "addon", name: a.name, price: a.priceValue ?? 0, billing, metadata: { key: a.key } });
     toast({ title: t("cart.added") || "Added to cart", description: a.name, duration: 2000 });
   };
+  // Dịch vụ trả 1 lần theo đơn vị công → KHÔNG gắn `billing` (giống hardware mua đứt),
+  // để giỏ hàng không hiện nhãn chu kỳ 1 năm/2 năm cho một khoản trả một lần.
+  const handleAddServiceToCart = (s: AddonView) => {
+    addItem({ id: `service-${s.key}-onetime`, type: "service", name: s.name, price: s.priceValue ?? 0, metadata: { key: s.key } });
+    toast({ title: t("cart.added") || "Added to cart", description: s.name, duration: 2000 });
+  };
   const handleAddHardwareToCart = (h: HwView, isRental: boolean) => {
     const price = isRental ? (h.rentValue ?? 0) : (h.buyPrice ?? 0);
     addItem({ id: `hardware-${h.key}-${isRental ? "rent" : "buy"}-${isRental ? billing : "onetime"}`, type: "hardware", name: h.name, price, billing: isRental ? billing : undefined, metadata: { key: h.key, isRental } });
@@ -609,9 +615,16 @@ const Price = () => {
                         <div className="mb-3 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-2 text-center text-sm text-muted-foreground">
                           {addon.priceType === "paid" ? addon.priceDisplay : au.byQuote}
                         </div>
-                        <Button variant="outline" asChild className="w-full">
-                          <Link to="/contact"><Phone className="mr-2 h-4 w-4" />{au.contactQuote}</Link>
-                        </Button>
+                        {/* Có đơn giá → cho chọn thẳng vào giỏ; chưa có giá (Liên hệ) → giữ nút liên hệ. */}
+                        {addon.priceType === "paid" && (addon.priceValue ?? 0) > 0 ? (
+                          <Button className="w-full" onClick={() => handleAddServiceToCart(addon)}>
+                            <ShoppingCart className="mr-2 h-4 w-4" />{au.select}
+                          </Button>
+                        ) : (
+                          <Button variant="outline" asChild className="w-full">
+                            <Link to="/contact"><Phone className="mr-2 h-4 w-4" />{au.contactQuote}</Link>
+                          </Button>
+                        )}
                       </div>
                     ))}
                   </div>
