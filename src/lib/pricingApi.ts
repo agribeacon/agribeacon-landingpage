@@ -7,7 +7,7 @@ export const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined) || "http://localhost:3018/api";
 
 export type PricingLocale = "en" | "vi" | "ja";
-export type PricingKind = "plan" | "addon" | "hardware";
+export type PricingKind = "plan" | "addon" | "hardware" | "service";
 
 export interface PricingItemDetail {
   tagline?: string;
@@ -30,6 +30,7 @@ export interface PricingItem {
   order: number;
   icon: string;
   popular: boolean;
+  group: "capacity" | "ai" | null;
   priceType: "free" | "contact" | "paid";
   prices: { oneYear?: number | null; twoYears?: number | null };
   promoPrices: { oneYear?: number | null; twoYears?: number | null };
@@ -38,6 +39,9 @@ export interface PricingItem {
   buyPromoPrice: number | null;
   rentPrices: { oneYear?: number | null; twoYears?: number | null };
   rentPromoPrices: { oneYear?: number | null; twoYears?: number | null };
+  servicePrice: number | null;
+  servicePromoPrice: number | null;
+  serviceUnit: string;
   promoPercent: number | null;
   promoEndsAt: string | null;
   name: string;

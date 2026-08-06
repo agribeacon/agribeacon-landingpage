@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, Building2, Crown, ShoppingCart, Info, Loader2, type LucideIcon } from "lucide-react";
+import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, Building2, Crown, ShoppingCart, Info, Loader2, Star, MessageCircle, Phone, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,8 +42,13 @@ interface AddonView {
   priceType: string; // 'free' | 'contact' | 'paid'
   priceValue: number | null; // giá bán (đã áp KM); null khi Liên hệ
   priceDisplay: string;
+  priceSuffix: string; // hậu tố đơn vị, vd "/ site" (để render "199.000₫ / site / tháng")
+  subtitle: string;
   originalDisplay: string | null; // giá gốc gạch ngang khi có KM
   promoLabel: string;
+  group: "capacity" | "ai" | null; // nhóm hiển thị trên trang giá
+  popular: boolean; // badge "Phổ biến" (dùng cho thẻ AI)
+  isService?: boolean; // item kind='service' (module Dịch vụ) → CTA luôn là Liên hệ
   detail?: ProductDetailData;
 }
 interface HwView {
@@ -61,6 +66,13 @@ interface HwView {
   detail?: ProductDetailData;
 }
 
+// KM chỉ hợp lệ khi có giá gốc và giá KM > 0 và thấp hơn giá gốc. Ô "Giá KM" bị nhập 0
+// thay vì bỏ trống là dữ liệu rác, không phải "khuyến mãi còn 0đ" — nếu coi là KM thì
+// trang giá hiện 0₫ trong khi CMS/báo giá vẫn theo giá gốc. (KM hết hạn đã bị BE lọc
+// ở /public/pricing nên ở đây không cần kiểm tra promoEndsAt.)
+const isValidPromo = (original: number | null, promo: number | null): boolean =>
+  promo != null && promo > 0 && original != null && promo < original;
+
 const promoBadge = (label: string, original: number | null, promo: number | null, percent?: number | null): string => {
   if (label) return label;
   if (percent != null) return `-${percent}%`;
@@ -68,6 +80,58 @@ const promoBadge = (label: string, original: number | null, promo: number | null
   return "";
 };
 type ComparisonRow = { category: string } | { feature: string; values: (boolean | string)[] };
+
+// Thứ tự & nhãn các nhóm add-on trên trang giá (bám bố cục ảnh mẫu). 'other' gom
+// các add-on chưa phân nhóm ở BE. Tách khỏi i18n lớn để gọn (theo pattern sẵn có).
+const ADDON_GROUP_ORDER = ["capacity", "ai", "service", "other"] as const;
+type AddonGroupId = (typeof ADDON_GROUP_ORDER)[number];
+const ADDON_GROUP_TEXT: Record<string, Record<AddonGroupId, { title: string; sub: string }>> = {
+  vi: {
+    capacity: { title: "Capacity", sub: "Mở rộng quy mô và số lượng người dùng." },
+    ai: { title: "AI Credit", sub: "Gói trợ lý AI Tiểu Thần Nông theo nhu cầu." },
+    service: { title: "Dịch vụ", sub: "Số hoá bản đồ, khảo sát & lắp đặt — theo báo giá thực tế." },
+    other: { title: "Tiện ích khác", sub: "" },
+  },
+  en: {
+    capacity: { title: "Capacity", sub: "Scale up sites and number of users." },
+    ai: { title: "AI Credit", sub: "AI assistant packs on demand." },
+    service: { title: "Services", sub: "Map digitization, survey & setup — by quote." },
+    other: { title: "More add-ons", sub: "" },
+  },
+  ja: {
+    capacity: { title: "Capacity", sub: "サイト数とユーザー数を拡張します。" },
+    ai: { title: "AI Credit", sub: "必要に応じたAIアシスタントパック。" },
+    service: { title: "サービス", sub: "地図デジタル化・調査・設置（見積もり）。" },
+    other: { title: "その他のアドオン", sub: "" },
+  },
+};
+
+// Nhãn UI khối add-on (bám ảnh mẫu). Tách khỏi i18n lớn để gọn.
+interface AddonUi {
+  add: string; added: string; select: string; selected: string; popular: string;
+  byQuote: string; contactQuote: string; perMonth: string;
+  subtotal: string; chosen: string; estTotal: string; exVat: string; continue: string;
+}
+const ADDON_UI: Record<string, AddonUi> = {
+  vi: {
+    add: "Thêm", added: "Đã thêm", select: "Chọn gói", selected: "Đã chọn", popular: "Phổ biến",
+    byQuote: "Theo báo giá thực tế", contactQuote: "Liên hệ báo giá", perMonth: "/ tháng",
+    subtotal: "Tạm tính", chosen: "add-on đã chọn", estTotal: "Tổng cộng (ước tính)",
+    exVat: "Chưa bao gồm VAT", continue: "Tiếp tục",
+  },
+  en: {
+    add: "Add", added: "Added", select: "Select", selected: "Selected", popular: "Popular",
+    byQuote: "By actual quote", contactQuote: "Request a quote", perMonth: "/ month",
+    subtotal: "Subtotal", chosen: "add-ons selected", estTotal: "Estimated total",
+    exVat: "VAT excluded", continue: "Continue",
+  },
+  ja: {
+    add: "追加", added: "追加済み", select: "選択", selected: "選択済み", popular: "人気",
+    byQuote: "実際の見積もり", contactQuote: "見積もり依頼", perMonth: "/ 月",
+    subtotal: "小計", chosen: "個のアドオン選択", estTotal: "合計（概算）",
+    exVat: "税抜", continue: "続ける",
+  },
+};
 
 // Bọc nút CTA bằng đường dẫn: URL ngoài (http/https) → thẻ <a> tab mới; path nội bộ → <Link>.
 // Không có url → trả nguyên nút (không điều hướng).
@@ -86,6 +150,7 @@ const Price = () => {
   const { catalog, loading } = usePricingCatalog(language);
   const { addItem } = useCart();
   const { toast } = useToast();
+  const au = ADDON_UI[language] || ADDON_UI.vi;
 
   const detailFrom = (it: PricingItem): ProductDetailData | undefined => (it.detail ? (it.detail as ProductDetailData) : undefined);
 
@@ -101,7 +166,7 @@ const Price = () => {
     return (catalog?.items || []).filter((i) => i.kind === "plan").map((it) => {
       const original = it.prices?.[billing] ?? null;
       const promo = it.promoPrices?.[billing] ?? null;
-      const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+      const hasPromo = it.priceType === "paid" && isValidPromo(original, promo);
       return {
         key: it.key,
         name: it.name,
@@ -125,7 +190,7 @@ const Price = () => {
       const isFree = it.priceType === "free";
       const original = it.prices?.[billing] ?? null;
       const promo = it.promoPrices?.[billing] ?? null;
-      const hasPromo = it.priceType === "paid" && promo != null && original != null && promo < original;
+      const hasPromo = it.priceType === "paid" && isValidPromo(original, promo);
       // Liên hệ → không có giá số; Miễn phí → 0; còn lại lấy giá (đã áp KM).
       const priceValue = isContact ? null : isFree ? 0 : (hasPromo ? promo : original);
       const suffix = it.priceSuffix ? " " + it.priceSuffix : "";
@@ -138,22 +203,75 @@ const Price = () => {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
         priceType: it.priceType,
         priceValue, priceDisplay,
+        priceSuffix: it.priceSuffix || "",
+        subtitle: it.subtitle || "",
         originalDisplay: hasPromo ? `${formatPrice(original)}₫${suffix}` : null,
         promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo, it.promoPercent) : "",
+        group: it.group ?? null,
+        popular: !!it.popular,
         detail: detailFrom(it),
       };
     });
   }, [catalog, billing, t]);
+
+  // ---- Dịch vụ (từ catalog kind='service') — hiển thị như thẻ Liên hệ/báo giá ----
+  const services: AddonView[] = useMemo(() => {
+    return (catalog?.items || []).filter((i) => i.kind === "service").map((it) => {
+      const isContact = it.priceType === "contact";
+      const isFree = it.priceType === "free";
+      const unit = it.serviceUnit ? `/${it.serviceUnit}` : "";
+      const priceValue = isContact ? null : isFree ? 0 : (it.servicePrice ?? null);
+      const priceDisplay = isContact
+        ? t("plans.contact")
+        : isFree
+          ? t("plans.free")
+          : (priceValue != null ? `${formatPrice(priceValue)}₫${unit}` : t("plans.contact"));
+      return {
+        key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description,
+        priceType: it.priceType,
+        priceValue, priceDisplay,
+        priceSuffix: "",
+        subtitle: it.subtitle || "",
+        originalDisplay: null,
+        promoLabel: "",
+        group: null,
+        popular: false,
+        isService: true,
+        detail: detailFrom(it),
+      };
+    });
+  }, [catalog, t]);
+
+  // Các section trên khối add-on: Capacity / AI Credit (từ add-on group) →
+  // Dịch vụ (từ kind='service') → Tiện ích khác (add-on chưa phân nhóm). Chỉ hiện
+  // section có item.
+  const displayGroups = useMemo(() => {
+    const text = ADDON_GROUP_TEXT[language] || ADDON_GROUP_TEXT.vi;
+    const addonBy = (gid: AddonGroupId) => addons.filter((a) => (a.group ?? "other") === gid);
+    const make = (id: AddonGroupId, items: AddonView[]) => ({
+      id,
+      title: text[id].title,
+      sub: text[id].sub,
+      items,
+    });
+    return [
+      make("capacity", addonBy("capacity")),
+      make("ai", addonBy("ai")),
+      make("service", services),
+      make("other", addonBy("other")),
+    ].filter((grp) => grp.items.length > 0);
+  }, [addons, services, language]);
+
 
   // ---- Hardware (từ catalog) ----
   const hardware: HwView[] = useMemo(() => {
     return (catalog?.items || []).filter((i) => i.kind === "hardware").map((it) => {
       const buyOrig = it.buyPrice ?? null;
       const buyPromo = it.buyPromoPrice ?? null;
-      const hasBuyPromo = buyPromo != null && buyOrig != null && buyPromo < buyOrig;
+      const hasBuyPromo = isValidPromo(buyOrig, buyPromo);
       const rentOrig = it.rentPrices?.[billing] ?? null;
       const rentPromo = it.rentPromoPrices?.[billing] ?? null;
-      const hasRentPromo = rentPromo != null && rentOrig != null && rentPromo < rentOrig;
+      const hasRentPromo = isValidPromo(rentOrig, rentPromo);
       return {
         key: it.key, icon: iconFor(it.icon), name: it.name, description: it.description, specs: it.specs || [],
         priceType: it.priceType,
@@ -400,39 +518,141 @@ const Price = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{t("addons.title")}</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">{t("addons.subtitle")}</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-5">
-            {addons.map((addon) => (
-              <Card key={addon.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full w-full md:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)]">
-                <CardHeader className="pb-3">
-                  <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-2">
-                    <addon.icon className="h-5 w-5 text-accent-foreground" />
+          <div className="max-w-6xl mx-auto space-y-6">
+            {displayGroups.map((grp) => (
+              <div key={grp.id} className="rounded-2xl border border-border bg-card p-5 md:p-6">
+                <div className="mb-5">
+                  <h3 className="text-lg md:text-xl font-bold text-foreground">{grp.title}</h3>
+                  {grp.sub && <p className="text-sm text-muted-foreground mt-1">{grp.sub}</p>}
+                </div>
+
+                {/* Capacity: thẻ + nút Thêm vào giỏ */}
+                {grp.id === "capacity" && (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {grp.items.map((addon) => (
+                        <div key={addon.key} className="rounded-xl border border-border p-4 flex flex-col">
+                          <div className="flex items-start gap-3 mb-3 flex-1">
+                            <div className="h-11 w-11 flex-none rounded-xl bg-primary/10 flex items-center justify-center">
+                              <addon.icon className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-foreground">{addon.name}</p>
+                              <p className="text-sm text-muted-foreground">{addon.description}</p>
+                            </div>
+                          </div>
+                          <p className="mb-4 text-xl font-bold text-primary">
+                            {addon.priceType === "paid" ? (
+                              <>{formatPrice(addon.priceValue ?? 0)}₫ <span className="text-xs font-normal text-muted-foreground">{addon.priceSuffix || au.perMonth}</span></>
+                            ) : addon.priceDisplay}
+                          </p>
+                          <div className="flex gap-2">
+                            <Button variant="outline" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.priceType === "contact", addon.detail)}>{t("addons.detail")}</Button>
+                            <Button className="flex-1" onClick={() => handleAddAddonToCart(addon)}>
+                              <ShoppingCart className="mr-1.5 h-4 w-4" />{au.add}
+                            </Button>
+                          </div>
+                        </div>
+                    ))}
                   </div>
-                  <CardTitle className="text-base">{addon.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <div className="mb-3">
-                    {addon.originalDisplay && (
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-sm text-muted-foreground line-through">{addon.originalDisplay}</span>
-                        {addon.promoLabel && <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">{addon.promoLabel}</Badge>}
+                )}
+
+                {/* AI Credit: thẻ gói, badge Phổ biến (gói popular được tô nổi bật) */}
+                {grp.id === "ai" && (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {grp.items.map((addon) => {
+                      const highlight = addon.popular;
+                      return (
+                        <div key={addon.key} className={`relative rounded-xl border p-4 flex flex-col transition-colors ${highlight ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border"}`}>
+                          {addon.popular && (
+                            <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 gap-1">
+                              <Star className="h-3 w-3" />{au.popular}
+                            </Badge>
+                          )}
+                          <p className="font-bold text-foreground">{addon.name}</p>
+                          {addon.subtitle && <p className="text-sm text-muted-foreground mt-0.5">{addon.subtitle}</p>}
+                          <div className="my-3 flex items-center gap-2 rounded-lg bg-primary/5 px-3 py-2 text-sm text-primary">
+                            <MessageCircle className="h-4 w-4 flex-none" />
+                            <span>{addon.description}</span>
+                          </div>
+                          <div className="flex-1" />
+                          <p className="mb-4 text-xl font-bold text-primary">
+                            {addon.priceType === "paid" ? (
+                              <>{formatPrice(addon.priceValue ?? 0)}₫ <span className="text-xs font-normal text-muted-foreground">{addon.priceSuffix || au.perMonth}</span></>
+                            ) : addon.priceDisplay}
+                          </p>
+                          <div className="flex gap-2">
+                            <Button variant="outline" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.priceType === "contact", addon.detail)}>{t("addons.detail")}</Button>
+                            <Button variant={highlight ? "default" : "outline"} className="flex-1" onClick={() => handleAddAddonToCart(addon)}>
+                              <ShoppingCart className="mr-1.5 h-4 w-4" />{au.select}
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Services (kind='service'): pill báo giá + nút liên hệ */}
+                {grp.id === "service" && (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {grp.items.map((addon) => (
+                      <div key={addon.key} className="rounded-xl border border-border p-4 flex flex-col">
+                        <div className="flex items-start gap-3 mb-3 flex-1">
+                          <div className="h-11 w-11 flex-none rounded-xl bg-primary/10 flex items-center justify-center">
+                            <addon.icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-foreground">{addon.name}</p>
+                            <p className="text-sm text-muted-foreground">{addon.description}</p>
+                          </div>
+                        </div>
+                        <div className="mb-3 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-2 text-center text-sm text-muted-foreground">
+                          {addon.priceType === "paid" ? addon.priceDisplay : au.byQuote}
+                        </div>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link to="/contact"><Phone className="mr-2 h-4 w-4" />{au.contactQuote}</Link>
+                        </Button>
                       </div>
-                    )}
-                    <span className="text-2xl font-bold text-foreground">{addon.priceDisplay}</span>
+                    ))}
                   </div>
-                  <p className="text-sm text-muted-foreground">{addon.description}</p>
-                </CardContent>
-                <CardFooter className="flex gap-2 mt-auto">
-                  <Button variant="outline" size="sm" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.priceType === "contact", addon.detail)}>{t("addons.detail")}</Button>
-                  {addon.priceType === "contact" ? (
-                    // Add-on Liên hệ không thêm vào giỏ được → nút dẫn sang trang liên hệ
-                    <Button asChild size="sm" className="flex-1">
-                      <Link to="/contact">{t("plans.contact")}</Link>
-                    </Button>
-                  ) : (
-                    <Button size="sm" className="flex-1" onClick={() => handleAddAddonToCart(addon)}><ShoppingCart className="h-4 w-4 mr-2" />{t("cart.addToCart") || "Add to Cart"}</Button>
-                  )}
-                </CardFooter>
-              </Card>
+                )}
+
+                {/* Tiện ích khác (add-on chưa phân nhóm): giữ thẻ Chi tiết + Thêm vào giỏ */}
+                {grp.id === "other" && (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {grp.items.map((addon) => (
+                      <Card key={addon.key} className="flex flex-col h-full border-border hover:border-primary/40 transition-colors">
+                        <CardHeader className="pb-3">
+                          <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-2">
+                            <addon.icon className="h-5 w-5 text-accent-foreground" />
+                          </div>
+                          <CardTitle className="text-base">{addon.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1">
+                          <div className="mb-3">
+                            {addon.originalDisplay && (
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <span className="text-sm text-muted-foreground line-through">{addon.originalDisplay}</span>
+                                {addon.promoLabel && <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">{addon.promoLabel}</Badge>}
+                              </div>
+                            )}
+                            <span className="text-2xl font-bold text-foreground">{addon.priceDisplay}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{addon.description}</p>
+                        </CardContent>
+                        <CardFooter className="flex gap-2 mt-auto">
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => openDetailModal("addon", addon.key, addon.name, addon.priceValue ?? 0, false, addon.priceType === "contact", addon.detail)}>{t("addons.detail")}</Button>
+                          {addon.priceType === "contact" ? (
+                            <Button asChild size="sm" className="flex-1"><Link to="/contact">{t("plans.contact")}</Link></Button>
+                          ) : (
+                            <Button size="sm" className="flex-1" onClick={() => handleAddAddonToCart(addon)}><ShoppingCart className="h-4 w-4 mr-2" />{t("cart.addToCart") || "Add to Cart"}</Button>
+                          )}
+                        </CardFooter>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
