@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CartItem {
   id: string;
-  type: 'plan' | 'addon' | 'hardware';
+  // 'service' = dịch vụ tính theo đơn vị công (ngày công/lần) — trả 1 lần, không có kỳ.
+  type: 'plan' | 'addon' | 'hardware' | 'service';
   name: string;
   price: number;
   billing?: 'sixMonths' | 'oneYear' | 'twoYears';

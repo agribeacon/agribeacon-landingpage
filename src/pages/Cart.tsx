@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, Package, Plane, Bot, Sprout, Droplets, Radio, BarChart3, TreePine, MapPinned, LucideIcon, CreditCard } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, Package, Plane, Bot, Sprout, Droplets, Radio, BarChart3, TreePine, MapPinned, LucideIcon, CreditCard, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ const typeIconMap: Record<string, LucideIcon> = {
   plan: CreditCard,
   addon: Package,
   hardware: Package,
+  service: Wrench,
 };
 
 const getItemIcon = (item: { type: string; metadata?: { key?: string } }): LucideIcon => {
@@ -110,6 +111,7 @@ const Cart = () => {
       plan: { label: t("cart.typePlan"), variant: "default" },
       addon: { label: t("cart.typeAddon"), variant: "secondary" },
       hardware: { label: t("cart.typeHardware"), variant: "outline" },
+      service: { label: t("cart.typeService"), variant: "outline" },
     };
     return labels[type] || { label: type, variant: "outline" as const };
   };
