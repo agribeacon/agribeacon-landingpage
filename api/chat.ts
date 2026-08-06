@@ -2,6 +2,14 @@ import { retrieveAgriBeaconKnowledge } from "./knowledge.js";
 
 const OPENCODE_GO_ENDPOINT = "https://opencode.ai/zen/go/v1/chat/completions";
 const DEFAULT_MODEL = "deepseek-v4-flash";
+// AND-386: nhà cung cấp có thể từ chối MODEL (vd "latest version ... requires explicit opt in")
+// làm trợ lý ngừng trả lời hoàn toàn. Cho phép cấu hình danh sách model dự phòng qua env để
+// ops đổi ngay không cần sửa code: OPENCODE_GO_FALLBACK_MODELS="model-a,model-b".
+const fallbackModels = (): string[] =>
+  (process.env.OPENCODE_GO_FALLBACK_MODELS || "")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean);
 const MAX_MESSAGES = 12;
 const MAX_CONTENT_LENGTH = 2000;
 
@@ -37,6 +45,10 @@ type OpenCodeGoResponse = {
     };
   }>;
 };
+
+// Thông báo hiển thị cho khách khi nhà cung cấp AI lỗi/từ chối — thay vì lỗi kỹ thuật.
+const PROVIDER_DOWN_MESSAGE =
+  "Trợ lý đang tạm thời không phản hồi được. Bạn thử lại sau ít phút, hoặc để lại câu hỏi ở form liên hệ để đội ngũ AgriBeacon trả lời nhé.";
 
 const systemPrompt = `You are Than Nong, AgriBeacon's helpful AI assistant for farmers and agricultural operators.
 Answer in the user's language. Answer directly without step-by-step reasoning. Keep answers under 120 words unless the user asks for detail.
@@ -83,12 +95,14 @@ const getNoKnowledgeAnswer = (message: string) => {
     : "I do not see this information in the current AgriBeacon documents. Please ask about AgriBeacon products, pricing, warranty, services, or contact sales for confirmation.";
 };
 
-const requestOpenCodeGo = async ({
+const callModel = async ({
   apiKey,
+  model,
   messages,
   maxTokens,
 }: {
   apiKey: string;
+  model: string;
   messages: Array<{ role: string; content: string }>;
   maxTokens: number;
 }) => {
@@ -99,7 +113,7 @@ const requestOpenCodeGo = async ({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: process.env.OPENCODE_GO_MODEL || DEFAULT_MODEL,
+      model,
       messages,
       temperature: 0.25,
       max_tokens: maxTokens,
@@ -108,6 +122,28 @@ const requestOpenCodeGo = async ({
 
   const data = (await response.json().catch(() => ({}))) as OpenCodeGoResponse;
   return { response, data };
+};
+
+// Thử model chính, model nào bị nhà cung cấp từ chối thì thử tiếp danh sách dự phòng (AND-386).
+const requestOpenCodeGo = async ({
+  apiKey,
+  messages,
+  maxTokens,
+}: {
+  apiKey: string;
+  messages: Array<{ role: string; content: string }>;
+  maxTokens: number;
+}) => {
+  const models = [process.env.OPENCODE_GO_MODEL || DEFAULT_MODEL, ...fallbackModels()];
+  let last = await callModel({ apiKey, model: models[0], messages, maxTokens });
+  for (let i = 1; i < models.length && !last.response.ok; i += 1) {
+    console.error(
+      "chat_api_model_rejected",
+      JSON.stringify({ model: models[i - 1], status: last.response.status, message: last.data?.error?.message }),
+    );
+    last = await callModel({ apiKey, model: models[i], messages, maxTokens });
+  }
+  return last;
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -142,8 +178,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let { response, data } = await requestOpenCodeGo({ apiKey, messages: providerMessages, maxTokens: 1600 });
 
     if (!response.ok) {
-      const message = data?.error?.message || "AI provider request failed";
-      return res.status(response.status).json({ error: message });
+      // AND-386: TUYỆT ĐỐI không đẩy nguyên văn lỗi nhà cung cấp ra trang public (lỗi cũ làm
+      // khách thấy cả link workspace nội bộ của opencode.ai). Log lại, trả thông báo thân thiện.
+      console.error(
+        "chat_api_provider_error",
+        JSON.stringify({ status: response.status, message: data?.error?.message }),
+      );
+      return res.status(503).json({ error: PROVIDER_DOWN_MESSAGE });
     }
 
     let answer = data?.choices?.[0]?.message?.content?.trim();
@@ -154,15 +195,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       data = retry.data;
 
       if (!response.ok) {
-        const message = data?.error?.message || "AI provider request failed";
-        return res.status(response.status).json({ error: message });
+        console.error(
+          "chat_api_provider_error",
+          JSON.stringify({ status: response.status, message: data?.error?.message }),
+        );
+        return res.status(503).json({ error: PROVIDER_DOWN_MESSAGE });
       }
 
       answer = data?.choices?.[0]?.message?.content?.trim();
     }
 
     if (!answer) {
-      return res.status(502).json({ error: "AI provider returned an empty response" });
+      console.error("chat_api_empty_answer");
+      return res.status(503).json({ error: PROVIDER_DOWN_MESSAGE });
     }
 
     return res.status(200).json({ answer });
