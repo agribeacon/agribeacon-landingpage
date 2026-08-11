@@ -1,15 +1,15 @@
-import { useMemo, useState, type ReactElement } from "react";
+import { useMemo, useState, useRef, useEffect, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { Check, X, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, Building2, Crown, ShoppingCart, Info, Loader2, Star, MessageCircle, Phone, type LucideIcon } from "lucide-react";
+import { Check, Plane, Droplets, Radio, Bot, BarChart3, TreePine, Sprout, MapPinned, Building2, Crown, ShoppingCart, Info, Loader2, Star, MessageCircle, Phone, Smartphone, ShieldCheck, Plug, Award, Headphones, ChevronLeft, ChevronRight, ArrowRight, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ProductDetailModal, type ProductDetailData } from "@/components/ProductDetailModal";
 import { useToast } from "@/hooks/use-toast";
-import { usePricingCatalog, type PricingItem } from "@/lib/pricingApi";
+import { usePricingCatalog, pricingImageSrc, type PricingItem } from "@/lib/pricingApi";
 
 const formatPrice = (price: number) => new Intl.NumberFormat("vi-VN").format(price);
 
@@ -63,6 +63,10 @@ interface HwView {
   rentValue: number | null; // giá bán (đã áp KM)
   rentOriginal: number | null;
   promoLabel: string;
+  group: "soil-station" | "handheld" | "robot" | "uav" | null; // tab phân loại
+  popular: boolean; // badge "Bán chạy"
+  imageUrl: string; // ảnh sản phẩm (hiển thị thay icon nếu có)
+  priceSuffix: string; // đơn vị giá cấu hình (vd "/chiếc", "/bộ"); rỗng → fallback
   detail?: ProductDetailData;
 }
 
@@ -79,7 +83,6 @@ const promoBadge = (label: string, original: number | null, promo: number | null
   if (original && promo && original > promo) return `-${Math.round((1 - promo / original) * 100)}%`;
   return "";
 };
-type ComparisonRow = { category: string } | { feature: string; values: (boolean | string)[] };
 
 // Thứ tự & nhãn các nhóm add-on trên trang giá (bám bố cục ảnh mẫu). 'other' gom
 // các add-on chưa phân nhóm ở BE. Tách khỏi i18n lớn để gọn (theo pattern sẵn có).
@@ -87,8 +90,8 @@ const ADDON_GROUP_ORDER = ["capacity", "ai", "service", "other"] as const;
 type AddonGroupId = (typeof ADDON_GROUP_ORDER)[number];
 const ADDON_GROUP_TEXT: Record<string, Record<AddonGroupId, { title: string; sub: string }>> = {
   vi: {
-    capacity: { title: "Capacity", sub: "Mở rộng quy mô và số lượng người dùng." },
-    ai: { title: "AI Credit", sub: "Gói trợ lý AI Tiểu Thần Nông theo nhu cầu." },
+    capacity: { title: "Mở rộng quy mô", sub: "Mở rộng quy mô và số lượng người dùng." },
+    ai: { title: "Trợ lý AI", sub: "Gói trợ lý AI Tiểu Thần Nông theo nhu cầu." },
     service: { title: "Dịch vụ", sub: "Số hoá bản đồ, khảo sát & lắp đặt — theo báo giá thực tế." },
     other: { title: "Tiện ích khác", sub: "" },
   },
@@ -133,6 +136,117 @@ const ADDON_UI: Record<string, AddonUi> = {
   },
 };
 
+// ---- Phân loại phần cứng (tabs) ----
+const HW_GROUP_ORDER = ["soil-station", "handheld", "robot", "uav", "other"] as const;
+type HwGroupId = (typeof HW_GROUP_ORDER)[number];
+const HW_GROUP_ICON: Record<HwGroupId, LucideIcon> = {
+  "soil-station": Sprout, handheld: Smartphone, robot: Bot, uav: Plane, other: BarChart3,
+};
+const HW_GROUP_TEXT: Record<string, Record<HwGroupId, { title: string; sub: string }>> = {
+  vi: {
+    "soil-station": { title: "Trạm đo đất cố định", sub: "Lắp đặt cố định tại ruộng, tự động theo dõi 24/7." },
+    handheld: { title: "Thiết bị cầm tay", sub: "Đo nhanh tại hiện trường, gọn nhẹ." },
+    robot: { title: "Robot", sub: "Tự động hoá canh tác ngoài đồng." },
+    uav: { title: "UAV", sub: "Bay khảo sát, phun & lập bản đồ." },
+    other: { title: "Thiết bị khác", sub: "" },
+  },
+  en: {
+    "soil-station": { title: "Fixed soil stations", sub: "Installed in-field, monitoring 24/7." },
+    handheld: { title: "Handheld devices", sub: "Fast on-site measurement, compact." },
+    robot: { title: "Robots", sub: "Automate field operations." },
+    uav: { title: "UAV", sub: "Survey, spray & mapping drones." },
+    other: { title: "Other devices", sub: "" },
+  },
+  ja: {
+    "soil-station": { title: "固定土壌ステーション", sub: "圃場に設置し24/7監視。" },
+    handheld: { title: "ハンドヘルド機器", sub: "現場で素早く測定。" },
+    robot: { title: "ロボット", sub: "圃場作業を自動化。" },
+    uav: { title: "UAV", sub: "調査・散布・マッピング。" },
+    other: { title: "その他の機器", sub: "" },
+  },
+};
+
+// Thanh cam kết dưới phần cứng (tĩnh, đa ngôn ngữ).
+const HW_TRUST: Record<string, Array<{ icon: LucideIcon; title: string; sub: string }>> = {
+  vi: [
+    { icon: ShieldCheck, title: "Sở hữu trọn đời", sub: "Không phí thuê bao" },
+    { icon: Plug, title: "Kết nối trực tiếp", sub: "Tích hợp sẵn với AgriBeacon" },
+    { icon: Award, title: "Bảo hành chính hãng", sub: "12 – 24 tháng" },
+    { icon: Headphones, title: "Hỗ trợ kỹ thuật", sub: "Tận tình 24/7" },
+  ],
+  en: [
+    { icon: ShieldCheck, title: "Own forever", sub: "No subscription fee" },
+    { icon: Plug, title: "Direct connection", sub: "Built-in with AgriBeacon" },
+    { icon: Award, title: "Official warranty", sub: "12 – 24 months" },
+    { icon: Headphones, title: "Tech support", sub: "24/7 dedicated" },
+  ],
+  ja: [
+    { icon: ShieldCheck, title: "永久所有", sub: "月額費用なし" },
+    { icon: Plug, title: "直接接続", sub: "AgriBeaconに標準統合" },
+    { icon: Award, title: "正規保証", sub: "12〜24ヶ月" },
+    { icon: Headphones, title: "技術サポート", sub: "24/7対応" },
+  ],
+};
+
+// Carousel ngang có mũi tên + chấm trang (cho danh sách thiết bị).
+function HardwareCarousel({ children }: { children: ReactElement[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState(1);
+  const recompute = () => {
+    const el = ref.current;
+    if (!el) return;
+    setPages(Math.max(1, Math.round(el.scrollWidth / el.clientWidth)));
+    setPage(Math.round(el.scrollLeft / el.clientWidth));
+  };
+  useEffect(() => {
+    recompute();
+    const el = ref.current;
+    if (!el) return;
+    el.addEventListener("scroll", recompute, { passive: true });
+    window.addEventListener("resize", recompute);
+    return () => {
+      el.removeEventListener("scroll", recompute);
+      window.removeEventListener("resize", recompute);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children.length]);
+  const go = (dir: -1 | 1) => ref.current?.scrollBy({ left: dir * (ref.current?.clientWidth || 0), behavior: "smooth" });
+  const toPage = (p: number) => ref.current?.scrollTo({ left: p * (ref.current?.clientWidth || 0), behavior: "smooth" });
+  const multi = pages > 1;
+  return (
+    <div className="relative">
+      {multi && (
+        <button type="button" onClick={() => go(-1)} aria-label="Trước"
+          className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border bg-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-40"
+          disabled={page <= 0}>
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
+      <div ref={ref} className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {children.map((c, i) => (
+          <div key={i} className="snap-start shrink-0 w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]">{c}</div>
+        ))}
+      </div>
+      {multi && (
+        <button type="button" onClick={() => go(1)} aria-label="Sau"
+          className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border bg-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-40"
+          disabled={page >= pages - 1}>
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      )}
+      {multi && (
+        <div className="mt-5 flex justify-center gap-2">
+          {Array.from({ length: pages }).map((_, p) => (
+            <button key={p} type="button" aria-label={`Trang ${p + 1}`} onClick={() => toPage(p)}
+              className={`h-2 rounded-full transition-all ${p === page ? "w-6 bg-primary" : "w-2 bg-border"}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Bọc nút CTA bằng đường dẫn: URL ngoài (http/https) → thẻ <a> tab mới; path nội bộ → <Link>.
 // Không có url → trả nguyên nút (không điều hướng).
 const CtaLink = ({ url, children }: { url?: string; children: ReactElement }): ReactElement => {
@@ -151,6 +265,8 @@ const Price = () => {
   const { addItem } = useCart();
   const { toast } = useToast();
   const au = ADDON_UI[language] || ADDON_UI.vi;
+  const hwViewAll = language === "en" ? "View all" : language === "ja" ? "すべて見る" : "Xem tất cả";
+  const hwBestSeller = language === "en" ? "Best seller" : language === "ja" ? "人気" : "Bán chạy";
 
   const detailFrom = (it: PricingItem): ProductDetailData | undefined => (it.detail ? (it.detail as ProductDetailData) : undefined);
 
@@ -207,7 +323,7 @@ const Price = () => {
         subtitle: it.subtitle || "",
         originalDisplay: hasPromo ? `${formatPrice(original)}₫${suffix}` : null,
         promoLabel: hasPromo ? promoBadge(it.promoLabel, original, promo, it.promoPercent) : "",
-        group: it.group ?? null,
+        group: (it.group === "capacity" || it.group === "ai" ? it.group : null) as AddonView["group"],
         popular: !!it.popular,
         detail: detailFrom(it),
       };
@@ -280,22 +396,28 @@ const Price = () => {
         rentValue: hasRentPromo ? rentPromo : rentOrig,
         rentOriginal: hasRentPromo ? rentOrig : null,
         promoLabel: promoBadge(it.promoLabel, hasBuyPromo ? buyOrig : rentOrig, hasBuyPromo ? buyPromo : rentPromo, it.promoPercent),
+        group: (["soil-station", "handheld", "robot", "uav"].includes(it.group as string) ? it.group : null) as HwView["group"],
+        popular: !!it.popular,
+        imageUrl: it.imageUrl || "",
+        priceSuffix: it.priceSuffix || "",
         detail: detailFrom(it),
       };
     });
   }, [catalog, billing]);
 
-  // ---- Comparison (từ catalog) ----
-  const comparisonTitle = catalog?.config?.comparison?.title || (t("comparison.title") as string);
-  const comparisonSubtitle = catalog?.config?.comparison?.subtitle || (t("comparison.subtitle") as string);
-  const comparisonData: ComparisonRow[] = useMemo(() => {
-    const rows: ComparisonRow[] = [];
-    for (const g of catalog?.config?.comparison?.groups || []) {
-      rows.push({ category: g.label });
-      for (const r of g.rows) rows.push({ feature: r.label, values: r.values });
-    }
-    return rows;
-  }, [catalog]);
+  // Cấu hình tab phân loại phần cứng (bám ảnh mẫu). Chỉ hiện tab có thiết bị.
+  const hwGroups = useMemo(() => {
+    const text = HW_GROUP_TEXT[language] || HW_GROUP_TEXT.vi;
+    return HW_GROUP_ORDER.map((gid) => ({
+      id: gid,
+      title: text[gid].title,
+      sub: text[gid].sub,
+      icon: HW_GROUP_ICON[gid],
+      items: hardware.filter((h) => (h.group ?? "other") === gid),
+    })).filter((g) => g.items.length > 0);
+  }, [hardware, language]);
+  const [hwTab, setHwTab] = useState<string>("");
+  const activeHwGroup = hwGroups.find((g) => g.id === hwTab) || hwGroups[0];
 
   // ---- FAQ (từ catalog) ----
   const faqArray: Array<{ q: string; a: string }> = useMemo(() => catalog?.config?.faq || [], [catalog]);
@@ -468,53 +590,6 @@ const Price = () => {
         </div>
       </section>
 
-      {/* Comparison Table */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-3">{t("comparison.badge")}</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{comparisonTitle}</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">{comparisonSubtitle}</p>
-          </div>
-          <div className="overflow-x-auto rounded-xl border border-border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/60">
-                  <th className="text-left py-4 px-5 font-semibold text-foreground min-w-[220px]">{comparisonTitle}</th>
-                  {plans.map((p) => (
-                    <th key={p.key} className="text-center py-4 px-4 font-semibold text-foreground min-w-[130px]">{p.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonData.map((row, i) => {
-                  if ("category" in row) {
-                    return (
-                      <tr key={i} className="bg-muted/30 border-t border-border">
-                        <td colSpan={plans.length + 1} className="py-3 px-5 font-semibold text-foreground text-xs uppercase tracking-wider">{row.category}</td>
-                      </tr>
-                    );
-                  }
-                  return (
-                    <tr key={i} className="border-t border-border hover:bg-muted/20 transition-colors">
-                      <td className="py-3 px-5 text-foreground">{row.feature}</td>
-                      {/* Render đúng theo số gói đang hiển thị — values có thể lệch khi admin thêm/xóa gói */}
-                      {plans.map((p, j) => {
-                        const val = row.values[j] ?? false;
-                        return (
-                          <td key={p.key} className="text-center py-3 px-4">
-                            {val === true ? <Check className="h-4 w-4 text-primary mx-auto" /> : val === false ? <X className="h-4 w-4 text-muted-foreground/30 mx-auto" /> : <span className="text-xs text-muted-foreground font-medium">{val}</span>}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
 
       {/* Add-ons */}
       <section className="bg-muted/50 py-20 px-4">
@@ -674,91 +749,123 @@ const Price = () => {
       {/* Hardware */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <Badge variant="outline" className="mb-3">{t("hardware.badge")}</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{t("hardware.title")}</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">{t("hardware.subtitle")}</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-5">
-            {hardware.map((hw) => (
-              <Card key={hw.key} className="border-border hover:border-primary/40 transition-colors flex flex-col h-full w-full md:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]">
-                <CardHeader>
-                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
-                    <hw.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-base">{hw.name}</CardTitle>
-                  <CardDescription>{hw.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {hw.specs.map((spec) => (<Badge key={spec} variant="secondary" className="text-xs font-normal">{spec}</Badge>))}
-                  </div>
-                  <div className="space-y-3">
-                    {/* Buy outright */}
-                    {hw.buyPrice != null && (
-                      <div className="rounded-lg border border-border bg-muted/40 p-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{t("hardware.buyOutright")}</p>
-                            <p className="text-xs text-muted-foreground">{t("hardware.buyDesc")}</p>
-                          </div>
-                          <div className="text-right shrink-0">
-                            {hw.buyOriginal != null && <p className="text-xs text-muted-foreground line-through">{formatPrice(hw.buyOriginal)}₫</p>}
-                            <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.buyPrice)}₫</p>
-                            <p className="text-xs text-muted-foreground">{t("hardware.perUnit")}</p>
-                          </div>
-                        </div>
-                        <div className="flex justify-end gap-1.5 mt-2">
-                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.buyPrice ?? 0, false, false, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
-                          <Button size="icon" className="h-7 w-7" onClick={() => handleAddHardwareToCart(hw, false)}><ShoppingCart className="h-3.5 w-3.5" /></Button>
-                        </div>
+
+          {hwGroups.length > 0 && activeHwGroup && (
+            <>
+              {/* Tabs phân loại */}
+              <div className="max-w-5xl mx-auto mb-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+                {hwGroups.map((g) => {
+                  const on = g.id === activeHwGroup.id;
+                  return (
+                    <button key={g.id} type="button" onClick={() => setHwTab(g.id)}
+                      className={`flex items-center gap-3 rounded-xl border p-3 md:p-4 text-left transition-colors ${on ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
+                      <div className={`h-10 w-10 flex-none rounded-lg flex items-center justify-center ${on ? "bg-primary/10" : "bg-muted"}`}>
+                        <g.icon className={`h-5 w-5 ${on ? "text-primary" : "text-muted-foreground"}`} />
                       </div>
-                    )}
-                    {/* Rent bundle */}
-                    {hw.rentValue != null && (
-                      <div className="rounded-lg border border-primary/30 bg-accent p-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium text-foreground">{t("hardware.rentBundle")}</p>
-                              <Badge className="text-[10px]">{t("hardware.rentBadge")}</Badge>
+                      <span className={`font-semibold text-sm ${on ? "text-primary" : "text-foreground"}`}>{g.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Tiêu đề nhóm đang chọn + Xem tất cả */}
+              <div className="max-w-6xl mx-auto mb-8 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 flex-none rounded-xl bg-primary/10 flex items-center justify-center">
+                    <activeHwGroup.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground">{activeHwGroup.title}</h3>
+                    {activeHwGroup.sub && <p className="text-sm text-muted-foreground">{activeHwGroup.sub}</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Carousel thiết bị */}
+              <div className="max-w-6xl mx-auto px-1">
+                <HardwareCarousel>
+                  {activeHwGroup.items.map((hw) => {
+                    const contact = hw.priceType === "contact" || (hw.buyPrice == null && hw.rentValue == null);
+                    const showRentOnly = hw.buyPrice == null && hw.rentValue != null;
+                    const price = hw.buyPrice != null ? hw.buyPrice : showRentOnly ? hw.rentValue : null;
+                    const priceOrig = hw.buyPrice != null ? hw.buyOriginal : showRentOnly ? hw.rentOriginal : null;
+                    const unit = hw.buyPrice != null ? (hw.priceSuffix || t("hardware.perUnit")) : showRentOnly ? (hw.priceSuffix || t("hardware.perUnitMonth")) : "";
+                    return (
+                      <Card key={hw.key} className="relative flex h-full overflow-hidden border-border hover:border-primary/40 transition-colors">
+                        {hw.popular && (
+                          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 shadow-sm">
+                            🔥 {hwBestSeller}
+                          </span>
+                        )}
+                        {/* Ảnh bên trái — nền trắng cho ảnh trong suốt, có bóng đổ mềm */}
+                        <div className="flex w-[46%] flex-none items-center justify-center bg-white p-3">
+                          {hw.imageUrl ? (
+                            <img src={pricingImageSrc(hw.imageUrl)} alt={hw.name} loading="lazy" className="max-h-full max-w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.14)]" />
+                          ) : (
+                            <hw.icon className="h-10 w-10 text-primary" />
+                          )}
+                        </div>
+                        {/* Thông tin bên phải */}
+                        <div className="flex min-w-0 flex-1 flex-col p-4">
+                          <h4 className="font-bold leading-snug text-foreground line-clamp-2">{hw.name}</h4>
+                          {hw.description && <p className="mt-1 text-xs text-muted-foreground line-clamp-3">{hw.description}</p>}
+                          <div className="mt-auto pt-3">
+                            {contact ? (
+                              <p className="mb-2 text-lg font-bold text-primary">{t("plans.contact")}</p>
+                            ) : (
+                              <div className="mb-2">
+                                {priceOrig != null && <p className="text-xs text-muted-foreground line-through">{formatPrice(priceOrig)}₫</p>}
+                                <p className="text-xl font-bold leading-tight text-primary">{formatPrice(price ?? 0)}₫</p>
+                                {unit && <p className="text-xs text-muted-foreground">{unit}</p>}
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="icon" className="flex-none" title={t("addons.detail")}
+                                onClick={() => openDetailModal("hardware", hw.key, hw.name, (hw.buyPrice ?? hw.rentValue) ?? 0, showRentOnly, contact, hw.detail)}>
+                                <Info className="h-4 w-4" />
+                              </Button>
+                              {contact ? (
+                                <Button asChild className="flex-1"><Link to="/contact">{t("plans.contact")}</Link></Button>
+                              ) : (
+                                <Button className="flex-1" title={t("cart.addToCart") || "Add to Cart"} onClick={() => handleAddHardwareToCart(hw, showRentOnly)}>
+                                  <ShoppingCart className="h-4 w-4" />
+                                </Button>
+                              )}
                             </div>
-                            <p className="text-xs text-muted-foreground">{t("hardware.rentDesc")}</p>
-                          </div>
-                          <div className="text-right shrink-0">
-                            {hw.rentOriginal != null && <p className="text-xs text-muted-foreground line-through">{formatPrice(hw.rentOriginal)}₫</p>}
-                            <p className="text-lg font-bold text-foreground whitespace-nowrap">{formatPrice(hw.rentValue)}₫</p>
-                            <p className="text-xs text-muted-foreground">{t("hardware.perUnitMonth")}</p>
                           </div>
                         </div>
-                        <div className="flex justify-end gap-1.5 mt-2">
-                          <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, hw.rentValue ?? 0, true, false, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
-                          <Button size="icon" className="h-7 w-7" onClick={() => handleAddHardwareToCart(hw, true)}><ShoppingCart className="h-3.5 w-3.5" /></Button>
-                        </div>
-                      </div>
-                    )}
-                    {/* Liên hệ: không có giá mua/thuê → hiện CTA liên hệ thay vì để trống */}
-                    {hw.priceType === "contact" && (
-                      <div className="rounded-lg border border-border bg-muted/40 p-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-lg font-bold text-foreground">{t("plans.contact")}</p>
-                          <div className="flex gap-1.5 shrink-0">
-                            <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => openDetailModal("hardware", hw.key, hw.name, 0, false, true, hw.detail)}><Info className="h-3.5 w-3.5" /></Button>
-                            <Button asChild size="sm" className="h-7"><Link to="/contact">{t("plans.contact")}</Link></Button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                      </Card>
+                    );
+                  })}
+                </HardwareCarousel>
+              </div>
+
+              {/* Thanh cam kết */}
+              <div className="max-w-6xl mx-auto mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
+                {(HW_TRUST[language] || HW_TRUST.vi).map((it) => (
+                  <div key={it.title} className="flex items-center gap-3">
+                    <div className="h-10 w-10 flex-none rounded-lg bg-primary/10 flex items-center justify-center">
+                      <it.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm text-foreground">{it.title}</p>
+                      <p className="text-xs text-muted-foreground">{it.sub}</p>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       {/* Cost estimator CTA */}
-      <section className="px-4 pb-20">
+      {/* <section className="px-4 pb-20">
         <div className="container mx-auto">
           <div className="rounded-2xl border border-border bg-muted/40 p-10 text-center max-w-3xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">{t("costEstimator.title")}</h2>
@@ -766,7 +873,7 @@ const Price = () => {
             <Link to="/cost-estimator"><Button size="lg">{t("costEstimator.cta")}</Button></Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* FAQ */}
       {faqArray.length > 0 && (

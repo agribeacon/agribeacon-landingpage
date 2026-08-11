@@ -6,6 +6,26 @@ import { useEffect, useState } from "react";
 export const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined) || "http://localhost:3018/api";
 
+// Ảnh sản phẩm lưu dạng S3 key (bucket private) → hiển thị qua proxy công khai.
+// - key trần → proxy.
+// - URL S3 nội bộ (chứa 'farms/.../pricing/') → rút key ra rồi proxy (ảnh cũ vẫn hiện).
+// - URL http(s) ngoài dán tay → dùng trực tiếp.
+const proxyPricingImage = (key: string) =>
+  `${API_BASE}/public/pricing/image?key=${encodeURIComponent(key)}`;
+export const pricingImageSrc = (imageUrl?: string | null): string => {
+  if (!imageUrl) return "";
+  if (/^https?:\/\//i.test(imageUrl)) {
+    try {
+      const path = decodeURIComponent(new URL(imageUrl).pathname.replace(/^\/+/, ""));
+      const idx = path.indexOf("farms/");
+      const key = idx >= 0 ? path.slice(idx) : path;
+      if (key.includes("/pricing/")) return proxyPricingImage(key);
+    } catch { /* URL lỗi → dùng nguyên */ }
+    return imageUrl;
+  }
+  return proxyPricingImage(imageUrl);
+};
+
 export type PricingLocale = "en" | "vi" | "ja";
 export type PricingKind = "plan" | "addon" | "hardware" | "service";
 
@@ -29,8 +49,9 @@ export interface PricingItem {
   key: string;
   order: number;
   icon: string;
+  imageUrl: string;
   popular: boolean;
-  group: "capacity" | "ai" | null;
+  group: "capacity" | "ai" | "soil-station" | "handheld" | "robot" | "uav" | null;
   priceType: "free" | "contact" | "paid";
   prices: { oneYear?: number | null; twoYears?: number | null };
   promoPrices: { oneYear?: number | null; twoYears?: number | null };

@@ -2917,7 +2917,7 @@ const translations = {
     
     // Addons Badge and Title
     'addons.badge': 'Tiện ích mở rộng',
-    'addons.title': 'Module bổ sung',
+    'addons.title': 'Dịch vụ bổ sung',
     'addons.subtitle': 'Mở rộng nền tảng với các tính năng chuyên biệt',
     
     // Cart
