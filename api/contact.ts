@@ -1,3 +1,5 @@
+import { envFooter } from "./_env";
+
 type ContactField = {
   name?: string;
   value?: string;
@@ -12,6 +14,7 @@ type ContactRequest = {
 type VercelRequest = {
   method?: string;
   body?: unknown;
+  headers?: Record<string, string | string[] | undefined>;
 };
 
 type VercelResponse = {
@@ -63,6 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             title: subject,
             color,
             fields,
+            footer: { text: envFooter(req) },
             timestamp: new Date().toISOString(),
           },
         ],
