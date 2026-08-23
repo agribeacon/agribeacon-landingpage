@@ -6,8 +6,8 @@
   "scripts": {
     "build:knowledge": "node scripts/build-chatbot-knowledge.mjs",
     "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build": "npm run build:knowledge && vite build",
+    "build:dev": "npm run build:knowledge && vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },
