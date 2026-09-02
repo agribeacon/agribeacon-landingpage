@@ -14,7 +14,7 @@ concurrency:
 jobs:
   deploy:
     name: Deploy landing page to staging.agribeacon.tech
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
 
     steps:
       - name: Deploy via SSH
