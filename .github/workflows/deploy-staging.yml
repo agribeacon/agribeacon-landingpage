@@ -14,7 +14,8 @@ concurrency:
 jobs:
   deploy:
     name: Deploy landing page to staging.agribeacon.tech
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 10
 
     steps:
       - name: Deploy via SSH
@@ -22,5 +23,5 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} '/opt/landingpage-staging/deploy.sh'
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} '/opt/landingpage-staging/deploy.sh'
           rm -f ~/.ssh/deploy_key
