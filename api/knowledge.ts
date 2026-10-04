@@ -84,6 +84,17 @@ const DOMAIN_PATTERNS = [
   /demo/,
   /lien he/,
   /contact/,
+  // AND-386: câu hỏi về brochure/add-on/gói/plan bị chặn trước khi chấm điểm vì
+  // không khớp domain pattern nào, dù knowledge base có nội dung liên quan.
+  /brochure/,
+  /add.?on/,
+  /\bplan\b/,
+  /goi (dich vu|cuoc|phan mem)/,
+  /package/,
+  /catalog/,
+  /tai lieu/,
+  /hardware/,
+  /phan cung/,
 ];
 
 const SYNONYMS: Record<string, string[]> = {

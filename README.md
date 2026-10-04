@@ -75,3 +75,7 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 
 <!-- Redeploy trigger: 2026-04-16 -->
 
+
+## Workspace agribeacon-ws
+
+Repo này là một phần của workspace [agribeacon-ws](https://github.com/agribeacon/agribeacon-ws): clone repo đó làm thư mục cha rồi chạy `scripts/clone-all.sh` để kéo toàn bộ repo của công ty về đúng cấu trúc. Quy ước chung cho người + AI agent (Claude Code, Codex, ...) nằm ở `AGENTS.md`/`CLAUDE.md` của thư mục cha; hệ sutagrow đọc thêm `sutagrow-api/AGENTS.md`.

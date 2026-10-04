@@ -1,3 +1,5 @@
+import { envFooter } from "./_env";
+
 type OrderItem = {
   name?: string;
   quantity?: number;
@@ -14,6 +16,7 @@ type OrderRequest = {
 type VercelRequest = {
   method?: string;
   body?: unknown;
+  headers?: Record<string, string | string[] | undefined>;
 };
 
 type VercelResponse = {
@@ -72,6 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               { name: "📞 Số điện thoại", value: phone, inline: true },
               { name: `📦 Sản phẩm (${items.length})`, value: buildItemLines(items) || "—" },
             ],
+            footer: { text: envFooter(req) },
             timestamp: new Date().toISOString(),
           },
         ],
