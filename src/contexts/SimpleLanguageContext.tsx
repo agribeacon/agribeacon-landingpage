@@ -1463,7 +1463,7 @@ const translations = {
     'help.steps': [
       {
         title: '1. Create your account',
-        desc: 'Sign up on the web app at farm.agribeacon.tech or download the mobile app. Create your organization, then invite your team and assign their roles.',
+        desc: 'Sign up on the web app at sutagrow.agribeacon.tech or download the mobile app. Create your organization, then invite your team and assign their roles.',
       },
       {
         title: '2. Set up farm, zones & plots',
@@ -1496,7 +1496,7 @@ const translations = {
       },
       {
         q: 'Which devices can I use?',
-        a: 'SutaGrow runs on the web (farm.agribeacon.tech) and on iOS and Android. Sign in with the same account and your data stays in sync across all of them.',
+        a: 'SutaGrow runs on the web (sutagrow.agribeacon.tech) and on iOS and Android. Sign in with the same account and your data stays in sync across all of them.',
       },
       {
         q: 'Do I need drones or IoT sensors to start?',
@@ -2968,7 +2968,7 @@ const translations = {
     'help.steps': [
       {
         title: '1. Tạo tài khoản',
-        desc: 'Đăng ký trên app web tại farm.agribeacon.tech hoặc tải app di động. Tạo tổ chức của bạn, sau đó mời thành viên và phân quyền cho từng người.',
+        desc: 'Đăng ký trên app web tại sutagrow.agribeacon.tech hoặc tải app di động. Tạo tổ chức của bạn, sau đó mời thành viên và phân quyền cho từng người.',
       },
       {
         title: '2. Thiết lập nông trại, vùng & lô',
@@ -3001,7 +3001,7 @@ const translations = {
       },
       {
         q: 'Tôi dùng được trên những thiết bị nào?',
-        a: 'SutaGrow chạy trên web (farm.agribeacon.tech) cùng iOS và Android. Đăng nhập cùng một tài khoản và dữ liệu sẽ đồng bộ trên tất cả thiết bị.',
+        a: 'SutaGrow chạy trên web (sutagrow.agribeacon.tech) cùng iOS và Android. Đăng nhập cùng một tài khoản và dữ liệu sẽ đồng bộ trên tất cả thiết bị.',
       },
       {
         q: 'Có cần drone hay cảm biến IoT để bắt đầu không?',
@@ -4437,7 +4437,7 @@ const translations = {
     'help.steps': [
       {
         title: '1. アカウントを作成',
-        desc: 'Webアプリ farm.agribeacon.tech で登録するか、モバイルアプリをダウンロードします。組織を作成し、メンバーを招待して各自の役割を割り当てます。',
+        desc: 'Webアプリ sutagrow.agribeacon.tech で登録するか、モバイルアプリをダウンロードします。組織を作成し、メンバーを招待して各自の役割を割り当てます。',
       },
       {
         title: '2. 農場・ゾーン・区画を設定',
@@ -4470,7 +4470,7 @@ const translations = {
       },
       {
         q: 'どの端末で使えますか？',
-        a: 'SutaGrowはWeb（farm.agribeacon.tech）とiOS・Androidで動作します。同じアカウントでログインすれば、すべての端末でデータが同期されます。',
+        a: 'SutaGrowはWeb（sutagrow.agribeacon.tech）とiOS・Androidで動作します。同じアカウントでログインすれば、すべての端末でデータが同期されます。',
       },
       {
         q: '始めるのにドローンやIoTセンサーは必要ですか？',

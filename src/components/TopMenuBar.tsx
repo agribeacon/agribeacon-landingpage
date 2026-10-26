@@ -10,7 +10,7 @@ const TopMenuBar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-end items-center h-8 gap-4 text-sm">
           {/* Login Button */}
-          <a href="https://farm.agribeacon.tech" target="_blank" rel="noopener noreferrer">
+          <a href="https://sutagrow.agribeacon.tech" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="sm" className="gap-1 text-sm h-8 px-3 hover:bg-muted">
               <LogIn className="h-3 w-3" />
               {t('nav.login')}
