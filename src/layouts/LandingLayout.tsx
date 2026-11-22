@@ -1,16 +1,15 @@
 import { Outlet } from "react-router-dom";
-import TopMenuBar from "@/components/TopMenuBar";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import SiteNav, { MobileCta } from "@/components/revamp/SiteNav";
+import SiteFooter from "@/components/revamp/SiteFooter";
 import ChatBot from "@/components/ChatBot";
 
-// Khung landing: thanh trên + navbar + footer + chatbot bao quanh các trang marketing.
+// Khung landing: menu + footer mới (revamp storytelling) + chatbot.
 const LandingLayout = () => (
   <>
-    <TopMenuBar />
-    <Navbar />
+    <SiteNav />
     <Outlet />
-    <Footer />
+    <SiteFooter />
+    <MobileCta />
     <ChatBot />
   </>
 );

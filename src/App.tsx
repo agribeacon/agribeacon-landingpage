@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SimpleLanguageProvider } from "@/contexts/SimpleLanguageContext";
 import { CartProvider } from "@/contexts/CartContext";
 import ScrollToTop from "./components/ScrollToTop";
@@ -11,8 +11,6 @@ import LandingLayout from "./layouts/LandingLayout";
 import HelpLayout from "./layouts/HelpLayout";
 import Home from "./pages/Home";
 import Solutions from "./pages/Solutions";
-import Price from "./pages/Price";
-import Technology from "./pages/Technology";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ContactSales from "./pages/ContactSales";
@@ -20,12 +18,6 @@ import CostEstimator from "./pages/CostEstimator";
 import BestPractices from "./pages/BestPractices";
 import Careers from "./pages/Careers";
 import JobDetail from "./pages/JobDetail";
-import Cart from "./pages/Cart";
-import FarmOS from "./pages/FarmOS";
-import UAV from "./pages/UAV";
-import Robot from "./pages/Robot";
-import IoT from "./pages/IoT";
-import AIAssistant from "./pages/AIAssistant";
 import DigitalFarmMap from "./pages/DigitalFarmMap";
 import RobotRental from "./pages/RobotRental";
 import YieldPlanning from "./pages/YieldPlanning";
@@ -33,6 +25,12 @@ import ResourceManagement from "./pages/ResourceManagement";
 import Traceability from "./pages/Traceability";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
+import Platform from "./pages/revamp/Platform";
+import StepPage from "./pages/revamp/StepPage";
+import Customers from "./pages/revamp/Customers";
+import Partners from "./pages/revamp/Partners";
+import DevicePage from "./pages/revamp/DevicePage";
+import Pricing from "./pages/revamp/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -58,8 +56,7 @@ const App = () => (
                 <Route element={<LandingLayout />}>
                   <Route path="/" element={<Home />} />
                   <Route path="/solutions" element={<Solutions />} />
-                  <Route path="/price" element={<Price />} />
-                  <Route path="/technology" element={<Technology />} />
+                  <Route path="/price" element={<Navigate to="/pricing" replace />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/contact-sales" element={<ContactSales />} />
@@ -67,17 +64,30 @@ const App = () => (
                   <Route path="/best-practices" element={<BestPractices />} />
                   <Route path="/careers" element={<Careers />} />
                   <Route path="/careers/:position" element={<JobDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/products/farm-os" element={<FarmOS />} />
-                  <Route path="/products/uav" element={<UAV />} />
-                  <Route path="/products/robot" element={<Robot />} />
-                  <Route path="/products/iot" element={<IoT />} />
-                  <Route path="/products/ai-assistant" element={<AIAssistant />} />
+                  <Route path="/cart" element={<Navigate to="/pricing" replace />} />
+                  <Route path="/products/uav" element={<Navigate to="/devices/uav" replace />} />
+                  <Route path="/products/robot" element={<Navigate to="/devices/robot" replace />} />
                   <Route path="/services/farm-map" element={<DigitalFarmMap />} />
                   <Route path="/services/robot-rental" element={<RobotRental />} />
                   <Route path="/ai/yield-planning" element={<YieldPlanning />} />
                   <Route path="/ai/resource-management" element={<ResourceManagement />} />
                   <Route path="/ai/traceability" element={<Traceability />} />
+
+                  {/* Cấu trúc mới (revamp) */}
+                  <Route path="/platform" element={<Platform />} />
+                  <Route path="/platform/:slug" element={<StepPage />} />
+                  <Route path="/customers" element={<Customers />} />
+                  <Route path="/partners" element={<Partners />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/guides" element={<BestPractices />} />
+                  <Route path="/tools/cost-estimator" element={<CostEstimator />} />
+                  <Route path="/services/farm-mapping" element={<DigitalFarmMap />} />
+                  <Route path="/devices/:slug" element={<DevicePage />} />
+                  {/* Route cũ → mới */}
+                  <Route path="/technology" element={<Navigate to="/platform" replace />} />
+                  <Route path="/products/farm-os" element={<Navigate to="/platform" replace />} />
+                  <Route path="/products/ai-assistant" element={<Navigate to="/platform/ai" replace />} />
+                  <Route path="/products/iot" element={<Navigate to="/devices/aiot" replace />} />
                 </Route>
 
                 {/* Help Center — khung riêng, không có navbar/footer landing */}
