@@ -197,7 +197,7 @@ const Navbar = () => {
               </Link>
             </Button>
 
-            <Link to="/contact-sales" className="ml-2">
+            <Link to="/contact" className="ml-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -332,7 +332,7 @@ const Navbar = () => {
 
               {/* CTA Buttons */}
               <div className="pt-2 space-y-2">
-                <Link to="/contact-sales" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/contact" className="w-full" onClick={() => setMobileMenuOpen(false)}>
                   <Button
                     variant="outline"
                     className="w-full border-primary text-primary mb-2"

@@ -13,7 +13,6 @@ import Home from "./pages/Home";
 import Solutions from "./pages/Solutions";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import ContactSales from "./pages/ContactSales";
 import CostEstimator from "./pages/CostEstimator";
 import BestPractices from "./pages/BestPractices";
 import Careers from "./pages/Careers";
@@ -61,7 +60,8 @@ const App = () => (
                   <Route path="/price" element={<Navigate to="/pricing" replace />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
-                  <Route path="/contact-sales" element={<ContactSales />} />
+                  {/* Một form liên hệ duy nhất — đường cũ chuyển về /contact. */}
+                  <Route path="/contact-sales" element={<Navigate to="/contact" replace />} />
                   <Route path="/cost-estimator" element={<CostEstimator />} />
                   <Route path="/best-practices" element={<BestPractices />} />
                   <Route path="/careers" element={<Careers />} />
