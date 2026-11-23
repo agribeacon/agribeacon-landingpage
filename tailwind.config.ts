@@ -14,9 +14,19 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['DM Sans', 'sans-serif'],
+        sans: ['"Be Vietnam Pro"', 'DM Sans', 'sans-serif'],
       },
       colors: {
+        brand: {
+          navy: "#092833",
+          "navy-2": "#0F3A49",
+          leaf: "#9ACB64",
+          "leaf-deep": "#4F7A26",
+          sand: "#F3EDDF",
+          soil: "#B89B6A",
+          water: "#4E9CC2",
+          amber: "#E0A43A",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -105,7 +105,7 @@ const PricingCalculator = () => {
   const handleStartTrial = () => {
     const plan = saasPlans.find((p) => p.id === selectedPlan);
     if (plan?.id === "enterprise") {
-      navigate("/contact-sales");
+      navigate("/contact?need=quote&plan=enterprise");
       return;
     }
 

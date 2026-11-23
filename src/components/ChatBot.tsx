@@ -173,7 +173,7 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-20 right-4 z-50 sm:right-6 md:bottom-6">
       {open && (
         <section className="mb-3 flex h-[min(620px,calc(100vh-12rem))] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:w-[420px]">
           <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3">
@@ -269,10 +269,10 @@ const ChatBot = () => {
       <Button
         size="lg"
         onClick={() => setOpen((current) => !current)}
-        className="h-14 rounded-full bg-gradient-to-r from-primary to-secondary px-5 shadow-glow"
+        className="h-14 rounded-full bg-brand-navy px-5 text-white shadow-lg ring-2 ring-brand-leaf/60 hover:bg-brand-navy-2"
         aria-label={open ? "Đóng chat" : "Mở chat"}
       >
-        {open ? <X className="mr-2 h-5 w-5" /> : <MessageCircle className="mr-2 h-5 w-5" />}
+        {open ? <X className="mr-2 h-5 w-5" /> : <MessageCircle className="mr-2 h-5 w-5 text-brand-leaf" />}
         Tiểu Thần Nông AI
       </Button>
     </div>

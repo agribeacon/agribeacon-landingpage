@@ -1,15 +1,27 @@
-import { envFooter } from "./_env";
+// Form liên hệ (/contact) → CRM AgriBeacon. Hàm server này giữ khoá API; trình duyệt không
+// bao giờ gọi thẳng CRM. Mỗi lần gửi thành công là một dòng ở hàng chờ "Lead tự về chờ duyệt"
+// của CRM, kênh Website — đội sale duyệt và liên hệ lại.
+//
+// Biến môi trường (server-only, KHÔNG đặt VITE_*):
+//   CRM_API_URL  địa chỉ gốc API của CRM, không có dấu / cuối
+//   CRM_API_KEY  khoá API cấp cho website
 
-type ContactField = {
-  name?: string;
-  value?: string;
-};
+// `need` … `plan` là ngữ cảnh nút khách đã bấm để tới form (query string của /contact).
+const FIELDS = [
+  "name",
+  "phone",
+  "email",
+  "farmSize",
+  "message",
+  "need",
+  "from",
+  "crop",
+  "area",
+  "device",
+  "plan",
+] as const;
 
-type ContactRequest = {
-  subject?: string;
-  color?: number;
-  fields?: ContactField[];
-};
+type Field = (typeof FIELDS)[number];
 
 type VercelRequest = {
   method?: string;
@@ -24,9 +36,26 @@ type VercelResponse = {
   };
 };
 
-const MAX_VALUE_LENGTH = 1024;
-const MAX_FIELDS = 25;
-const DEFAULT_COLOR = 0x4ade80;
+// Khớp trần độ dài của cửa CRM — cắt ở đây để một ô quá dài không làm rơi cả lead.
+const LIMITS: Record<Field, number> = {
+  name: 160,
+  phone: 40,
+  email: 160,
+  farmSize: 160,
+  message: 2000,
+  need: 60,
+  from: 60,
+  crop: 60,
+  area: 20,
+  device: 60,
+  plan: 60,
+};
+
+const clean = (value: unknown, max: number): string | null => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim().slice(0, max);
+  return trimmed || null;
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -34,53 +63,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const webhook = process.env.DISCORD_WEBHOOK_URL;
-  if (!webhook) {
-    return res.status(500).json({ error: "Missing DISCORD_WEBHOOK_URL" });
+  const apiUrl = process.env.CRM_API_URL;
+  const apiKey = process.env.CRM_API_KEY;
+  if (!apiUrl || !apiKey) {
+    console.error("Missing CRM_API_URL / CRM_API_KEY");
+    return res.status(500).json({ error: "Chưa cấu hình kết nối CRM" });
   }
 
-  const body = (req.body || {}) as ContactRequest;
-  const subject = (body.subject || "📬 Liên hệ mới").trim().slice(0, 256);
-  const color = typeof body.color === "number" ? body.color : DEFAULT_COLOR;
+  const body = (req.body && typeof req.body === "object" ? req.body : {}) as Record<string, unknown>;
+  const lead = Object.fromEntries(FIELDS.map((key) => [key, clean(body[key], LIMITS[key])])) as Record<
+    Field,
+    string | null
+  >;
 
-  // Keep only fields that actually have a value; Discord rejects empty field values.
-  const fields = (Array.isArray(body.fields) ? body.fields : [])
-    .filter((f) => f && typeof f.value === "string" && f.value.trim())
-    .slice(0, MAX_FIELDS)
-    .map((f) => ({
-      name: (f.name || "—").slice(0, 256),
-      value: f.value!.trim().slice(0, MAX_VALUE_LENGTH),
-    }));
-
-  if (fields.length === 0) {
-    return res.status(400).json({ error: "Cần ít nhất một trường có nội dung" });
+  if (!lead.name) {
+    return res.status(400).json({ error: "Thiếu họ tên" });
+  }
+  if (!lead.phone && !lead.email) {
+    return res.status(400).json({ error: "Cần số điện thoại hoặc email" });
   }
 
   try {
-    const response = await fetch(webhook, {
+    const response = await fetch(`${apiUrl.replace(/\/+$/, "")}/integrations/website-leads`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        embeds: [
-          {
-            title: subject,
-            color,
-            fields,
-            footer: { text: envFooter(req) },
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      }),
+      headers: { "Content-Type": "application/json", "X-Api-Key": apiKey },
+      body: JSON.stringify(lead),
     });
 
     if (!response.ok) {
-      console.error("Discord webhook failed:", response.status);
-      return res.status(502).json({ error: "Không gửi được thông báo" });
+      console.error("CRM rejected website lead:", response.status, await response.text());
+      // 400 = dữ liệu khách gõ không hợp lệ · 429 = đang quá nhiều lượt gửi · còn lại = lỗi phía CRM.
+      const status = response.status === 400 || response.status === 429 ? response.status : 502;
+      return res.status(status).json({ error: "Không gửi được về CRM" });
     }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error("Failed to post contact to Discord:", err);
-    return res.status(500).json({ error: "Gửi thất bại" });
+    console.error("Failed to reach CRM:", err);
+    return res.status(502).json({ error: "Không tới được CRM" });
   }
 }
