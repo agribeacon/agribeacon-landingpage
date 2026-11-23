@@ -746,3 +746,62 @@ Mọi trang thiết bị dùng **cùng một khuôn**, để thiết bị luôn 
 Site đang dùng: đất **"9in1"** (theo anh/chị) và nước theo **bảng giá**.
 
 **Việc tiếp theo:** chatbot Tiểu Thần Nông trên website vẫn đọc dữ liệu giá cũ (`api/generated/agribeacon-knowledge.ts` sinh từ trang Price cũ). Cần cập nhật script `scripts/build-chatbot-knowledge.mjs` để không trả lời giá.
+
+---
+
+## 8. Cập nhật v4: trang "Nông nghiệp chính xác" và phần Thực trạng
+
+- **Trang mới `/precision-agriculture`** (menu Tài nguyên, mega menu SutaGrow OS, footer):
+  - định nghĩa;
+  - 4 nguyên tắc (đúng lượng, đúng thời điểm, đúng vị trí, đúng loại);
+  - vì sao quan trọng;
+  - thực trạng;
+  - bảng so sánh canh tác truyền thống với nông nghiệp chính xác;
+  - vòng lặp đo lường, phân tích, hành động, đánh giá;
+  - công nghệ thành phần;
+  - lộ trình 6 bước;
+  - FAQ.
+- **Phần "Thực trạng" trên trang chủ** chia 2 nhóm:
+  - trang trại canh tác truyền thống: thất thoát vật tư, công nhật khó kiểm soát, bón phân/phun thuốc theo cảm tính, năng suất không đồng đều;
+  - trang trại đã đầu tư công nghệ: dữ liệu rời rạc, chi phí chỉ tổng hợp cuối vụ, thiết bị chưa phát huy hiệu quả.
+- **Dòng chứng minh dưới hero** rút gọn, không liệt kê từng loại cây và tỉnh.
+- Nội dung dùng chung đặt tại `src/content/precision.ts`.
+
+---
+
+## 9. Chốt thông số VY-SO (2026-11-22)
+
+VY-SO **9in1**: pH, EC, N, P, K, nhiệt độ, độ ẩm, **độ mặn** và **SHI** (Soil Health Index).
+- SHI tổng hợp từ EC, độ ẩm và nhiệt độ theo nguyên tắc Goldilocks: đất khỏe khi các yếu tố nằm trong vùng tối ưu.
+- Đã cập nhật trên trang chủ, bước 3, trang thiết bị Trạm AIoT và danh mục sản phẩm.
+- Cảm biến trạm VY-SO-UP + VY-PH-UP vẫn ghi theo bảng giá (EC, N, P, K, nhiệt độ, độ ẩm + pH). Cần xác nhận trạm cố định đã có độ mặn và SHI chưa.
+
+---
+
+## 10. Thực trạng có số liệu & phần Tầm nhìn (2026-11-22)
+
+**Thực trạng** gồm 3 nhóm, xếp theo mức ưu tiên:
+1. Chất lượng & tiêu chuẩn xuất khẩu
+2. Canh tác truyền thống
+3. Công nghệ rời rạc
+
+**Số liệu đang dùng** (kiểm tra lại trước mỗi đợt cập nhật):
+
+| Số liệu | Nguồn |
+|---|---|
+| 20% lô sầu riêng VN vào EU bị kiểm tra (tăng từ 10%) | Quy định (EU) 2024/3153 |
+| EUDR áp dụng từ 30/12/2026 với cà phê, cacao, cao su | Quy định (EU) 2023/1115, sửa đổi bởi 2025/2650 |
+| Hiệu suất sử dụng phân bón tại VN dưới 50% | Cục Trồng trọt, báo Nhân Dân |
+| 72% nước ngọt khai thác dùng cho nông nghiệp | FAO AQUASTAT 2025 |
+| Xuất khẩu nông lâm thủy sản VN 2025 khoảng 70 tỷ USD | Bộ NN&MT |
+| Nông nghiệp, lâm nghiệp, sử dụng đất chiếm 13–21% phát thải khí nhà kính toàn cầu (2010–2019) | IPCC AR6, Chương 7 |
+| Trung Quốc yêu cầu xét nghiệm cadimi, auramine O với toàn bộ lô sầu riêng VN | Báo chí VN (VietnamNet) |
+
+**Tầm nhìn** gồm 5 trụ cột:
+1. Chứng nhận
+2. Chứng minh chất lượng với người mua (SutaMarket)
+3. Đo lường carbon
+4. Vốn xanh
+5. Bảo hiểm nông nghiệp
+
+Mỗi trụ cột ghi rõ dữ liệu bên thẩm định cần và phần SutaGrow OS cung cấp. Kèm ghi chú: việc cấp chứng nhận, tín chỉ, khoản vay, bảo hiểm do tổ chức có thẩm quyền quyết định.

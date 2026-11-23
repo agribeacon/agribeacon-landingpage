@@ -15,6 +15,7 @@ import rtkRover from "@/assets/products/monrtk-rover.jpg";
 import dubiro from "@/assets/products/dubiro-robot.jpg";
 import robotField from "@/assets/field/robot-vineyard.jpg";
 import droneField from "@/assets/field/drone-cacao.jpg";
+import type { VideoKey } from "@/content/videos";
 import waterField from "@/assets/field/team-water-station.jpg";
 
 export interface Product {
@@ -37,6 +38,7 @@ export interface DeviceLine {
   highlights: { t: string; d: string }[];
   products: Product[];
   video: string;
+  videos: VideoKey[];
   note?: string;
 }
 
@@ -45,41 +47,11 @@ const STATION_BASE =
 
 export const DEVICE_LINES: DeviceLine[] = [
   {
-    slug: "aiot",
-    name: "Trạm đo đa cảm biến AIoT",
-    tagline: "Một trạm đo, ba lớp dữ liệu – đất, nước, khí hậu – và nối thẳng vào hệ thống tưới.",
-    intro:
-      "Trạm đo cố định gắn tới 5 cảm biến, tự nhận diện, gửi dữ liệu qua 4G. Trung tâm điều khiển VY-STA dùng chính dữ liệu đó để tự bật, tự dừng tưới. Cảm biến cầm tay dùng chung đầu đo để kiểm tra nhanh tại vườn.",
-    steps: [3, 5],
-    hero: stationWeatherWater,
-    heroField: waterField,
-    heroFieldPos: "object-[50%_80%]",
-    highlights: [
-      { t: "Cắm là chạy", d: "Trạm tự nhận cảm biến. Farm nhỏ: 1 trạm độc lập. Farm lớn: trạm nối mesh về gateway." },
-      { t: "Tự bật/dừng tưới", d: "VY-STA điều khiển van, bơm theo độ ẩm đất, chất lượng nước và thời tiết thực tế." },
-      { t: "Cảnh báo ngay tại trạm", d: "Còi báo tại trạm, cảnh báo quản lý trên app, cấu hình giờ hoạt động từ xa." },
-      { t: "Bền ngoài trời", d: "Năng lượng mặt trời, có lưu điện; đầu đo nước chuẩn IP68." },
-    ],
-    products: [
-      { name: "Trạm đo đa cảm biến cố định", code: "VY-NO", img: stationMulti, summary: "Khung trạm để tự chọn cảm biến theo vị trí.", specs: [STATION_BASE, "Không bao gồm SIM 4G"] },
-      { name: "Trạm đo đất", code: "VY-NO + VY-SO-UP + VY-PH-UP", img: stationSoil, summary: "Trạm cố định giám sát dinh dưỡng đất liên tục.", specs: [STATION_BASE, "VY-SO-UP: EC, N, P, K, nhiệt độ, độ ẩm đất", "VY-PH-UP: pH đất"] },
-      { name: "Trạm khí hậu & nước", code: "VY-NO + VY-AIR + VY-WA", img: stationWeatherWater, summary: "Vi khí hậu tại farm và chất lượng nguồn nước tưới.", specs: [STATION_BASE, "VY-AIR: 8 thông số khí hậu", "VY-WA: 5 thông số chất lượng nước"] },
-      { name: "Trung tâm điều khiển thiết bị (Gateway)", code: "VY-STA", img: gateway, summary: "Gom dữ liệu các trạm và điều khiển thiết bị tưới tự động bật/dừng." },
-      { name: "Hub kết nối & data logger", code: "VY-LINK", img: vyLink, summary: "Cắm một trong các đầu đo VY-SO, VY-WA, VY-AIR – tự nhận diện, đo và hiển thị chỉ số." },
-      { name: "Cảm biến dinh dưỡng đất (trạm, cao cấp)", code: "VY-SO-UP", img: vySoUp, summary: "EC, N, P, K, nhiệt độ, độ ẩm đất." },
-      { name: "Cảm biến pH đất (trạm, cao cấp)", code: "VY-PH-UP", img: vyPhUp, summary: "pH đất." },
-      { name: "Cảm biến dinh dưỡng đất cầm tay", code: "VY-SO", img: vySoHandheld, summary: "8 chỉ số: pH, EC, N, P, K, nhiệt độ, độ ẩm, độ mặn. BLE 5.0, màn OLED, đọc số ngay tại ruộng." },
-      { name: "Cảm biến chất lượng nước 5in1", code: "VY-WA", img: vyWa, summary: "pH, nhiệt độ, TDS, độ mặn, EC." },
-      { name: "Cảm biến thời tiết 8in1", code: "VY-AIR", img: vyAir, summary: "Nhiệt độ & độ ẩm không khí, tốc độ & hướng gió, áp suất, lượng mưa, độ chiếu sáng, tổng bức xạ." },
-    ],
-    video: "Trạm đo ngoài farm và van tưới tự bật/dừng",
-  },
-  {
     slug: "rtk",
     name: "MONRTK – định vị & lập bản đồ RTK",
-    tagline: "Tọa độ cấp centimet: nền móng của bản đồ từng cây.",
+    tagline: "Định vị chính xác đến centimet, lập bản đồ đến từng cây.",
     intro:
-      "Đặt trạm Base, đi Rover quanh farm để lấy ranh giới, diện tích, vị trí từng cây và tuyến di chuyển cho máy móc. Dữ liệu đẩy về SutaGrow OS qua 4G/MQTT, xử lý thành bản đồ 2D/3D.",
+      "Đặt trạm Base, khảo sát bằng Rover quanh trang trại để lấy ranh giới, diện tích, vị trí từng cây và tuyến di chuyển cho máy móc. Dữ liệu đẩy về SutaGrow OS qua 4G/MQTT, xử lý thành bản đồ 2D/3D.",
     steps: [1, 2, 5],
     hero: rtkRover,
     highlights: [
@@ -93,11 +65,45 @@ export const DEVICE_LINES: DeviceLine[] = [
       { name: "MONRTK Rover", code: "MONRTK-R", img: rtkRover, summary: "Thiết bị cầm tay khảo sát, lập bản đồ cây trồng & trang trại." },
     ],
     video: "Kỹ sư đi rover lấy tọa độ từng cây",
+    videos: ["rtkMap"],
+  },
+  {
+    slug: "aiot",
+    name: "Trạm đo đa cảm biến AIoT",
+    tagline: "Giám sát đất, nước, khí hậu trên một trạm đo, kết nối trực tiếp hệ thống tưới.",
+    intro:
+      "Trạm đo cố định gắn tới 5 cảm biến, tự nhận diện, gửi dữ liệu qua 4G. Trung tâm điều khiển VY-STA dùng chính dữ liệu đó để tự bật, tự dừng tưới. Mọi cảm biến của trạm cũng dùng độc lập như thiết bị đo cầm tay khi cần.",
+    steps: [3, 5],
+    hero: stationWeatherWater,
+    heroField: waterField,
+    heroFieldPos: "object-[50%_80%]",
+    highlights: [
+      { t: "Chỉ số sức khỏe đất SHI", d: "Tổng hợp EC, độ ẩm, nhiệt độ theo nguyên tắc Goldilocks thành một chỉ số dễ theo dõi." },
+      { t: "Dùng tại trạm hoặc cầm tay", d: "Cùng một cảm biến: gắn cố định vào trạm, hoặc cắm vào VY-LINK để đo nhanh tại bất kỳ khu nào." },
+      { t: "Lắp đặt nhanh", d: "Trạm tự nhận cảm biến. Trang trại nhỏ dùng 1 trạm độc lập; trang trại lớn nối mesh về gateway." },
+      { t: "Tự bật/dừng tưới", d: "VY-STA điều khiển van, bơm theo độ ẩm đất, chất lượng nước và thời tiết thực tế." },
+      { t: "Cảnh báo ngay tại trạm", d: "Còi báo tại trạm, cảnh báo quản lý trên app, cấu hình giờ hoạt động từ xa." },
+      { t: "Bền ngoài trời", d: "Năng lượng mặt trời, có lưu điện; đầu đo nước chuẩn IP68." },
+    ],
+    products: [
+      { name: "Trạm đo đa cảm biến cố định", code: "VY-NO", img: stationMulti, summary: "Khung trạm để tự chọn cảm biến theo vị trí.", specs: [STATION_BASE, "Không bao gồm SIM 4G"] },
+      { name: "Trạm đo đất", code: "VY-NO + VY-SO-UP + VY-PH-UP", img: stationSoil, summary: "Trạm cố định giám sát dinh dưỡng đất liên tục.", specs: [STATION_BASE, "VY-SO-UP: EC, N, P, K, nhiệt độ, độ ẩm đất", "VY-PH-UP: pH đất"] },
+      { name: "Trạm khí hậu & nước", code: "VY-NO + VY-AIR + VY-WA", img: stationWeatherWater, summary: "Vi khí hậu tại trang trại và chất lượng nguồn nước tưới.", specs: [STATION_BASE, "VY-AIR: 8 thông số khí hậu", "VY-WA: 5 thông số chất lượng nước"] },
+      { name: "Trung tâm điều khiển thiết bị (Gateway)", code: "VY-STA", img: gateway, summary: "Gom dữ liệu các trạm và điều khiển thiết bị tưới tự động bật/dừng." },
+      { name: "Bộ đo cầm tay & data logger", code: "VY-LINK", img: vyLink, summary: "Biến mọi đầu đo VY-SO, VY-WA, VY-AIR thành thiết bị cầm tay: tự nhận diện, đo và hiển thị chỉ số ngay tại vườn." },
+      { name: "Cảm biến dinh dưỡng đất (trạm, cao cấp)", code: "VY-SO-UP", img: vySoUp, summary: "EC, N, P, K, nhiệt độ, độ ẩm đất. Dùng tại trạm hoặc cầm tay." },
+      { name: "Cảm biến pH đất (trạm, cao cấp)", code: "VY-PH-UP", img: vyPhUp, summary: "pH đất. Dùng tại trạm hoặc cầm tay." },
+      { name: "Cảm biến dinh dưỡng đất cầm tay 9in1", code: "VY-SO", img: vySoHandheld, summary: "9 chỉ số: pH, EC, N, P, K, nhiệt độ, độ ẩm, độ mặn và chỉ số sức khỏe đất SHI. BLE 5.0, màn OLED, đọc số ngay tại ruộng." },
+      { name: "Cảm biến chất lượng nước 5in1", code: "VY-WA", img: vyWa, summary: "pH, nhiệt độ, TDS, độ mặn, EC. Dùng tại trạm hoặc cầm tay." },
+      { name: "Cảm biến thời tiết 8in1", code: "VY-AIR", img: vyAir, summary: "Nhiệt độ & độ ẩm không khí, tốc độ & hướng gió, áp suất, lượng mưa, độ chiếu sáng, tổng bức xạ. Dùng tại trạm hoặc cầm tay." },
+    ],
+    video: "Trạm đo ngoài farm và van tưới tự bật/dừng",
+    videos: [],
   },
   {
     slug: "uav",
     name: "MONSKY UAV – khảo sát & giám sát",
-    tagline: "Nhìn cả farm từ trên cao, định kỳ, theo cùng một đường bay.",
+    tagline: "Khảo sát và giám sát sức khỏe cây trồng định kỳ từ trên cao.",
     intro:
       "Drone khảo sát và giám sát nông nghiệp: ảnh đa phổ, bản đồ sức khỏe cây (NDVI, NDRE, SAVI…), phát hiện sớm stress và sâu bệnh bằng AI, lưu lịch sử bay về SutaGrow OS.",
     steps: [1, 5],
@@ -111,11 +117,12 @@ export const DEVICE_LINES: DeviceLine[] = [
     ],
     products: [{ name: "MONSKY UAV", code: "MONSKY", img: monsky, summary: "UAV tự hành khảo sát và giám sát nông nghiệp. Thời gian bay tối đa 72 phút." }],
     video: "MONSKY bay khảo sát vườn cây",
+    videos: ["uav"],
   },
   {
     slug: "robot",
     name: "DUBIRO – robot phun thuốc",
-    tagline: "Phun đúng tuyến, đều liều, người vận hành đứng ngoài vùng thuốc.",
+    tagline: "Phun thuốc đúng tuyến, đều liều, giảm tiếp xúc hóa chất cho người vận hành.",
     intro:
       "Robot phun thuốc tự hành / bán tự hành cho trang trại cây lâu năm. Điều khiển từ xa qua 4G với camera 360°, chạy theo tuyến RTK, lưu nhật ký tuyến đi, lưu lượng và thời gian phun sau mỗi lượt.",
     steps: [5],
@@ -129,38 +136,106 @@ export const DEVICE_LINES: DeviceLine[] = [
     ],
     products: [{ name: "Robot DUBIRO", code: "DUBIRO", img: dubiro, summary: "Robot phun thuốc tự hành / bán tự hành. Có dịch vụ thuê theo buổi hoặc mùa vụ." }],
     video: "DUBIRO phun giữa hàng cây",
+    videos: ["robot"],
   },
 ];
 
-// Gói phần mềm – không công khai giá
-export const SOFTWARE_PLANS = [
-  { name: "SutaGrow Farm Monitor", for: "Đi kèm khi trang bị thiết bị AIoT", d: "Theo dõi dữ liệu trạm đo, cảnh báo, điều khiển tưới trên app." },
-  { name: "SutaGrow Manage", for: "Một trang trại, quản lý bài bản", d: "Bản đồ từng cây, công việc, nhân công & công nhật, vật tư & kho, chi phí." },
-  { name: "SutaGrow Optimize", for: "Nhiều trang trại", d: "Quản lý đa trang trại trên một bản đồ, so sánh KPI giữa các địa điểm." },
-  { name: "SutaGrow Enterprise", for: "Vùng trồng, thu mua lớn", d: "Quản lý vùng trồng và chuỗi thu mua. Có phương án white label." },
-];
+// ---------------------------------------------------------------------------
+// Gói & báo giá theo hành trình (không công khai giá)
+export type OfferKind = "service" | "device" | "software" | "ai";
 
-export const PLAN_ADDONS = [
-  "Bổ sung trang trại",
-  "Bổ sung người dùng",
-  "Tiểu Thần Nông – gói câu hỏi AI theo người dùng/tháng (3 mức)",
-];
+export interface OfferItem {
+  kind: OfferKind;
+  name: string;
+  d: string; // 1 dòng, **từ khóa**
+  img?: string;
+  code?: string;
+}
 
-export const SERVICE_LIST = [
+export interface OfferStage {
+  key: string;
+  short: string;
+  title: string;
+  goal: string;
+  link?: { label: string; path: string };
+  note?: string;
+  osNote: string; // dữ liệu chặng này đi vào SutaGrow OS thế nào
+  items: OfferItem[];
+}
+
+export const OFFER_JOURNEY: OfferStage[] = [
   {
-    group: "Phân tích đất & vi sinh (phòng lab)",
+    key: "soil",
+    short: "Hiểu đất",
+    title: "Hiểu đất trước khi trồng",
+    goal: "Biết đất và nước của mình hợp với **cây, giống** nào.",
+    link: { label: "Bước 1: Hiểu mảnh đất", path: "/platform/survey" },
+    osNote: "Kết quả đo lưu đúng **vị trí lấy mẫu**, dùng lại khi lập kế hoạch bón phân.",
     items: [
-      { name: "VY-SO-LAB01 · Phân tích đất cơ bản", d: "pH, EC, độ ẩm, chất hữu cơ (OM), N tổng số, P dễ tiêu, K trao đổi, CEC – sàng lọc nền hóa lý, dinh dưỡng." },
-      { name: "VY-SO-LAB02 · Đất & vi sinh", d: "LAB01 + vi khuẩn hiếu khí, nấm tổng số, vi khuẩn cố định đạm, phân giải lân, phân hủy cellulose, nấm Trichoderma." },
-      { name: "VY-SO-LAB03 · Toàn bộ sức khỏe đất", d: "LAB01 + LAB02 + NH4⁺, NO3⁻, P/K tổng số, Ca/Mg/Na trao đổi, tác nhân gây bệnh (Fusarium, Phytophthora, Rhizoctonia), tuyến trùng." },
+      { kind: "service", code: "VY-SO-LAB01", name: "Phân tích đất cơ bản", d: "**Hóa lý, dinh dưỡng**: pH, EC, chất hữu cơ, NPK, CEC." },
+      { kind: "service", code: "VY-SO-LAB02", name: "Đất & vi sinh", d: "Gói cơ bản, thêm **vi sinh vật có lợi**." },
+      { kind: "service", code: "VY-SO-LAB03", name: "Toàn bộ sức khỏe đất", d: "Gói vi sinh, thêm **mầm bệnh, tuyến trùng**." },
+      { kind: "device", code: "VY-LINK", name: "Bộ đo cầm tay", d: "Cắm đầu đo **VY-SO, VY-WA, VY-AIR**, xem kết quả **ngay tại vườn**.", img: vyLink },
+      { kind: "device", code: "VY-SO", name: "Cảm biến đất cầm tay 9in1", d: "Đo **9 chỉ số đất**, có chỉ số sức khỏe đất SHI.", img: vySoHandheld },
+      { kind: "device", code: "VY-WA", name: "Cảm biến nước 5in1", d: "Kiểm tra **chất lượng nước tưới**.", img: vyWa },
     ],
   },
   {
-    group: "Bản đồ & triển khai",
+    key: "plan",
+    short: "Quy hoạch",
+    title: "Quy hoạch trang trại",
+    goal: "Có bản đồ **đến từng cây** trước khi trồng và làm hạ tầng.",
+    link: { label: "Bước 2: Quy hoạch & bản đồ", path: "/platform/planning" },
+    osNote: "Mỗi khu, luống, **từng cây có mã riêng**; việc làm sau này đều gắn vào đó.",
     items: [
-      { name: "Kỹ sư quy hoạch & lập bản đồ farm/cây trồng", d: "Đi cùng MONRTK, tính theo diện tích." },
-      { name: "Triển khai tại farm (onsite)", d: "Tư vấn chuyên sâu, lắp đặt, cấu hình, kết nối dữ liệu và đào tạo người dùng." },
-      { name: "Thuê robot DUBIRO", d: "Theo buổi hoặc theo mùa vụ, có người vận hành." },
+      { kind: "device", code: "MONRTK", name: "MONRTK Base", d: "Trạm mốc cho độ chính xác **đến cm**.", img: rtkBase },
+      { kind: "device", code: "MONRTK", name: "MONRTK Rover", d: "Đo **ranh giới, vị trí từng cây** ngoài thực địa.", img: rtkRover },
+      { kind: "service", name: "Kỹ sư quy hoạch & lập bản đồ", d: "Thiết kế **khu, hàng cây, đường tưới, hạ tầng**. Báo giá theo diện tích." },
+    ],
+  },
+  {
+    key: "monitor",
+    short: "Giám sát & tưới",
+    title: "Giám sát & tưới tự động",
+    goal: "Theo dõi **đất, nước, thời tiết** cả ngày và **tưới khi đất cần**.",
+    link: { label: "Xem trạm đo đa cảm biến", path: "/devices/aiot" },
+    note: "Mỗi cảm biến trên trạm cũng dùng riêng được như **máy đo cầm tay**.",
+    osNote: "Xem số đo trên bản đồ, **nhận cảnh báo và bật tắt tưới** từ điện thoại.",
+    items: [
+      { kind: "device", code: "VY-NO", name: "Trạm đo đất", d: "**VY-SO-UP, VY-PH-UP** đo dinh dưỡng đất liên tục.", img: stationSoil },
+      { kind: "device", code: "VY-NO", name: "Trạm khí hậu & nước", d: "**VY-AIR 8in1, VY-WA 5in1** đo thời tiết tại vườn và nguồn nước.", img: stationWeatherWater },
+      { kind: "device", code: "VY-STA", name: "Trung tâm điều khiển tưới", d: "**Tự bật, tắt tưới** theo số đo của trạm.", img: gateway },
+    ],
+  },
+  {
+    key: "automate",
+    short: "Tối ưu nhân công",
+    title: "Giảm việc tay chân bằng UAV, robot",
+    goal: "Để máy làm các việc **lặp lại, nặng nhọc**.",
+    link: { label: "Bước 5: Tối ưu & tự động hóa", path: "/platform/automation" },
+    osNote: "Mỗi lượt bay, lượt phun **tự ghi nhật ký**: ở khu nào, bao nhiêu thuốc, tốn bao nhiêu.",
+    items: [
+      { kind: "device", code: "MONSKY", name: "UAV MONSKY", d: "**Bay khảo sát, theo dõi sức khỏe cây**, bay tối đa 72 phút.", img: monsky },
+      { kind: "device", code: "DUBIRO", name: "Robot đa tác vụ DUBIRO", d: "**Phun thuốc, cắt cỏ** theo tuyến RTK, tự chạy hoặc có người điều khiển.", img: dubiro },
+      { kind: "service", name: "Thuê robot DUBIRO", d: "Thuê theo **buổi** hoặc **mùa vụ**, kèm người vận hành." },
     ],
   },
 ];
+
+export const PLATFORM_OFFER = {
+  title: "SutaGrow OS & Trợ lý AI Tiểu Thần Nông",
+  goal: "Ghi lại **việc làm hằng ngày** và gom **số liệu từ mọi thiết bị** về một app. Chặng nào cũng dùng.",
+  items: [
+    { kind: "software", name: "SutaGrow Farm Monitor", d: "Đi kèm thiết bị: **xem số đo, nhận cảnh báo, điều khiển tưới**." },
+    { kind: "software", name: "SutaGrow Manage", d: "Cho một trang trại: **bản đồ cây, giao việc, chấm công, kho, chi phí**." },
+    { kind: "software", name: "SutaGrow Optimize", d: "Xem **nhiều trang trại** trên một bản đồ, so sánh với nhau." },
+    { kind: "software", name: "SutaGrow Enterprise", d: "Cho **vùng trồng, chuỗi thu mua**; có bản mang thương hiệu riêng." },
+    { kind: "ai", name: "Trợ lý AI Tiểu Thần Nông", d: "**Nói là nhập liệu**, hỏi kỹ thuật canh tác; trả lời theo vai trò người dùng." },
+    { kind: "software", name: "Mở rộng theo nhu cầu", d: "Thêm **trang trại**, thêm **người dùng** khi cần." },
+  ] as OfferItem[],
+};
+
+export const ONSITE_SERVICE = {
+  name: "Triển khai & đào tạo tại trang trại",
+  d: "Kỹ thuật viên đến tận nơi **lắp đặt, cài đặt** và **hướng dẫn** người dùng.",
+};

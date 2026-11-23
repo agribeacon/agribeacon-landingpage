@@ -32,7 +32,8 @@ const SiteFooter = () => (
         <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-white/50">Đồng hành chuyên môn cùng</span>
         <div className="flex flex-wrap gap-x-8 gap-y-2">
           {PARTNERS.map((p) => (
-            <Link key={p.name} to="/partners" className="text-sm font-semibold text-white/85 hover:text-brand-leaf">
+            <Link key={p.name} to="/partners" className="flex items-center gap-2.5 text-sm font-semibold text-white/85 hover:text-brand-leaf">
+              <img src={p.logo} alt="" className="h-9 w-9 rounded-full bg-white object-cover" loading="lazy" />
               {p.name}
             </Link>
           ))}
@@ -44,7 +45,7 @@ const SiteFooter = () => (
       <div className="lg:col-span-2">
         <img src={logoLight} alt="AgriBeacon" className="mb-4 h-8 w-auto" />
         <p className="mb-5 max-w-sm text-sm text-white/70">
-          {BRAND.os} – hệ điều hành AIoT cho trang trại cây lâu năm và cây công nghiệp. Bắt đầu từ mảnh đất, không phải từ AI.
+          {BRAND.os}: hệ điều hành AIoT cho trang trại cây lâu năm và cây công nghiệp.
         </p>
         <ul className="space-y-2 text-sm text-white/70">
           <li className="flex items-center gap-2">
@@ -75,7 +76,8 @@ const SiteFooter = () => (
       <Col
         title="Tài nguyên"
         links={[
-          { name: "Hướng dẫn thực hành", path: "/guides" },
+          { name: "Nông nghiệp chính xác", path: "/precision-agriculture" },
+          { name: "Tính hiệu quả đầu tư (ROI)", path: "/tools/roi-calculator" },
           { name: "Ước tính chi phí", path: "/tools/cost-estimator" },
           { name: "Brochure", path: "/brochure" },
           { name: "Trợ giúp", path: "/help" },
@@ -97,7 +99,7 @@ const SiteFooter = () => (
     <div className="border-t border-white/10">
       <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-white/50 sm:px-6 md:flex-row md:justify-between lg:px-8">
         <span>© {new Date().getFullYear()} AgriBeacon. {BRAND.os}, Tiểu Thần Nông và các thiết bị là sản phẩm trong hệ sinh thái AgriBeacon.</span>
-        <span>Dữ liệu farm thuộc về bạn.</span>
+        <span>Dữ liệu trang trại thuộc quyền sở hữu của khách hàng.</span>
       </div>
     </div>
   </footer>

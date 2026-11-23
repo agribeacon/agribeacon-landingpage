@@ -3,30 +3,22 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, LogIn, Menu, X, ArrowRight } from "lucide-react";
 import logo from "@/assets/brand/agribeacon-logo.svg";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { BRAND, CROPS, DEVICES, FARMS, JOURNEY, SERVICES, PARTNERS } from "@/content/site";
+import { BRAND, DEVICES, FARMS, JOURNEY, SERVICES, PARTNERS } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 type SimpleLink = { name: string; path: string; hint?: string };
 
-const solutionsByScale: SimpleLink[] = [
-  { name: "Farm gia đình (< 10 ha)", path: "/solutions#family-farm" },
-  { name: "Trang trại doanh nghiệp (10–50 ha)", path: "/solutions#commercial-farm" },
-  { name: "Farm lớn, HTX, nhiều farm", path: "/solutions#multi-farm" },
-];
-const solutionsByGoal: SimpleLink[] = [
-  { name: "Xuất khẩu & truy xuất", path: "/solutions#export-traceability" },
-  { name: "Bền vững & ESG", path: "/solutions#sustainability" },
-];
 const resources: SimpleLink[] = [
-  { name: "Hướng dẫn thực hành", path: "/guides", hint: "Theo 6 bước của hành trình" },
-  { name: "Ước tính chi phí", path: "/tools/cost-estimator", hint: "Tính nhanh chi phí đầu tư" },
-  { name: "Brochure", path: "/brochure", hint: "Tải hoặc xem lật trang" },
-  { name: "Trung tâm trợ giúp", path: "/help", hint: "Hướng dẫn dùng SutaGrow OS" },
+  { name: "Nông nghiệp chính xác là gì?", path: "/precision-agriculture", hint: "Là gì và áp dụng thế nào" },
+  { name: "Tính hiệu quả đầu tư (ROI)", path: "/tools/roi-calculator", hint: "Ước tính trang trại tiết kiệm được bao nhiêu" },
+  { name: "Ước tính chi phí", path: "/tools/cost-estimator", hint: "Tính nhanh chi phí ban đầu" },
+  { name: "Brochure", path: "/brochure", hint: "Xem online hoặc tải về" },
+  { name: "Trung tâm trợ giúp", path: "/help", hint: "Cách dùng app SutaGrow" },
 ];
 const about: SimpleLink[] = [
-  { name: "Câu chuyện & triết lý", path: "/about" },
-  { name: "Tuyển dụng", path: "/careers" },
-  { name: "Liên hệ", path: "/contact" },
+  { name: "Về AgriBeacon", path: "/about", hint: "Chúng tôi là ai, làm gì" },
+  { name: "Tuyển dụng", path: "/careers", hint: "Vị trí đang tuyển" },
+  { name: "Liên hệ", path: "/contact", hint: "Gọi, nhắn hoặc ghé văn phòng" },
 ];
 
 const isExternal = (p: string) => p.startsWith("/brochure") || p.startsWith("http");
@@ -106,10 +98,12 @@ const SiteNav = () => {
               </div>
               <div className="rounded-xl bg-brand-sand p-4">
                 <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Bắt đầu</div>
-                <ItemLink item={{ name: `Tổng quan ${BRAND.os}`, path: "/platform", hint: "Hệ điều hành AIoT của farm" }} />
-                <ItemLink item={{ name: "Tải app SutaGrow", path: "/#app", hint: "iOS & Android" }} />
+                <ItemLink item={{ name: `Tổng quan ${BRAND.os}`, path: "/platform", hint: "Xem toàn bộ tính năng" }} />
+                <ItemLink item={{ name: "Nông nghiệp chính xác", path: "/precision-agriculture", hint: "Bón, tưới, phun đúng chỗ cần" }} />
+                <ItemLink item={{ name: "Quản lý đa trang trại", path: "/platform#multi-farm", hint: "Theo dõi nhiều trang trại từ một nơi" }} />
+                <ItemLink item={{ name: "Tải app SutaGrow", path: "/#app", hint: "Có trên iOS và Android" }} />
                 <Link to={BRAND.surveyPath} className="mt-3 flex items-center justify-between rounded-lg bg-brand-navy px-3 py-2.5 text-sm font-semibold text-white">
-                  Đặt lịch khảo sát farm <ArrowRight className="h-4 w-4" />
+                  Đặt lịch khảo sát trang trại <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -120,7 +114,7 @@ const SiteNav = () => {
               <div>
                 <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Thiết bị</div>
                 {DEVICES.map((d) => (
-                  <ItemLink key={d.path} item={{ name: d.name, path: d.path, hint: `${d.hint} · bước ${d.steps.join(", ")}` }} />
+                  <ItemLink key={d.path} item={{ name: d.name, path: d.path, hint: d.hint }} />
                 ))}
               </div>
               <div>
@@ -128,40 +122,18 @@ const SiteNav = () => {
                 {SERVICES.map((s) => (
                   <ItemLink key={s.path} item={{ name: s.name, path: s.path, hint: s.hint }} />
                 ))}
-                <p className="mt-3 px-3 text-xs text-muted-foreground">Mọi thiết bị đều đẩy dữ liệu tự động về {BRAND.os}.</p>
+                <p className="mt-3 px-3 text-xs text-muted-foreground">Mọi thiết bị đều gửi số liệu về {BRAND.os}.</p>
               </div>
             </div>
           </Dropdown>
 
-          <Dropdown label="Giải pháp" wide>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Theo cây trồng</div>
-                {CROPS.map((c) => (
-                  <ItemLink key={c} item={{ name: c, path: "/solutions#crops" }} />
-                ))}
-              </div>
-              <div>
-                <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Theo quy mô</div>
-                {solutionsByScale.map((i) => (
-                  <ItemLink key={i.path} item={i} />
-                ))}
-              </div>
-              <div>
-                <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Theo mục tiêu</div>
-                {solutionsByGoal.map((i) => (
-                  <ItemLink key={i.path} item={i} />
-                ))}
-              </div>
-            </div>
-          </Dropdown>
 
           <Dropdown label="Khách hàng & Đối tác">
-            <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Farm đang dùng</div>
+            <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Trang trại đang dùng</div>
             {FARMS.filter((f) => f.featured).map((f) => (
               <ItemLink key={f.name} item={{ name: f.name, path: "/customers", hint: `${f.crop} · ${f.area} · ${f.location}` }} />
             ))}
-            <ItemLink item={{ name: "Xem tất cả farm →", path: "/customers" }} />
+            <ItemLink item={{ name: "Xem tất cả khách hàng →", path: "/customers" }} />
             <div className="my-2 border-t border-border" />
             <div className="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Đối tác chuyên môn</div>
             {PARTNERS.slice(0, 2).map((p) => (
@@ -206,8 +178,7 @@ const SiteNav = () => {
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border bg-white px-4 pb-28 pt-2 xl:hidden">
           <MobileGroup title={BRAND.os} items={[{ name: `Tổng quan ${BRAND.os}`, path: "/platform" }, ...JOURNEY.map((s) => ({ name: `${s.n}. ${s.short}`, path: s.path }))]} defaultOpen />
           <MobileGroup title="Thiết bị & Dịch vụ" items={[...DEVICES, ...SERVICES]} />
-          <MobileGroup title="Giải pháp" items={[{ name: "Theo cây trồng", path: "/solutions#crops" }, ...solutionsByScale, ...solutionsByGoal]} />
-          <MobileGroup title="Khách hàng & Đối tác" items={[{ name: "Farm đang dùng", path: "/customers" }, { name: "Đối tác chuyên môn", path: "/partners" }]} />
+          <MobileGroup title="Khách hàng & Đối tác" items={[{ name: "Trang trại đang dùng", path: "/customers" }, { name: "Đối tác chuyên môn", path: "/partners" }]} />
           <Link to="/pricing" className="block border-b border-border py-3 font-semibold text-brand-navy">
             Gói & báo giá
           </Link>
@@ -228,9 +199,9 @@ const SiteNav = () => {
 
 /** CTA ghim đáy màn hình trên mobile (đặt ngoài header vì header có backdrop-blur). */
 export const MobileCta = () => (
-  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white/95 p-3 pr-20 backdrop-blur md:hidden">
+  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white/95 p-3 backdrop-blur md:hidden">
     <Link to={BRAND.surveyPath} className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-navy py-3 text-sm font-semibold text-white">
-      Đặt lịch khảo sát farm <ArrowRight className="h-4 w-4" />
+      Đặt lịch khảo sát trang trại <ArrowRight className="h-4 w-4" />
     </Link>
   </div>
 );

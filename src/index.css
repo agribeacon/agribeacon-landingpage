@@ -185,3 +185,27 @@ All colors MUST be HSL.
 .help-prose-content blockquote p:last-of-type::after {
   content: none;
 }
+
+/* mũi tên chạy trên sơ đồ Gói & báo giá */
+@keyframes flow-x { to { background-position: 8px 0; } }
+@keyframes flow-y { to { background-position: 0 8px; } }
+.flow-x {
+  background-image: linear-gradient(90deg, currentColor 50%, transparent 0);
+  background-size: 8px 100%;
+  animation: flow-x 0.6s linear infinite;
+}
+.flow-y {
+  background-image: linear-gradient(180deg, currentColor 50%, transparent 0);
+  background-size: 100% 8px;
+  animation: flow-y 0.6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-x, .flow-y { animation: none; }
+}
+
+/* dải khách hàng chạy ngang: danh sách lặp 4 lần, chạy 1/4 chiều dài rồi quay lại */
+@keyframes marquee { to { transform: translateX(calc(-25% - 0.1875rem)); } }
+.marquee { animation: marquee 90s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; flex-wrap: wrap; width: auto; }
+}

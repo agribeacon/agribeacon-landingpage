@@ -3,20 +3,26 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useEffect } from "react";
 import FarmIllustration from "@/components/revamp/FarmIllustration";
 import VideoSlot from "@/components/revamp/VideoSlot";
+import type { VideoKey } from "@/content/videos";
+import { VideoGallery } from "@/components/revamp/VideoPlayer";
+import AiEntryDemo from "@/components/revamp/AiEntryDemo";
 import StatusBadge from "@/components/revamp/StatusBadge";
 import { BRAND, DEVICES, JOURNEY } from "@/content/site";
 import { cn } from "@/lib/utils";
+import { rich } from "@/lib/rich";
 import poster1 from "@/assets/digital-farm-map-hero.jpg";
 import poster2 from "@/assets/digital-farm-map-sample.jpg";
-import poster3 from "@/assets/field/team-water-station.jpg";
+import poster3 from "@/assets/products/station-multi.jpg";
 import poster4 from "@/assets/field/team-vineyard-sensor.jpg";
 import poster5 from "@/assets/field/robot-vineyard.jpg";
 import poster6 from "@/assets/ai-assistant-hero.jpg";
 
+const STEP_VIDEOS: Partial<Record<number, VideoKey>> = { 1: "rtkMap", 2: "planning3d", 4: "sutagrowOverview", 5: "rtkRobotUav", 6: "ai" };
+
 const POSTERS: Record<number, { src: string; pos?: string }> = {
   1: { src: poster1 },
   2: { src: poster2 },
-  3: { src: poster3, pos: "object-[50%_75%]" },
+  3: { src: poster3 },
   4: { src: poster4, pos: "object-[50%_60%]" },
   5: { src: poster5 },
   6: { src: poster6 },
@@ -51,7 +57,7 @@ const StepPage = () => {
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-brand-leaf-deep">{step.title}</span>
             </div>
             <h1 className="text-4xl font-extrabold leading-tight text-brand-navy sm:text-5xl">{step.heroTitle}</h1>
-            <p className="mt-5 text-lg text-brand-navy/75">{step.heroSub}</p>
+            <p className="mt-5 text-lg text-brand-navy/75">{rich(step.heroSub)}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to={`${BRAND.surveyPath}&step=${step.n}`} className="inline-flex items-center gap-2 rounded-full bg-brand-navy px-5 py-3 font-semibold text-white hover:bg-brand-navy-2">
                 Đặt lịch khảo sát <ArrowRight className="h-4 w-4" />
@@ -71,24 +77,26 @@ const StepPage = () => {
       <section className="bg-white py-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
           <div className="rounded-2xl bg-brand-navy p-6 text-white">
-            <div className="text-xs font-bold uppercase tracking-wider text-brand-leaf">Câu hỏi của chủ farm</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-leaf">Câu hỏi của chủ trang trại</div>
             <p className="mt-3 text-xl font-semibold">“{step.question}”</p>
           </div>
           <div className="rounded-2xl border border-border p-6">
-            <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Thực tế hôm nay</div>
-            <p className="mt-3 text-brand-navy/80">{step.problem}</p>
+            <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Hiện trạng</div>
+            <p className="mt-3 text-brand-navy/80">{rich(step.pain)}</p>
           </div>
           <div className="rounded-2xl border border-brand-leaf/60 bg-brand-leaf/10 p-6">
-            <div className="text-xs font-bold uppercase tracking-wider text-brand-leaf-deep">Chúng tôi làm</div>
-            <p className="mt-3 text-brand-navy/80">{step.answer}</p>
+            <div className="text-xs font-bold uppercase tracking-wider text-brand-leaf-deep">Giải pháp</div>
+            <p className="mt-3 text-brand-navy/80">{rich(step.gain)}</p>
           </div>
         </div>
       </section>
 
+      {step.n === 6 && <AiEntryDemo />}
+
       {/* Tính năng */}
       <section className="bg-white pb-16 lg:pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-brand-navy">Trong {BRAND.os}</h2>
+          <h2 className="text-3xl font-bold text-brand-navy">Tính năng trên {BRAND.os}</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {step.features.map((f) => (
               <div key={f.title} className="rounded-2xl border border-border p-6 transition hover:border-brand-leaf">
@@ -96,7 +104,7 @@ const StepPage = () => {
                   <h3 className="font-semibold text-brand-navy">{f.title}</h3>
                   <StatusBadge status={f.status} />
                 </div>
-                <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{rich(f.desc)}</p>
               </div>
             ))}
           </div>
@@ -106,9 +114,15 @@ const StepPage = () => {
       {/* Video + dữ liệu bạn có được */}
       <section className="bg-brand-sand py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
-          <VideoSlot poster={poster.src} mediaClassName={poster.pos} brief={step.video} className="aspect-video rounded-3xl" />
+          {STEP_VIDEOS[step.n] ? (
+            <VideoSlot video={STEP_VIDEOS[step.n]} poster={poster.src} mediaClassName={poster.pos} brief={step.video} className="aspect-video rounded-3xl" />
+          ) : (
+            <div className="flex aspect-video items-center justify-center rounded-3xl bg-white p-6">
+              <img src={poster.src} alt={step.title} className={cn("h-full w-auto object-contain", poster.pos)} loading="lazy" />
+            </div>
+          )}
           <div>
-            <h2 className="text-2xl font-bold text-brand-navy">Dữ liệu bạn có được sau bước này</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Kết quả đạt được sau bước này</h2>
             <ul className="mt-6 space-y-3">
               {step.dataOut.map((d) => (
                 <li key={d} className="flex items-start gap-3">
@@ -137,6 +151,19 @@ const StepPage = () => {
           </div>
         </div>
       </section>
+
+      {step.n === 2 && (
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-brand-leaf-deep">Mô phỏng quy hoạch</div>
+            <h2 className="text-3xl font-bold text-brand-navy">Hình dung trang trại trước khi đầu tư</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">AgriBeacon dựng mô hình 3D quy hoạch khu, luống, hàng cây và hệ thống tưới dựa trên số liệu khảo sát RTK, giúp chủ trang trại so sánh phương án trước khi triển khai ngoài thực địa.</p>
+            <div className="mt-8">
+              <VideoGallery videos={["planGuava", "planCoffeePineapple"]} />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Điều hướng bước */}
       <nav className="border-t border-border bg-white" aria-label="Các bước khác">

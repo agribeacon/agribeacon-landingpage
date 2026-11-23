@@ -31,6 +31,8 @@ import Customers from "./pages/revamp/Customers";
 import Partners from "./pages/revamp/Partners";
 import DevicePage from "./pages/revamp/DevicePage";
 import Pricing from "./pages/revamp/Pricing";
+import PrecisionAgriculture from "./pages/revamp/PrecisionAgriculture";
+import RoiCalculator from "./pages/revamp/RoiCalculator";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +80,8 @@ const App = () => (
                   <Route path="/platform/:slug" element={<StepPage />} />
                   <Route path="/customers" element={<Customers />} />
                   <Route path="/partners" element={<Partners />} />
+                  <Route path="/precision-agriculture" element={<PrecisionAgriculture />} />
+                  <Route path="/tools/roi-calculator" element={<RoiCalculator />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/guides" element={<BestPractices />} />
                   <Route path="/tools/cost-estimator" element={<CostEstimator />} />
