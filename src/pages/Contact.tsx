@@ -5,13 +5,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import MapComponent from "@/components/Map";
 import { useSimpleLanguage } from "@/contexts/SimpleLanguageContext";
 
+// Ngữ cảnh các nút CTA gắn vào link tới form (`/contact?need=quote&device=rtk`) — gửi kèm về CRM
+// để sale biết khách cần gì trước khi gọi lại.
+const CONTEXT_PARAMS = ["need", "from", "crop", "area", "device", "plan"] as const;
+
 const Contact = () => {
   const { toast } = useToast();
   const { t } = useSimpleLanguage();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,14 +36,8 @@ const Contact = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          subject: "📬 Liên hệ mới (trang Contact)",
-          fields: [
-            { name: "👤 Họ tên", value: formData.name },
-            { name: "✉️ Email", value: formData.email },
-            { name: "📞 Số điện thoại", value: formData.phone },
-            { name: "🌾 Quy mô farm", value: formData.farmSize },
-            { name: "📝 Nội dung", value: formData.message },
-          ],
+          ...formData,
+          ...Object.fromEntries(CONTEXT_PARAMS.map((key) => [key, searchParams.get(key) ?? ""])),
         }),
       });
       if (!response.ok) throw new Error("Request failed");
@@ -47,15 +47,20 @@ const Contact = () => {
       });
       setFormData({ name: "", email: "", phone: "", farmSize: "", message: "" });
     } catch {
+      // Giữ nguyên thứ khách đã gõ để thử lại được ngay.
       toast({
-        title: "Gửi thất bại",
-        description: "Vui lòng thử lại sau.",
+        title: t('contact.form.error.title'),
+        description: t('contact.form.error.description'),
         variant: "destructive",
       });
     } finally {
       setSending(false);
     }
   };
+
+  // Cần ít nhất một cách liên lạc: ô này bắt buộc khi ô kia còn trống.
+  const hasPhone = formData.phone.trim() !== "";
+  const hasEmail = formData.email.trim() !== "";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
@@ -99,14 +104,14 @@ const Contact = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">{t('contact.form.email')} *</Label>
+                      <Label htmlFor="email">{t('contact.form.email')}{!hasPhone && " *"}</Label>
                       <Input
                         id="email"
                         name="email"
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
-                        required
+                        required={!hasPhone}
                         placeholder={t('contact.form.email.placeholder')}
                       />
                     </div>
@@ -114,13 +119,14 @@ const Contact = () => {
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="phone">{t('contact.form.phone')}</Label>
+                      <Label htmlFor="phone">{t('contact.form.phone')}{!hasEmail && " *"}</Label>
                       <Input
                         id="phone"
                         name="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={handleChange}
+                        required={!hasEmail}
                         placeholder={t('contact.form.phone.placeholder')}
                       />
                     </div>
